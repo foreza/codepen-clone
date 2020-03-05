@@ -1,11 +1,63 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+
+    <!-- Materialize dependency -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+
+    <div class="container">
+      <img src="/images/codepen-logo.svg"/>
+      <h3>LOGIN</h3>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <form class="col s6">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input placeholder="" id="usernameOrEmail" type="text" class="validate"/>
+                        <label for="usernameOrEmail">USERNAME OR EMAIL</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input placeholder="" id="password" type="password" class="validate"/>
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Log In
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <span><a href="#">Forgot Password</a>?</span>
+                </div>
+            </form>
+        </div>
+
+        <div class="container center-align">
+          <p>Need an account? <a href="#">Sign up now!</a></p>
+      </div>
+    </div>
+
+
+
+
+
+    <script type="text/javascript" src="/javascripts/materialize.js"></script>
+
+</body>
+
+
 </html>
