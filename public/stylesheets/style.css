@@ -6,3 +6,76 @@ body {
 a {
   color: #00B7FF;
 }
+
+
+h1,h2,h3,h4,h5 {
+  color: floralwhite;
+}
+
+/* fallback */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: ('./font/materialize.woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+.dashboard{
+  background-color: #131317;
+}
+
+.dashboard-secondary {
+  background-color: #2c303a;
+}
+
+.dashboard-tertiary {
+  background-color: #1e1f26;
+}
+
+.dashboard span {
+  color: white;
+}
+
+
+button .material-icons {
+  font-size: 13px;
+}
+
+
+div.col span {
+  white-space: nowrap;
+}
+
+
+
+/* Reduce the padding that materialize adds */
+#tab-button-group.tabs .tab a {
+  padding: 0 10px;
+  
+}
+
+#tab-button-group {
+  background: none;
+}
+
+
+#tab-pens .row {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
