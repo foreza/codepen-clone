@@ -32,9 +32,45 @@
       <div id="tab-pens" class="col s12">
 
         <div class="row">
-          <div class="col s4">Search</div>
-          <div class="col s4">View</div>
-          <div class="col s4">Tag</div>
+          
+          <div class="col s4 valign-wrapper">
+            <div class="col s2">
+              <span>Search</span>
+            </div>
+            <div class="input-field col s6">
+              <input placeholder="Search for..." id="search-pens" type="text">
+            </div>
+            <div class="input-field col s4">
+              <button class="btn waves-effect waves-light" type="search-submit" name="action">Search</button>
+            </div>
+          </div>
+
+          <div class="col s4 valign-wrapper">
+            <div class="col s2">
+              <span>View</span>
+            </div>
+            <div class="input-field col s10">
+                <select class="browser-default">
+                  <option value="1" selected>All</option>
+                  <option value="2">All my Pens (no forks)</option>
+                  <option value="3">Public</option>
+                  <option value="4">Private</option>
+                  <option value="5">Template</option>
+                  <option value="6f">Fork</option>
+                
+                </select>
+            </div>
+          </div>
+       
+          <div class="col s4 valign-wrapper">
+            <div class="col s2">
+              <span>Tag</span>
+            </div>
+            <div class="input-field col s10">
+              <input placeholder="Keyword..." id="search-pens" type="text">
+              <!-- Input + Dropdown -->
+            </div>
+          </div>
         </div>
 
         <div class="row">
@@ -45,6 +81,7 @@
               
 
 
+      </div>
       </div>
 
       <div id="tab-project" class="col s12">
@@ -71,8 +108,8 @@
 
     $(document).ready(function () {
       $('.tabs').tabs();
+      $('select').formSelect();
 
-      // TODO: const mTabInstance = M.Tabs.init(el, options);
 
     });
 
