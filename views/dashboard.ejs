@@ -8,6 +8,8 @@
   <!-- Materialize dependency -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
@@ -15,24 +17,28 @@
 <body>
 
   <div class="container">
-    <h1>DASHBOARD</h1>
+    <h4>DASHBOARD</h4>
   </div>
 
-  <div class="container">
+  <div class="">
     <div class="row">
       <div class="col s12">
         <ul class="tabs">
-          <li class="tab col s2"><a class="active" href="#tab-pens">Pens</a></li>
-          <li class="tab col s2"><a href="#tab-project">Projects</a></li>
-          <li class="tab col s2"><a href="#tab-collections">Collections</a></li>
-          <li class="tab col s2"><a href="#tab-deleted">Deleted</a></li>
+          <li class="tab col s2"><a class="active" href="#tab-pens">
+            <i class="material-icons">developer_board</i>Pens</a></li>
+          <li class="tab col s2"><a href="#tab-project">
+            <i class="material-icons">developer_board</i>Projects</a></li>
+          <li class="tab col s2"><a href="#tab-collections">
+            <i class="material-icons">developer_board</i>Collections</a></li>
+          <li class="tab col s2"><a href="#tab-deleted">
+            <i class="material-icons">developer_board</i>Deleted</a></li>
         </ul>
 
       </div>
       <div id="tab-pens" class="col s12">
 
         <div class="row">
-          
+
           <div class="col s4 valign-wrapper">
             <div class="col s2">
               <span>Search</span>
@@ -50,18 +56,17 @@
               <span>View</span>
             </div>
             <div class="input-field col s10">
-                <select class="browser-default">
-                  <option value="1" selected>All</option>
-                  <option value="2">All my Pens (no forks)</option>
-                  <option value="3">Public</option>
-                  <option value="4">Private</option>
-                  <option value="5">Template</option>
-                  <option value="6f">Fork</option>
-                
-                </select>
+              <select class="browser-default">
+                <option value="1" selected>All</option>
+                <option value="2">All my Pens (no forks)</option>
+                <option value="3">Public</option>
+                <option value="4">Private</option>
+                <option value="5">Template</option>
+                <option value="6f">Fork</option>
+              </select>
             </div>
           </div>
-       
+
           <div class="col s4 valign-wrapper">
             <div class="col s2">
               <span>Tag</span>
@@ -74,28 +79,59 @@
         </div>
 
         <div class="row">
-          <div class="col s2">Grid/List</div>
-          <div class="col s2">Sort Direction</div>
-          <div class="col s4">Sort By</div>
-        </div>
+          <div class="col s2">
+              <span>Grid</span>
+              <button>
+                <i class="material-icons">apps</i>
+              </button>
+              <button>
+                <i class="material-icons">dehaze</i>
+              </button>
+              <span>List</span>
+          </div>
+          <div class="col s2">
+
+              <span>Sort Direction</span>
+              <button>
+                <i class="material-icons">keyboard_arrow_up</i>
+              </button>
+              <button>
+                <i class="material-icons">keyboard_arrow_down</i>
+              </button>
+
+          </div>
+          <div class="col s4">
+            <div class="col s2">
+              <span>Sort By</span>
+            </div>            
+            <select class="browser-default col s10">
+              <option value="1" selected>Date Created</option>
+              <option value="2">Date Updated</option>
+              <option value="3">Popularity</option>
+            </select>
+            <div class="input-field">
               
+            </div>
+          </div>
+        </div>
 
 
-      </div>
-      </div>
 
-      <div id="tab-project" class="col s12">
-        <h2>WIP</h2>
-      </div>
-
-      <div id="tab-collections" class="col s12">
-        <h2>WIP</h2>
-      </div>
-
-      <div id="tab-deleted" class="col s12">
-        <h2>WIP</h2>
       </div>
     </div>
+
+    <div id="tab-project" class="col s12">
+      <h2>WIP</h2>
+    </div>
+
+    <div id="tab-collections" class="col s12">
+      <h2>WIP</h2>
+    </div>
+
+    <div id="tab-deleted" class="col s12">
+      <h2>WIP</h2>
+    </div>
+  </div>
   </div>
 
 
