@@ -15,8 +15,31 @@
 
 <body class="dashboard">
 
-  <div>
-    <h4>DASHBOARD</h4>
+  
+    <div id="top-row">
+
+      <h4>DASHBOARD</h4>
+      <!-- Dropdown Trigger -->
+      <div id="profile-image">
+        <a class='dropdown-trigger' href='#' data-target='profile-dropdown'>
+          <img src="/images/profile-sample.jpg">
+        </a>
+      </div>
+
+
+
+
+
+  <!-- Dropdown Structure -->
+  <ul id='profile-dropdown' class='dropdown-content'>
+    <li><a href="#!">Dashboard</a></li>
+    <li><a href="#!">Profile</a></li>
+    <li class="divider" tabindex="-1"></li>
+    <li><a href="#!">New Pen</a></li>
+    <li class="divider" tabindex="-1"></li>
+    <li><a href="#!"><i class="material-icons">view_module</i>Settings</a></li>
+    <li><a href="#!"><i class="material-icons">cloud</i>Log out</a></li>
+  </ul>
   </div>
 
   <!-- Navigation tab -->
@@ -169,6 +192,7 @@
 
     <!-- Generated content here: -->
 
+    <!-- Sample Grid view -->
 
     <div class="row">
 
@@ -320,6 +344,11 @@
 
 
     </div>
+
+    <!-- Sample Table View  -->
+
+    <!-- TODO -->
+
   </div>
   </div>
 
@@ -355,6 +384,8 @@
     $(document).ready(function () {
       $('.tabs').tabs();
       $('select').formSelect();
+      $('.dropdown-trigger').dropdown();
+
 
 
     });
