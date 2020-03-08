@@ -3,377 +3,424 @@
 
 <head>
   <title><%= title %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
 
   <!-- Materialize dependency -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
-
+  <link rel='stylesheet' href='/stylesheets/style.css' />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
-<body class="dashboard">
+<header>
 
+
+  <div id="top-row">
+
+    <h4>DASHBOARD</h4>
+    <!-- Dropdown Trigger -->
+    <div id="profile-image">
+      <a class='dropdown-trigger' href='#' data-target='profile-dropdown'>
+        <img src="/images/profile-sample.jpg">
+      </a>
+    </div>
+
+
+    <!-- Dropdown Structure -->
+    <ul id='profile-dropdown' class='dropdown-content'>
+      <li><a href="#!">Dashboard</a></li>
+      <li><a href="#!">Profile</a></li>
+      <li class="divider" tabindex="-1"></li>
+      <li><a href="#!">New Pen</a></li>
+      <li class="divider" tabindex="-1"></li>
+      <li><a href="#!"><i class="material-icons">view_module</i>Settings</a></li>
+      <li><a href="#!"><i class="material-icons">cloud</i>Log out</a></li>
+    </ul>
+  </div>
+
+
+  <ul id="slide-out" class="sidenav sidenav-fixed">
+    <li><h6 class="nav-head-text">Create</h6></li>
+    <li>
+      <div class="divider"></div>
+    </li>
+    <li><a href="#!"><i class="material-icons">cloud</i>Pen</a></li>
+    <li>
+      <!-- TODO: Custom do this as the component provided here does things we don't like -->
+      <ul id="pen-from-template" class="collapsible">
+        <li>
+          <div class="collapsible-header">from template</div>
+          <div class="collapsible-body"><span>dynamic content here!</span></div>
+        </li>
+      </ul>
+            
+    </li>
   
-    <div id="top-row">
-
-      <h4>DASHBOARD</h4>
-      <!-- Dropdown Trigger -->
-      <div id="profile-image">
-        <a class='dropdown-trigger' href='#' data-target='profile-dropdown'>
-          <img src="/images/profile-sample.jpg">
-        </a>
-      </div>
+    <li><a href="#!"><i class="material-icons">cloud</i>Project</a></li>
+    <li><a href="#!"><i class="material-icons">cloud</i>Collection</a></li>
 
 
-
-
-
-  <!-- Dropdown Structure -->
-  <ul id='profile-dropdown' class='dropdown-content'>
+    <li><h6 class="nav-head-text">Your</h6></li>
     <li><a href="#!">Dashboard</a></li>
     <li><a href="#!">Profile</a></li>
-    <li class="divider" tabindex="-1"></li>
-    <li><a href="#!">New Pen</a></li>
-    <li class="divider" tabindex="-1"></li>
-    <li><a href="#!"><i class="material-icons">view_module</i>Settings</a></li>
-    <li><a href="#!"><i class="material-icons">cloud</i>Log out</a></li>
-  </ul>
-  </div>
+    <li><a href="#!">Pinned Items</a></li>
+    <li><a href="#!">Activity</a></li>
 
-  <!-- Navigation tab -->
-  <ul id="tab-button-group" class="tabs">
-    <li class="tab col">
-      <a class="active" href="#tab-pens">
-        <div class="valign-wrapper">
-          <i class="material-icons">developer_board</i>
-          <span>Pens</span>
-        </div>
-      </a>
-    </li>
-    <li class="tab col">
-      <a href="#tab-project">
-        <div class="valign-wrapper">
-          <i class="material-icons">developer_board</i>
-          <span>Projects</span>
-        </div>
-      </a>
-    </li>
-    <li class="tab col">
-      <a href="#tab-collections">
-        <div class="valign-wrapper">
-          <i class="material-icons">developer_board</i>
-          <span>Collections</span>
-        </div>
-      </a>
-    </li>
-    <li class="tab col">
-      <a href="#tab-deleted">
-        <div class="valign-wrapper">
-          <i class="material-icons">developer_board</i>
-          <span>Deleted</span>
-        </div>
-      </a>
-    </li>
   </ul>
 
+  <!-- TODO: Support resizing on click -->
 
-  <div id="tab-pens" class="col s12">
+  <!-- <a href="#" data-target="slide-out" class="sidenav-trigger">
+    <i class="material-icons">menu</i>
+  </a> -->
 
-    <div class="row dashboard-secondary">
+</header>
 
-      <!-- Search Primary -->
-      <div class="col s4 valign-wrapper">
-        <div class="col s2">
-          <span>Search</span>
+<main>
+
+  <body class="dashboard">
+
+    <!-- Navigation tab -->
+    <ul id="tab-button-group" class="tabs">
+      <li class="tab col">
+        <a class="active" href="#tab-pens">
+          <div class="valign-wrapper">
+            <i class="material-icons">developer_board</i>
+            <span>Pens</span>
+          </div>
+        </a>
+      </li>
+      <li class="tab col">
+        <a href="#tab-project">
+          <div class="valign-wrapper">
+            <i class="material-icons">developer_board</i>
+            <span>Projects</span>
+          </div>
+        </a>
+      </li>
+      <li class="tab col">
+        <a href="#tab-collections">
+          <div class="valign-wrapper">
+            <i class="material-icons">developer_board</i>
+            <span>Collections</span>
+          </div>
+        </a>
+      </li>
+      <li class="tab col">
+        <a href="#tab-deleted">
+          <div class="valign-wrapper">
+            <i class="material-icons">developer_board</i>
+            <span>Deleted</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+
+    <div id="tab-pens" class="col s12">
+
+      <div class="row dashboard-secondary">
+
+        <!-- Search Primary -->
+        <div class="col s4 valign-wrapper">
+          <div class="col s2">
+            <span>Search</span>
+          </div>
+          <div class="input-field col s6">
+            <input placeholder="Search for..." id="search-pens" type="text">
+          </div>
+          <div class="input-field col s4">
+            <button class="btn waves-effect waves-light" type="search-submit" name="action">Search</button>
+          </div>
         </div>
-        <div class="input-field col s6">
-          <input placeholder="Search for..." id="search-pens" type="text">
+
+        <!-- View Dropdown -->
+        <div class="col s4 valign-wrapper">
+          <div class="col s2">
+            <span>View</span>
+          </div>
+          <div class="input-field col s10">
+            <select class="browser-default">
+              <option value="1" selected>All</option>
+              <option value="2">All my Pens (no forks)</option>
+              <option value="3">Public</option>
+              <option value="4">Private</option>
+              <option value="5">Template</option>
+              <option value="6f">Fork</option>
+            </select>
+          </div>
         </div>
-        <div class="input-field col s4">
-          <button class="btn waves-effect waves-light" type="search-submit" name="action">Search</button>
+
+        <!-- Tag -->
+        <div class="col s4 valign-wrapper">
+          <div class="col s2">
+            <span>Tag</span>
+          </div>
+          <div class="input-field col s10">
+            <input placeholder="Keyword..." id="search-keyword" type="text">
+          </div>
         </div>
+
       </div>
 
-      <!-- View Dropdown -->
-      <div class="col s4 valign-wrapper">
-        <div class="col s2">
-          <span>View</span>
+      <div class="row dashboard-secondary">
+
+        <!-- Grid/List Toggle -->
+        <div class="col s2 valign-wrapper ">
+          <div class="row input-field dashboard-tertiary">
+
+
+
+            <div class="input-field col s2 ">
+              <span>Grid</span>
+            </div>
+            <div class="input-field col s2">
+              <button>
+                <i class="material-icons">apps</i>
+              </button>
+            </div>
+            <div class="input-field col s2">
+              <button>
+                <i class="material-icons">dehaze</i>
+              </button>
+            </div>
+            <div class="input-field col s2">
+              <span>List</span>
+            </div>
+
+          </div>
         </div>
-        <div class="input-field col s10">
-          <select class="browser-default">
-            <option value="1" selected>All</option>
-            <option value="2">All my Pens (no forks)</option>
-            <option value="3">Public</option>
-            <option value="4">Private</option>
-            <option value="5">Template</option>
-            <option value="6f">Fork</option>
-          </select>
+
+        <!-- Sort Direction Toggle -->
+        <div class="col s2 valign-wrapper">
+          <div class="input-field row">
+            <div class="input-field  col s6">
+              <span>Sort Direction</span>
+            </div>
+            <div class="input-field col s2">
+              <button>
+                <i class="material-icons">keyboard_arrow_up</i>
+              </button>
+            </div>
+            <div class="input-field col s2">
+              <button>
+                <i class="material-icons">keyboard_arrow_down</i>
+              </button>
+            </div>
+
+          </div>
         </div>
+
+        <!-- Sort By Dropdown -->
+        <div class="col s6 valign-wrapper">
+          <div class="col s2">
+            <span>Sort By</span>
+          </div>
+          <div class="input-field col s10">
+            <select class="browser-default">
+              <option value="1" selected>Date Created</option>
+              <option value="2">Date Updated</option>
+              <option value="3">Popularity</option>
+            </select>
+          </div>
+
+        </div>
+
       </div>
 
-      <!-- Tag -->
-      <div class="col s4 valign-wrapper">
-        <div class="col s2">
-          <span>Tag</span>
+      <!-- Generated content here: -->
+
+      <!-- Sample Grid view -->
+
+      <div class="row">
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-image">
+              <div class="placeholder"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="row card-info">
+              <span>{Pen Title}</span>
+              <span class="card-options">
+                <a href="#">
+                  <i class="material-icons">more_horiz</i>
+                </a>
+              </span>
+            </div>
+            <div class="row card-action">
+              <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
+              <button><i class="material-icons">comment</i><span>{1}</span></button>
+              <button><i class="material-icons">visibility</i><span>{1}</span></button>
+            </div>
+
+          </div>
         </div>
-        <div class="input-field col s10">
-          <input placeholder="Keyword..." id="search-keyword" type="text">
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-image">
+              <div class="placeholder"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="row card-info">
+              <span>{Pen Title}</span>
+              <span class="card-options">
+                <a href="#">
+                  <i class="material-icons">more_horiz</i>
+                </a>
+              </span>
+            </div>
+            <div class="row card-action">
+              <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
+              <button><i class="material-icons">comment</i><span>{1}</span></button>
+              <button><i class="material-icons">visibility</i><span>{1}</span></button>
+            </div>
+
+          </div>
         </div>
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-image">
+              <div class="placeholder"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="row card-info">
+              <span>{Pen Title}</span>
+              <span class="card-options">
+                <a href="#">
+                  <i class="material-icons">more_horiz</i>
+                </a>
+              </span>
+            </div>
+            <div class="row card-action">
+              <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
+              <button><i class="material-icons">comment</i><span>{1}</span></button>
+              <button><i class="material-icons">visibility</i><span>{1}</span></button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-image">
+              <div class="placeholder"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="row card-info">
+              <span>{Pen Title}</span>
+              <span class="card-options">
+                <a href="#">
+                  <i class="material-icons">more_horiz</i>
+                </a>
+              </span>
+            </div>
+            <div class="row card-action">
+              <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
+              <button><i class="material-icons">comment</i><span>{1}</span></button>
+              <button><i class="material-icons">visibility</i><span>{1}</span></button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-image">
+              <div class="placeholder"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="row card-info">
+              <span>{Pen Title}</span>
+              <span class="card-options">
+                <a href="#">
+                  <i class="material-icons">more_horiz</i>
+                </a>
+              </span>
+            </div>
+            <div class="row card-action">
+              <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
+              <button><i class="material-icons">comment</i><span>{1}</span></button>
+              <button><i class="material-icons">visibility</i><span>{1}</span></button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <div class="card-image">
+              <div class="placeholder"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="row card-info">
+              <span>{Pen Title}</span>
+              <span class="card-options">
+                <a href="#">
+                  <i class="material-icons">more_horiz</i>
+                </a>
+              </span>
+            </div>
+            <div class="row card-action">
+              <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
+              <button><i class="material-icons">comment</i><span>{1}</span></button>
+              <button><i class="material-icons">visibility</i><span>{1}</span></button>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
       </div>
+
+      <!-- Sample Table View  -->
+
+      <!-- TODO -->
+
+    </div>
+    </div>
+
+
+
 
     </div>
 
-    <div class="row dashboard-secondary">
-
-      <!-- Grid/List Toggle -->
-      <div class="col s2 valign-wrapper ">
-        <div class="row input-field dashboard-tertiary">
-
-
-
-          <div class="input-field col s2 ">
-            <span>Grid</span>
-          </div>
-          <div class="input-field col s2">
-            <button>
-              <i class="material-icons">apps</i>
-            </button>
-          </div>
-          <div class="input-field col s2">
-            <button>
-              <i class="material-icons">dehaze</i>
-            </button>
-          </div>
-          <div class="input-field col s2">
-            <span>List</span>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Sort Direction Toggle -->
-      <div class="col s2 valign-wrapper">
-        <div class="input-field row">
-          <div class="input-field  col s6">
-            <span>Sort Direction</span>
-          </div>
-          <div class="input-field col s2">
-            <button>
-              <i class="material-icons">keyboard_arrow_up</i>
-            </button>
-          </div>
-          <div class="input-field col s2">
-            <button>
-              <i class="material-icons">keyboard_arrow_down</i>
-            </button>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Sort By Dropdown -->
-      <div class="col s6 valign-wrapper">
-        <div class="col s2">
-          <span>Sort By</span>
-        </div>
-        <div class="input-field col s10">
-          <select class="browser-default">
-            <option value="1" selected>Date Created</option>
-            <option value="2">Date Updated</option>
-            <option value="3">Popularity</option>
-          </select>
-        </div>
-
-      </div>
-
     </div>
 
-    <!-- Generated content here: -->
-
-    <!-- Sample Grid view -->
-
-    <div class="row">
-
-      <div class="col s12 m6 l4">
-        <div class="card">
-          <div class="card-image">
-            <div class="placeholder"></div>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="row card-info">
-            <span>{Pen Title}</span>
-            <span class="card-options">
-              <a href="#">
-                <i class="material-icons">more_horiz</i>
-              </a>
-            </span>
-          </div>
-          <div class="row card-action">
-            <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
-            <button><i class="material-icons">comment</i><span>{1}</span></button>
-            <button><i class="material-icons">visibility</i><span>{1}</span></button>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col s12 m6 l4">
-        <div class="card">
-          <div class="card-image">
-            <div class="placeholder"></div>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="row card-info">
-            <span>{Pen Title}</span>
-            <span class="card-options">
-              <a href="#">
-                <i class="material-icons">more_horiz</i>
-              </a>
-            </span>
-          </div>
-          <div class="row card-action">
-            <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
-            <button><i class="material-icons">comment</i><span>{1}</span></button>
-            <button><i class="material-icons">visibility</i><span>{1}</span></button>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col s12 m6 l4">
-        <div class="card">
-          <div class="card-image">
-            <div class="placeholder"></div>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="row card-info">
-            <span>{Pen Title}</span>
-            <span class="card-options">
-              <a href="#">
-                <i class="material-icons">more_horiz</i>
-              </a>
-            </span>
-          </div>
-          <div class="row card-action">
-            <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
-            <button><i class="material-icons">comment</i><span>{1}</span></button>
-            <button><i class="material-icons">visibility</i><span>{1}</span></button>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col s12 m6 l4">
-        <div class="card">
-          <div class="card-image">
-            <div class="placeholder"></div>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="row card-info">
-            <span>{Pen Title}</span>
-            <span class="card-options">
-              <a href="#">
-                <i class="material-icons">more_horiz</i>
-              </a>
-            </span>
-          </div>
-          <div class="row card-action">
-            <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
-            <button><i class="material-icons">comment</i><span>{1}</span></button>
-            <button><i class="material-icons">visibility</i><span>{1}</span></button>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col s12 m6 l4">
-        <div class="card">
-          <div class="card-image">
-            <div class="placeholder"></div>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="row card-info">
-            <span>{Pen Title}</span>
-            <span class="card-options">
-              <a href="#">
-                <i class="material-icons">more_horiz</i>
-              </a>
-            </span>
-          </div>
-          <div class="row card-action">
-            <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
-            <button><i class="material-icons">comment</i><span>{1}</span></button>
-            <button><i class="material-icons">visibility</i><span>{1}</span></button>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col s12 m6 l4">
-        <div class="card">
-          <div class="card-image">
-            <div class="placeholder"></div>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="row card-info">
-            <span>{Pen Title}</span>
-            <span class="card-options">
-              <a href="#">
-                <i class="material-icons">more_horiz</i>
-              </a>
-            </span>
-          </div>
-          <div class="row card-action">
-            <button><i class="material-icons">favorite_border</i><span>{1}</span></button>
-            <button><i class="material-icons">comment</i><span>{1}</span></button>
-            <button><i class="material-icons">visibility</i><span>{1}</span></button>
-          </div>
-
-        </div>
-      </div>
-
-
-
-
+    <div id="tab-project" class="col s12">
+      <h2>WIP</h2>
     </div>
 
-    <!-- Sample Table View  -->
+    <div id="tab-collections" class="col s12">
+      <h2>WIP</h2>
+    </div>
 
-    <!-- TODO -->
-
-  </div>
-  </div>
-
-
-
-
-  </div>
-
-  </div>
-
-  <div id="tab-project" class="col s12">
-    <h2>WIP</h2>
-  </div>
-
-  <div id="tab-collections" class="col s12">
-    <h2>WIP</h2>
-  </div>
-
-  <div id="tab-deleted" class="col s12">
-    <h2>WIP</h2>
-  </div>
-  </div>
-  </div>
+    <div id="tab-deleted" class="col s12">
+      <h2>WIP</h2>
+    </div>
+    </div>
+    </div>
 
 
+
+
+
+  </body>
+
+</main>
+
+
+<footer>
 
   <script type="text/javascript" src="/javascripts/jquery-3.4.1.js"></script>
   <script type="text/javascript" src="/javascripts/materialize.js"></script>
@@ -385,6 +432,8 @@
       $('.tabs').tabs();
       $('select').formSelect();
       $('.dropdown-trigger').dropdown();
+      $('.sidenav').sidenav();
+      $('.collapsible').collapsible();
 
 
 
@@ -392,7 +441,8 @@
 
   </script>
 
-</body>
+</footer>
+
 
 
 </html>
