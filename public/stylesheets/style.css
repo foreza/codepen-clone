@@ -8,6 +8,7 @@ a {
 }
 
 
+
 h1,h2,h3,h4,h5 {
   color: floralwhite;
 }
@@ -78,4 +79,47 @@ div.col span {
 #tab-pens .row {
   margin-bottom: 0px;
   margin-top: 0px;
+}
+
+
+#tab-pens .card-image {
+  height: 200px;
+  display: block;
+  position: relative;
+}
+
+
+#tab-pens .card-image img {
+  display: block;
+  position: absolute;
+  overflow: hidden;
+  height: 200px;
+
+}
+
+
+#tab-pens .placeholder {
+  background-image: url("../images/placeholder.jpg");
+  height: 200px;
+  width: auto;
+  border-radius: 10px;
+  background-repeat: no-repeat;
+}
+
+
+span.card-options {
+  float: right;
+}
+
+
+.card-content {
+  background:#2c303a;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+
+.card-action button {
+  background-color: #1e1f26;
+  color: white;
 }
