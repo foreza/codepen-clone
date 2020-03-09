@@ -1,0 +1,31 @@
+
+/* https://codepen.io/sosuke/pen/Pjoqqp */
+/* https://stackoverflow.com/questions/22252472/how-to-change-the-color-of-an-svg-element/53336754#53336754 */
+/* Set image svg to color  */
+img#login-logo {
+    filter: invert(45%) sepia(0%) saturate(4567%) hue-rotate(64deg) brightness(102%) contrast(89%);
+    width: 200px;
+}
+
+#login-form-header{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+#sign-up-notice {
+    height: 60px;
+    background-color: #2c303a;
+    border-radius: 5px;
+}
+
+
+#forgot-password-link {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#sign-up-notice p {
+    width: 100%;
+}
+
+

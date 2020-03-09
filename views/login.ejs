@@ -3,35 +3,43 @@
 
 <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    
 
     <!-- Materialize dependency -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/login.css' />
+
 </head>
 
 <body>
 
-    <div class="container">
-      <img src="/images/codepen-logo.svg"/>
-      <h3>LOGIN</h3>
-    </div>
+    <header>
 
-    <div class="container">
+    </header>
+
+    <main>
+      <div id="login-form-header" class="container">
+        <img id="login-logo" src="/images/codepen-logo.svg"/>
+        <h1>Log in!</h1>
+      </div>
+
+      <div class="container">
         <div class="row">
             <form class="col s6">
                 <div class="row">
                     <div class="input-field col s12">
+                        <p class="input-label-custom">USERNAME OR EMAIL</p>
                         <input placeholder="" id="usernameOrEmail" type="text" class="validate"/>
-                        <label for="usernameOrEmail">USERNAME OR EMAIL</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <input placeholder="" id="password" type="password" class="validate"/>
-                        <label for="password">Password</label>
+                      <p class="input-label-custom">PASSWORD</p>
+                      <input placeholder="" id="password" type="password" class="validate"/>
                     </div>
                 </div>
                 <div class="row">
@@ -40,23 +48,26 @@
                     </button>
                   </div>
                 </div>
-                <div class="row">
-                  <span><a href="#">Forgot Password</a>?</span>
+                <div id="forgot-password-link" class="row center-align">
+                  <p><a href="#">Forgot Password</a>?</p>
                 </div>
             </form>
         </div>
 
-        <div class="container center-align">
-          <p>Need an account? <a href="#">Sign up now!</a></p>
+        <div id="sign-up-notice" class="valign-wrapper">
+          <p class="center-align">Need an account? <a href="#">Sign up now!</a></p>
       </div>
     </div>
 
+    </main>
 
 
+    <footer>
+      <script type="text/javascript" src="/javascripts/materialize.js"></script>
+    </footer>
+    
 
-
-    <script type="text/javascript" src="/javascripts/materialize.js"></script>
-
+  
 </body>
 
 
