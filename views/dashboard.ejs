@@ -7,7 +7,9 @@
   <!-- Materialize dependency -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
+  
   <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel='stylesheet' href='/stylesheets/dashboard.css' />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
@@ -119,23 +121,23 @@
 
     <div id="tab-pens" class="col s12">
 
-      <div class="row dashboard-secondary">
+      <div class="pen-input-container row dashboard-secondary">
 
         <!-- Search Primary -->
-        <div class="col s4 valign-wrapper">
-          <div class="col s2">
-            <span>Search</span>
+        <div class="pen-input-group col s4 valign-wrapper">
+          <div class="col s2 valign-wrapper">
+            <p>Search</p>
           </div>
-          <div class="input-field col s6">
+          <div class="valign-wrapper col s7">
             <input placeholder="Search for..." id="search-pens" type="text">
           </div>
-          <div class="input-field col s4">
+          <div class="valign-wrapper col s3">
             <button class="btn waves-effect waves-light" type="search-submit" name="action">Search</button>
           </div>
         </div>
 
         <!-- View Dropdown -->
-        <div class="col s4 valign-wrapper">
+        <div class="pen-input-group col s4 valign-wrapper">
           <div class="col s2">
             <span>View</span>
           </div>
@@ -434,8 +436,6 @@
       $('.dropdown-trigger').dropdown();
       $('.sidenav').sidenav();
       $('.collapsible').collapsible();
-
-
 
     });
 
