@@ -1,0 +1,115 @@
+/* Reduce the padding that materialize adds */
+
+#tab-button-group.tabs .tab a {
+    padding: 0 10px;
+  }
+  
+  #tab-button-group.tabs .tab span {
+    padding: 0 5px;
+  }
+  
+  #tab-button-group {
+    background: none;
+  }
+  
+  #tab-pens .row {
+    margin-bottom: 0px;
+    margin-top: 0px;
+  }
+  
+  #tab-pens .card-image {
+    height: 200px;
+    display: block;
+    position: relative;
+  }
+  
+  #tab-pens .card-image img {
+    display: block;
+    position: absolute;
+    overflow: hidden;
+    height: 200px;
+  }
+  
+  #tab-pens .placeholder {
+    background-image: url("../images/placeholder.jpg");
+    height: 200px;
+    width: auto;
+    border-radius: 10px;
+    background-repeat: no-repeat;
+  }
+  
+  span.card-options {
+    float: right;
+  }
+  
+  .card-content {
+    background: #2c303a;
+    padding: 15px;
+    margin: 0 auto;
+  }
+  
+  .card-action button {
+    background-color: #1e1f26;
+    color: white;
+  }
+
+
+
+
+  /* Dashboard Sort bar */
+
+
+input:not([type]), input[type=text]:not(.browser-default), input[type=password]:not(.browser-default), input[type=email]:not(.browser-default), input[type=url]:not(.browser-default), input[type=time]:not(.browser-default), input[type=date]:not(.browser-default), input[type=datetime]:not(.browser-default), input[type=datetime-local]:not(.browser-default), input[type=tel]:not(.browser-default), input[type=number]:not(.browser-default), input[type=search]:not(.browser-default), textarea.materialize-textarea {
+    background-color: transparent;
+    font-size: 15px;
+    margin: 0px;
+    padding: 0px;
+    height: 2rem;
+    border: none;
+  }
+
+  input[type=text]:focus, input[type=password]:focus {
+    background-color: white;
+    border: 0px ;
+  }
+
+  select {
+    font-size: 15px;
+    margin: 0px;
+    padding: 0px;
+    height: 2rem;
+  }
+
+  div.pen-input-group .col{
+      background-color: #1e1f26;
+      border: 1px grey;
+      height: 40px;
+      text-align: center;
+  }
+
+  div.pen-input-container{
+    border-radius: 5px;
+    padding: 10px 5px;
+    background-color:#2c303a;
+  }
+
+  button[type=search-submit] {
+    background-color: #5a5f73;
+    border: 0px;
+    height: 100%;
+    width: 100%;
+    border-radius: 0;
+    text-align: center;
+    padding: 0;
+  }
+
+.pen-input-group p {
+    width: 100%;
+    text-align: center;
+}
+
+#tab-pens .row .col{
+    padding: 5px;
+}
+
+}
