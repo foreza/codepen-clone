@@ -3,75 +3,99 @@
 
 <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
 
     <!-- Materialize dependency -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/signup.css' />
+
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body>
 
-    <div class="container">
+    <header>
 
-        <div class="container center-align">
-            <h3>FREE</h1>
-        </div>
-        <div class="container center-align">
-            <h5>Welcome to CodePen (clone)</h3>
-        </div>
+    </header>
 
-    </div>
+    <main>
+        <div id="tier-intro" class="container valign-wrapper">
 
-    <div class="container">
-
-        <div class="row">
-            <form class="col s12">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input placeholder="Placeholder" id="name" type="text" class="validate">
-                        <label for="first_name">Your Name</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input placeholder="Placeholder" id="username" type="text" class="validate">
-                        <label for="first_name">Choose a username</label>
-                        <div><span>codepen.io/username</span></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input id="email" type="email" class="validate">
-                        <label for="email">Email</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input id="password" type="password" class="validate">
-                        <label for="password">Choose Password</label>
-                    </div>
-                </div>
-            </form>
-            <div class="row">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                </button>
-                <div>
-                    <span>By signing up, you agree to CodePen's <a href="#">Terms of Service</a> , <a href="#">Code of
-                            Conduct</a>, and <a href="#">Privacy Policy</a>.</span>
-                </div>
+            <div class="container center-align">
+                <h3>FREE</h3>
+                <p>Welcome to CodePen! (clone)</p>
             </div>
+    
         </div>
-    </div>
+    
+        <div class="container">
+    
+            <div id="signup-parent" class="row">
+                <div id="signup-form" class="col s8">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <p class="input-label-custom">Your Name</p>
+                                <input id="name" type="text" class="validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <p class="input-label-custom">Choose a username</p>
+                                <input id="username" type="text" class="validate">
+                                <div><p class="side-note-special">codepen.io/username</p></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <p class="input-label-custom">Email</p>
+                                <input id="email" type="email" class="validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <p class="input-label-custom">Choose Password</p>
+                                <input id="password" type="password" class="validate">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                        </button>
+                        <div>
+                        <p class="side-note">By signing up, you agree to CodePen's <a href="#">Terms of Service</a> , <a href="#">Code of Conduct</a>, and <a href="#">Privacy Policy</a>.</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div id="tier-explanation" class="col s4">
+                    
+                </div>
+    
+            </div>
+    
+         
+        </div>
+    </main>
+
+    <footer>
+
+        <div class="center-align">
+
+    
+        <a href="#">Terms of Service</a>  · <a href="#"> Privacy Policy</a>  · <a href="#">Code of Conduct</a>
 
     </div>
 
+        <script type="text/javascript" src="/javascripts/materialize.js"></script>
+
+    </footer>
 
 
 
-    <script type="text/javascript" src="/javascripts/materialize.js"></script>
 
 </body>
 <footer>

@@ -1,11 +1,16 @@
 
 /* Cancel out all existing padding/margin on base elements, set defaults */
-body, header, main, footer, div{
+body, header, main, footer{
   padding: 0px;
   margin: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #131317;
   color: floralwhite;
+}
+
+div {
+  padding: 0px;
+  margin: 0px;
 }
 
 .col .row {
@@ -19,7 +24,7 @@ a {
 
 /* Cancel header padding and margin, set defaults */
 p, h1,h2,h3,h4,h5,h6 {
-  color: floralwhite;
+  color: white;
   padding: 0px;
   margin: 0px;
 }
@@ -269,8 +274,8 @@ p.input-label-custom {
 }
 
 
-button[type=submit] {
-  background-color: #47cf73;
-  width: 100%;
-  color: black;
+
+
+p.side-note {
+  color: grey; 
 }

@@ -28,4 +28,8 @@ img#login-logo {
     width: 100%;
 }
 
-
+button[type=submit] {
+    background-color: #47cf73;
+    width: 100%;
+    color: black;
+}

@@ -1,0 +1,41 @@
+
+
+div#tier-intro{
+    height: 200px;
+    background-color: #5a5f73;
+}
+
+div#signup-parent{
+    display: block;
+    position: relative;
+    height: 700px;
+}
+
+div#signup-form{
+    background-color: #ffffff;
+    padding: 5%;
+    position: relative;
+    display: block;
+    height: 100%;
+}
+
+div#tier-explanation {
+    background-color: #444857;
+    position: relative;
+    height: 100%;
+}
+
+
+button[type=submit] {
+    background-color: #47cf73;
+    font-size: 20px;
+    width: 40%;
+    height: 50px;
+    margin-bottom: 20px; 
+  }
+
+.side-note-special {
+    font-size: 10px;
+    margin-bottom: 15px;
+    color: grey;
+}
