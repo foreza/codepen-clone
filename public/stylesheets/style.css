@@ -113,59 +113,7 @@ div.col span {
   color: white !important;
 }
 
-/* Sidebar Section */
 
-/* Do a default padding left  */
-
-header, main, footer {
-  padding-left: 220px;
-}
-
-/* Overwrite default materialize sidenav */
-
-header .sidenav, header .collapsible-body {
-  width: 200px;
-  background-color: #2c303a;
-  color: white;
-}
-
-/* TODO: Handle additional media queries */
-
-@media only screen and (max-width: 992px) {
-  header, main, footer {
-    padding-left: 0;
-  }
-}
-
-.sidenav li>a {
-  padding: 0px;
-  height: 30px;
-  line-height: 30px;
-  color: white;
-}
-
-.sidenav li>a>i, .sidenav li>a>i.material-icons {
-  margin: 0px;
-  height: 30px;
-  line-height: 30px;
-  color: grey;
-  margin-right: 5px;
-}
-
-.nav-head-text {
-  color: #777;
-}
-
-#pen-from-template .collapsible-header {
-  padding: 0px;
-  margin-left: 30px;
-  line-height: normal;
-}
-
-.sidenav .collapsible-body, .sidenav.fixed .collapsible-body {
-  background-color: #2c303a;
-  color: white;
-}
 
 /* Input form general styling */
 

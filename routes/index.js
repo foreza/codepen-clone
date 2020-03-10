@@ -21,4 +21,8 @@ router.get('/dashboard', function(req, res, next) {
   res.render('dashboard', { title: 'Dashboard' });
 });
 
+router.get('/pen', function(req, res, next) {
+  res.render('pen', { title: 'Pen' });
+});
+
 module.exports = router;
