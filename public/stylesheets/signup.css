@@ -6,9 +6,11 @@
 }
 
 #signup-parent{
-    display: block;
+    display: flex;          
+    flex-direction: row;
+    flex-wrap: nowrap;
     position: relative;
-    height: 700px;
+    align-items: stretch;
 }
 
 #signup-form{
@@ -16,13 +18,11 @@
     padding: 5%;
     position: relative;
     display: block;
-    height: 100%;
 }
 
 #tier-explanation {
     background-color: #444857;
     position: relative;
-    height: 100%;
 }
 
 #signup-button {
