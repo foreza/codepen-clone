@@ -1,17 +1,17 @@
 
 
-div#tier-intro{
+#tier-intro{
     height: 200px;
     background-color: #5a5f73;
 }
 
-div#signup-parent{
+#signup-parent{
     display: block;
     position: relative;
     height: 700px;
 }
 
-div#signup-form{
+#signup-form{
     background-color: #ffffff;
     padding: 5%;
     position: relative;
@@ -19,13 +19,13 @@ div#signup-form{
     height: 100%;
 }
 
-div#tier-explanation {
+#tier-explanation {
     background-color: #444857;
     position: relative;
     height: 100%;
 }
 
-button[type=submit] {
+#signup-button {
     background-color: #47cf73;
     font-size: 20px;
     width: 40%;

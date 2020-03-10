@@ -2,7 +2,7 @@
 /* https://codepen.io/sosuke/pen/Pjoqqp */
 /* https://stackoverflow.com/questions/22252472/how-to-change-the-color-of-an-svg-element/53336754#53336754 */
 /* Set image svg to color  */
-img#login-logo {
+#login-logo {
     filter: invert(45%) sepia(0%) saturate(4567%) hue-rotate(64deg) brightness(102%) contrast(89%);
     width: 200px;
 }
@@ -28,7 +28,7 @@ img#login-logo {
     width: 100%;
 }
 
-button[type=submit] {
+#login-button {
     background-color: #47cf73;
     width: 100%;
     color: black;
