@@ -3,10 +3,10 @@
 
 <head>
     <title><%= title %></title>
-    
+
 
     <!-- Materialize dependency -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -19,24 +19,126 @@
 
     <header>
 
+        <div id="pen-view-header">
+            <img id="pen-logo" src="/images/codepen-logo.svg" />
+        </div>
+
     </header>
 
     <main>
 
-      <div id="pen-view-header">
-        <img id="pen-logo" src="/images/codepen-logo.svg"/>
-      </div>
+        <div id="editor-group" class="row">
+            <div id="editor-1" class="col resizable-editor">
+                <textarea>testing!</textarea>
+            </div>
+            <div id="editor-resize-1" class="col vertical-resize-control">
+            </div>
+            <div id="editor-2" class="col resizable-editor">
+                <textarea>testing!</textarea>
+            </div>
+            <div id="editor-resize-2" class="col vertical-resize-control">
+            </div>
+            <div id="editor-3" class="col resizable-editor">
+                <textarea>testing!</textarea>
+            </div>
+        </div>
+
+        <div id="results-resize" class="resize-control"></div>
+
+        <div id="results-window">
+            <textarea> im weathering with YOU
+            </textarea>
+        </div>
+
+
 
 
     </main>
 
 
     <footer>
-      <script type="text/javascript" src="/javascripts/materialize.js"></script>
-    </footer>
-    
+        <script type="text/javascript" src="/javascripts/jquery-3.4.1.js"></script>
+        <script type="text/javascript" src="/javascripts/materialize.js"></script>
+        <script>
 
-  
+            var leftPane;
+            var centerPane;
+            var rightPane;
+            var leftAnchor;
+            var rightAnchor;
+            
+            var resizeLeft = false;
+            var resizeRight = false;
+
+            var tWidth;
+
+
+            $(function () {
+
+                leftAnchor = $("#editor-resize-1");
+                rightAnchor = $("#editor-resize-2");
+
+                leftPane = $("#editor-1");
+                centerPane = $("#editor-2");
+                rightPane = $("#editor-3");
+
+                
+
+                leftAnchor.mousedown(() => {
+                    console.log("left pressed down");
+                    resizeLeft = true;
+                    resizeRight = false;
+                    tWidth = leftPane.width() + centerPane.width();
+                });
+
+                rightAnchor.mousedown(() => {
+                    console.log("right pressed down");
+                    resizeRight = true;
+                    resizeLeft = false;
+                    tWidth = centerPane.width() + rightPane.width();
+                });
+
+                $(document).mouseup(() => {
+                    console.log("release");
+                    resizeLeft = false;
+                    resizeRight = false;
+                })
+
+                $(document).on('mousemove', (e) => {
+
+
+                    if (resizeLeft) {
+
+                        var val = (e.pageX/ window.innerWidth) * 100;
+                        leftPane.width(`${val}%`);
+
+                        var val2 = ((tWidth / window.innerWidth) * 100) - val;
+                        centerPane.width(`${val2}%`);
+                    }
+
+                    if (resizeRight) {
+
+                        var val = ((e.pageX - leftPane.width()) / window.innerWidth) * 100;
+                        centerPane.width(`${val}%`);
+
+                        var val2 = ((tWidth / window.innerWidth) * 100) - val;
+                        rightPane.width(`${val2}%`);
+                    }
+            });
+
+
+            });
+
+
+
+
+
+
+        </script>
+    </footer>
+
+
+
 </body>
 
 

@@ -2,3 +2,28 @@
     height: 20px;
     width: auto;
 }
+
+
+#editor-group {
+    display: flex;          
+    flex-direction: row;
+    flex-wrap: nowrap;
+    position: relative;
+    align-items: stretch;
+    min-height: 300px;
+}
+
+textarea {
+    color: white;
+}
+
+div.resizable-editor {
+    width: 33%;
+    background-color: grey;
+}
+
+div.vertical-resize-control{
+    width:10px;
+    cursor: pointer;
+    background-color: bisque;
+}
