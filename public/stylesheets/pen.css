@@ -33,14 +33,16 @@ body {
 
 
 #results-window {
-
+    background-color: white;
+    height: 100%;
 }
 
 
 div.resizable-editor {
     width: 33%;
     background-color: grey;
-    
+    overflow-y: auto;
+
 }
 
 div.vertical-resize-control{
