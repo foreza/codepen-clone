@@ -25,22 +25,18 @@ $(function () {
     leftPane = $("#editor-1");
     centerPane = $("#editor-2");
     rightPane = $("#editor-3");
-    
-    bottomPane = $("#results-window");
-    topPane = $("#results-hidden");
-    editorPane = $("#editor-group");
+
+    editorPane = $("#editor-group");    
+    bottomPane = $("#result-group");
 
 
-
-    bottomPane.height(window.innerHeight - topPane.height());
-    editorPane.height(window.innerHeight);
+    bottomPane.height(window.innerHeight - editorPane.height());
 
     bottomAnchor.mousedown(() => {
         console.log("left pressed down");
         resizeLeft = resizeRight = false;
         resizeBottom = true;
     });
-
 
     leftAnchor.mousedown(() => {
         console.log("left pressed down");
@@ -88,8 +84,7 @@ $(function () {
 
             var val = window.innerHeight - e.pageY;
             bottomPane.height(`${val}px`);
-            
-            topPane.height(`${e.pageY}px`);
+            editorPane.height(`${e.pageY}px`);
 
         }
     });

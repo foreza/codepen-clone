@@ -7,6 +7,10 @@ body {
     width: auto;
 }
 
+.row {
+    margin-bottom: 0px;
+}
+
 
 #editor-group {
     display: flex;          
@@ -14,29 +18,22 @@ body {
     flex-wrap: nowrap;
     position: relative;
     align-items: stretch;
-    height: 100%;
+    min-height: 200px;
 }
 
 
 #result-group {
-    position: absolute;
-    top: 0;
+    position: relative;
+    display: block;
     height: 100%;
     width: 100%;
+    background-color: green;
+
 }
 
-#results-hidden {
-    min-height: 25%;
-    height: 50%;    
-}
 
 #results-window {
-    display: flex;      
-    flex-direction: column;    
-    align-items: stretch;
-    
-    background-color: green;
-    
+
 }
 
 
@@ -57,9 +54,4 @@ div.horizontal-resize-control{
     height:10px;
     cursor: pointer;
     background-color: tomato;
-    z-index: 5;
-}
-
-textarea {
-    z-index: 3;
 }
