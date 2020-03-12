@@ -1,3 +1,7 @@
+body {
+    overflow: hidden
+}
+
 #pen-logo {
     height: 20px;
     width: auto;
@@ -10,20 +14,52 @@
     flex-wrap: nowrap;
     position: relative;
     align-items: stretch;
-    min-height: 300px;
+    height: 100%;
 }
 
-textarea {
-    color: white;
+
+#result-group {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
 }
+
+#results-hidden {
+    min-height: 25%;
+    height: 50%;    
+}
+
+#results-window {
+    display: flex;      
+    flex-direction: column;    
+    align-items: stretch;
+    
+    background-color: green;
+    
+}
+
 
 div.resizable-editor {
     width: 33%;
     background-color: grey;
+    
 }
 
 div.vertical-resize-control{
     width:10px;
     cursor: pointer;
     background-color: bisque;
+}
+
+
+div.horizontal-resize-control{
+    height:10px;
+    cursor: pointer;
+    background-color: tomato;
+    z-index: 5;
+}
+
+textarea {
+    z-index: 3;
 }

@@ -43,13 +43,19 @@
             </div>
         </div>
 
-        <div id="results-resize" class="resize-control"></div>
+        <div id="result-group" class="row">
 
-        <div id="results-window">
+            <div id="results-hidden"></div>
+
+            <div id="results-resize" class="horizontal-resize-control">
+            </div>
+
+            <div id="results-window">
             <textarea> im weathering with YOU
             </textarea>
+            </div>
         </div>
-
+        
 
 
 
@@ -59,82 +65,8 @@
     <footer>
         <script type="text/javascript" src="/javascripts/jquery-3.4.1.js"></script>
         <script type="text/javascript" src="/javascripts/materialize.js"></script>
-        <script>
-
-            var leftPane;
-            var centerPane;
-            var rightPane;
-            var leftAnchor;
-            var rightAnchor;
-            
-            var resizeLeft = false;
-            var resizeRight = false;
-
-            var tWidth;
-
-
-            $(function () {
-
-                leftAnchor = $("#editor-resize-1");
-                rightAnchor = $("#editor-resize-2");
-
-                leftPane = $("#editor-1");
-                centerPane = $("#editor-2");
-                rightPane = $("#editor-3");
-
-                
-
-                leftAnchor.mousedown(() => {
-                    console.log("left pressed down");
-                    resizeLeft = true;
-                    resizeRight = false;
-                    tWidth = leftPane.width() + centerPane.width();
-                });
-
-                rightAnchor.mousedown(() => {
-                    console.log("right pressed down");
-                    resizeRight = true;
-                    resizeLeft = false;
-                    tWidth = centerPane.width() + rightPane.width();
-                });
-
-                $(document).mouseup(() => {
-                    console.log("release");
-                    resizeLeft = false;
-                    resizeRight = false;
-                })
-
-                $(document).on('mousemove', (e) => {
-
-
-                    if (resizeLeft) {
-
-                        var val = (e.pageX/ window.innerWidth) * 100;
-                        leftPane.width(`${val}%`);
-
-                        var val2 = ((tWidth / window.innerWidth) * 100) - val;
-                        centerPane.width(`${val2}%`);
-                    }
-
-                    if (resizeRight) {
-
-                        var val = ((e.pageX - leftPane.width()) / window.innerWidth) * 100;
-                        centerPane.width(`${val}%`);
-
-                        var val2 = ((tWidth / window.innerWidth) * 100) - val;
-                        rightPane.width(`${val2}%`);
-                    }
-            });
-
-
-            });
-
-
-
-
-
-
-        </script>
+        <script type="text/javascript" src="/javascripts/pen.js"></script>
+        
     </footer>
 
 
