@@ -16,6 +16,16 @@ var tWidth;
 
 var tHeight;
 
+
+function refreshEditorElements(){
+
+    leftPane.empty();
+    rightPane.empty();
+    centerPane.empty();
+    monaco_refreshWindow();
+
+}
+
 $(function () {
 
     leftAnchor = $("#editor-resize-1");
@@ -61,7 +71,6 @@ $(function () {
 
     $(document).on('mousemove', (e) => {
 
-
         if (resizeLeft) {
 
             var val = (e.pageX / window.innerWidth) * 100;
@@ -69,6 +78,8 @@ $(function () {
 
             var val2 = ((tWidth / window.innerWidth) * 100) - val;
             centerPane.width(`${val2}%`);
+
+            refreshEditorElements();
         }
 
         if (resizeRight) {
@@ -78,6 +89,8 @@ $(function () {
 
             var val2 = ((tWidth / window.innerWidth) * 100) - val;
             rightPane.width(`${val2}%`);
+
+            refreshEditorElements();
         }
 
         if (resizeBottom) {
@@ -86,7 +99,13 @@ $(function () {
             bottomPane.height(`${val}px`);
             editorPane.height(`${e.pageY}px`);
 
+            refreshEditorElements();
+
         }
+
+
+
+
     });
 
 
