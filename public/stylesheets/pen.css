@@ -43,6 +43,7 @@ body {
 
 #pen-view-options i {
     margin-right: 5px;
+    margin-left: 5px;
 }
 
 #pen-view-options button {
@@ -102,3 +103,87 @@ div.horizontal-resize-control{
     cursor: pointer;
     background-color: tomato;
 }
+
+
+#view-dropdown {
+    top: 50px !important;
+    width: 400px !important;
+    background-color: black;
+    height: fit-content !important;
+    padding: 10px;
+    border: none;
+}
+
+
+.collection.with-header .collection-header {
+    padding: 0;
+    background-color: transparent;
+    border-bottom: none;
+    padding-left: 5px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+}
+
+.collection.with-header .collection-item {
+    padding: 0;
+    background-color: transparent;
+    border-bottom: none;
+    text-align: left;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+
+.collection.with-header a, span.collection-link {
+    color: white;
+}
+
+.collection.with-header a.active {
+    background-color: #444857;
+}
+
+.collection.with-header a:hover {
+    background-color: #5a5f73 !important;
+}
+
+
+
+.collection-item .secondary-content i {
+    font-size: 14px;
+    color: white;
+}
+
+.dropdown-content li {
+    min-height: auto;
+}
+
+.collection-item .secondary-content span.collection-link {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#code-link-collection {
+    text-align: left;
+    height: 40px;
+}
+
+#code-link-collection a.code-link{
+    padding: 10px 10px;
+    border-radius: 5px; 
+}
+
+#editor-layout-collection {
+    width: 100%;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid white;
+    overflow: hidden;
+}
+
+#editor-layout-collection .layout-link-container a.layout-link  i {
+    width: 100%;
+    height: 100%;
+    font-size: 30px;
+    padding: 5px 0px;
+}
+
