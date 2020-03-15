@@ -54,18 +54,6 @@ function monaco_configure() {
     });
 }
 
-// TODO: Allow for an singular function to handle any rendering
-// function monaco_loadEditorContent(editorId, content, language) {
-//     require(['vs/editor/editor.main'], () => {
-
-//         return monaco.editor.create(document.getElementById(editorId), {
-//             value: content,
-//             language: language
-//         });
-
-//     });
-// }
-
 // TODO: Temporarily set these ravlues
 function monaco_loadContentFromRemote() {
     
@@ -139,14 +127,14 @@ function monaco_refreshContent() {
 // Called by any resize operation to clear DOM and refresh the editor
 function updateForResize() {
 
-    // leftPane.empty();
-    // rightPane.empty();
-    // centerPane.empty();
     monaco_refreshContent();
 
 }
 
 $(function () {
+
+
+    $('.dropdown-trigger').dropdown();
 
     leftAnchor = $("#editor-resize-1");
     rightAnchor = $("#editor-resize-2");
@@ -181,7 +169,6 @@ $(function () {
     $(document).mouseup(() => {
         resizeLeft = resizeRight = resizeBottom = false;
     })
-
 
     $(document).on('mousemove', (e) => {
 
@@ -218,7 +205,6 @@ $(function () {
 
 
     });
-
 
 
     monaco_configure();

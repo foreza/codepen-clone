@@ -19,8 +19,41 @@
 
     <header>
 
-        <div id="pen-view-header">
+        <div id="pen-view-header" class="valign-wrapper">
             <img id="pen-logo" src="/images/codepen-logo.svg" />
+            <div id="pen-info">
+                <div id="pen-name-editable" class="valign-wrapper">
+                    <span>thitle <a href="#"><i class="material-icons">edit</i></a></span>
+                </div>
+                <div id="pen-author-name">
+                    <span>A PEN BY <a href="#">doki</a></span>
+                </div>
+            </div>
+            <div id="pen-view-options" class="right-align">
+                <button id="" class="btn"><i class="material-icons">cloud</i>Save
+                </button>
+                <button id="" class="btn"><i class="material-icons">settings</i>Settings
+                </button>
+                <button id="" class="btn"><i class="material-icons">visibility</i>Change View
+                </button>
+            </div>
+
+            <div id="profile-image">
+                <a class='dropdown-trigger' href='#' data-target='profile-dropdown'>
+                    <img src="/images/profile-sample.jpg">
+                </a>
+                <!-- Dropdown Structure -->
+                <ul id='profile-dropdown' class='dropdown-content'>
+                    <li><a href="#!">Dashboard</a></li>
+                    <li><a href="#!">Profile</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="#!">New Pen</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="#!"><i class="material-icons">view_module</i>Settings</a></li>
+                    <li><a href="#!"><i class="material-icons">cloud</i>Log out</a></li>
+                </ul>
+            </div>
+
         </div>
 
     </header>

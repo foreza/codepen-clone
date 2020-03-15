@@ -1,11 +1,55 @@
 body {
-    overflow: hidden
+    overflow: hidden;
 }
 
+
+#pen-view-header {
+    height: 55px;
+}
+
+
 #pen-logo {
-    height: 20px;
+    height: 25px;
     width: auto;
 }
+
+#pen-info {
+    height: 100%;
+    width: 25%;
+    margin-left: 20px;
+}
+
+#pen-name-editable{
+    height: 50%;
+    font-size: 15px;
+}
+
+#pen-name-editable i{
+    font-size: 15px;
+}
+
+#pen-author-name {
+    font-size: 12px;
+}
+
+#pen-author-name span {
+    color: #9b9dad;
+}
+
+#pen-view-options {
+    width: 100%;
+    margin-right: 70px;
+}
+
+#pen-view-options i {
+    margin-right: 5px;
+}
+
+#pen-view-options button {
+    background-color: #444857;
+    font-size: 14px;
+}
+
 
 .row {
     margin-bottom: 0px;
