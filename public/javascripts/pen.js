@@ -34,7 +34,7 @@ function formatDocument(html, css, javascript) {
 }
 
 
-function refreshContent() {
+function refreshRenderContent() {
     renderInIframe(formatDocument(leftEditor.getValue(), centerEditor.getValue(), rightEditor.getValue()));
 }
 
@@ -55,16 +55,16 @@ function monaco_configure() {
 }
 
 // TODO: Allow for an singular function to handle any rendering
-function monaco_loadEditorContent(editorId, content, language) {
-    require(['vs/editor/editor.main'], () => {
+// function monaco_loadEditorContent(editorId, content, language) {
+//     require(['vs/editor/editor.main'], () => {
 
-        return monaco.editor.create(document.getElementById(editorId), {
-            value: content,
-            language: language
-        });
+//         return monaco.editor.create(document.getElementById(editorId), {
+//             value: content,
+//             language: language
+//         });
 
-    });
-}
+//     });
+// }
 
 // TODO: Temporarily set these ravlues
 function monaco_loadContentFromRemote() {
@@ -88,50 +88,60 @@ function monaco_loadContentFromRemote() {
 
 
 
-function monaco_refreshContent() {
-    require(['vs/editor/editor.main'], function () {
+function monaco_initializeEditors() {
 
-        leftEditor = monaco.editor.create(document.getElementById('editor-1'), {
-            value: leftEditorContent,
-            language: 'html'
-        });
+    require(['vs/editor/editor.main'], () => {
 
-        centerEditor = monaco.editor.create(document.getElementById('editor-2'), {
-            value: centerEditorContent,
-            language: 'css'
-        });
+    leftEditor = monaco.editor.create(document.getElementById('editor-1'), {
+        value: leftEditorContent,
+        language: 'html',
+        automaticLayout: true
+    });
 
-        rightEditor = monaco.editor.create(document.getElementById('editor-3'), {
-            value: rightEditorContent,
-            language: 'javascript'
-        });
-
-
-        leftEditor.onDidChangeModelContent(e => {
-            leftEditorContent = leftEditor.getValue();
-            refreshContent();
-        })
-
-        centerEditor.onDidChangeModelContent(e => {
-            centerEditorContent = centerEditor.getValue();
-            refreshContent();
-        })
-
-        rightEditor.onDidChangeModelContent(e => {
-            rightEditorContent = rightEditor.getValue();
-            refreshContent();
-        })
+    centerEditor = monaco.editor.create(document.getElementById('editor-2'), {
+        value: centerEditorContent,
+        language: 'css',
+        automaticLayout: true
 
     });
+
+    rightEditor = monaco.editor.create(document.getElementById('editor-3'), {
+        value: rightEditorContent,
+        language: 'javascript',
+        automaticLayout: true
+    });
+
+    leftEditor.onDidChangeModelContent(e => {
+        leftEditorContent = leftEditor.getValue();
+        refreshRenderContent();
+    })
+
+    centerEditor.onDidChangeModelContent(e => {
+        centerEditorContent = centerEditor.getValue();
+        refreshRenderContent();
+    })
+
+    rightEditor.onDidChangeModelContent(e => {
+        rightEditorContent = rightEditor.getValue();
+        refreshRenderContent();
+    })
+    });
+
+}
+
+function monaco_refreshContent() {
+    leftEditor.layout();
+    centerEditor.layout();
+    rightEditor.layout();
 }
 
 
 // Called by any resize operation to clear DOM and refresh the editor
 function updateForResize() {
 
-    leftPane.empty();
-    rightPane.empty();
-    centerPane.empty();
+    // leftPane.empty();
+    // rightPane.empty();
+    // centerPane.empty();
     monaco_refreshContent();
 
 }
@@ -213,7 +223,7 @@ $(function () {
 
     monaco_configure();
     monaco_loadContentFromRemote();
-    monaco_refreshContent();
+    monaco_initializeEditors();
 
 });
 
