@@ -1,106 +1,137 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title><%= title %></title>
-
     <!-- Materialize dependency -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/stylesheets/sidebar.css' />
-    <link rel='stylesheet' href='/stylesheets/signup.css' />
-
-
-
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="/stylesheets/materialize.css"
+      media="screen,projection"
+    />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/sidebar.css" />
+    <link rel="stylesheet" href="/stylesheets/signup.css" />
+    <script src="/javascripts/jquery-3.4.1.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
-
-<body>
-
-    <header>
-
-    </header>
-
+  </head>
+  <body>
+    <header></header>
     <main>
-        <div id="tier-intro" class="container valign-wrapper">
+      <div id="tier-intro" class="container valign-wrapper">
+        <div class="container center-align">
+          <h3>FREE</h3>
+          <p>Welcome to CodePen! (clone)</p>
+        </div>
+      </div>
 
-            <div class="container center-align">
-                <h3>FREE</h3>
-                <p>Welcome to CodePen! (clone)</p>
-            </div>
-    
-        </div>
-    
-        <div class="container">
-    
-            <div id="signup-parent" class="row">
-                <div id="signup-form" class="col s8">
-                    <form class="col s12">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <p class="input-label-custom">Your Name</p>
-                                <input id="name" type="text" class="">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <p class="input-label-custom">Choose a username</p>
-                                <input id="username" type="text" class="validate">
-                                <div><p class="side-note-special">codepen.io/username</p></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <p class="input-label-custom">Email</p>
-                                <input id="email" type="email" class="validate">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <p class="input-label-custom">Choose Password</p>
-                                <input id="password" type="password" class="validate">
-                            </div>
-                        </div>
-                    </form>
-                    <div class="row">
-                        <button id="signup-button" class="btn waves-effect waves-light" type="submit" name="action">Submit
-                        </button>
-                        <div>
-                        <p class="side-note">By signing up, you agree to CodePen's <a href="#">Terms of Service</a> , <a href="#">Code of Conduct</a>, and <a href="#">Privacy Policy</a>.</p>
-                        </div>
-                    </div>
+      <div class="container">
+        <div id="signup-parent" class="row">
+          <div id="signup-form" class="col s8">
+            <form class="col s12" id="signup-form2">
+              <div class="row">
+                <div class="input-field col s12">
+                  <p class="input-label-custom">Your Name</p>
+                  <input id="name" type="text" class="" />
                 </div>
-    
-                <div id="tier-explanation" class="col s4">
-                    
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <p class="input-label-custom">Choose a username</p>
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    class="validate"
+                  />
+                  <div>
+                    <p class="side-note-special">codepen.io/username</p>
+                  </div>
                 </div>
-    
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <p class="input-label-custom">Email</p>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="validate"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <p class="input-label-custom">Choose Password</p>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="validate"
+                  />
+                </div>
+              </div>
+            </form>
+            <div class="row">
+              <button
+                id="signup-button"
+                class="btn waves-effect waves-light"
+                type="submit"
+                name="action"
+                form="signup-form2"
+              >
+                Submit
+              </button>
+              <div>
+                <p class="side-note">
+                  By signing up, you agree to CodePen's
+                  <a href="#">Terms of Service</a> ,
+                  <a href="#">Code of Conduct</a>, and
+                  <a href="#">Privacy Policy</a>.
+                </p>
+              </div>
             </div>
-    
-         
+          </div>
+
+          <div id="tier-explanation" class="col s4"></div>
         </div>
+      </div>
     </main>
 
     <footer>
+      <div class="center-align">
+        <a href="#">Terms of Service</a> · <a href="#"> Privacy Policy</a> ·
+        <a href="#">Code of Conduct</a>
+      </div>
 
-        <div class="center-align">
-
-    
-        <a href="#">Terms of Service</a>  · <a href="#"> Privacy Policy</a>  · <a href="#">Code of Conduct</a>
-
-    </div>
-
-        <script type="text/javascript" src="/javascripts/materialize.js"></script>
-
+      <script type="text/javascript" src="/javascripts/materialize.js"></script>
+      <script>
+        $(function() {
+          const form = $("#signup-form2");
+          form.on("submit", function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+              username: formData.get("username").trim(),
+              email: formData.get("email").trim(),
+              password: formData.get("password").trim()
+            };
+            console.log(data);
+            $.post("/users", data)
+              .then(response => {
+                console.log(response);
+              })
+              .catch(err => {
+                console.error(err);
+              });
+          });
+        });
+      </script>
     </footer>
-
-
-
-
-</body>
-<footer>
-
-</footer>
-
+  </body>
+  <footer></footer>
 </html>
