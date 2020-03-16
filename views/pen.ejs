@@ -34,11 +34,71 @@
                 </button>
                 <button id="" class="btn"><i class="material-icons">cloud</i>Save
                 </button>
-                <button id="" class="btn"><i class="material-icons">settings</i>Settings
+                <button id="" href="#pen-settings-modal" class="btn modal-trigger"><i class="material-icons">settings</i>Settings
                 </button>
                 <button id="" class="btn dropdown-trigger" data-target='view-dropdown'><i
                         class="material-icons">visibility</i>Change View
                 </button>
+
+
+                <!-- Pen Settings Modal Structure -->
+                <div id="pen-settings-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="row">
+                            <span class="modal-title">Pen Settings</span>
+                            <span class="modal-exit"><a class="modal-close" href="#">
+                                <i class="material-icons">cancel</i></a>
+                        </div>
+                        </span>
+                            <div class="row">
+                                <div class="col s3">
+                                    <ul class="tabs">
+                                        <li class="tab col s12"><a href="#tab-html">HTML</a></li>
+                                        <li class="tab col s12"><a href="#tab-css">CSS</a></li>
+                                        <li class="tab col s12"><a href="#tab-js">JS</a></li>
+                                        <li class="tab col s12"><a class="active" href="#tab-details">Pen Details</a></li>
+
+                                      </ul>
+                                </div>
+                                <div class="col s9">
+                                    <div class="modal-tab" id="tab-html" class="col s12">
+                                        <div>
+                                            <p>HTML Preprocessor</p>
+                                            <p>Add Class(es) to &lt;html&gt;</p>
+                                            <p>Stuff for &lt;head&gt;</p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-tab" id="tab-css" class="col s12">
+                                        <div>
+                                            <p>CSS Preprocessor</p>
+                                            <p>CSS Base</p>
+                                            <p>Add External Stylesheets/Pens</p>
+                                            <p>Any URL's added here will be added as <link>s in order, and before the CSS in the editor. If you link to another Pen, it will include the CSS from that Pen. If the preprocessor matches, it will attempt to combine them before processing.</p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-tab" id="tab-js" class="col s12">
+                                        <div>
+                                            <p>JavaScript Preprocessor</p>
+                                            <p>Add External Scripts/Pens</p>
+                                            <p>Any URL's added here will be added as &lt;script&gt;s in order, and run before the JavaScript in the editor. You can use the URL of any other Pen and it will include the JavaScript from that Pen.</p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-tab" id="tab-details" class="col s12">
+                                        <div>
+                                            <h6>Pen Title</h6>
+                                            <input type="text" placeholder="Untitled"/>
+                                            <h6>Pen Description</h6>
+                                            <textarea></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Save and Close</a>
+                    </div>
+                </div>
+
 
                 <!-- Dropdown Structure -->
                 <ul id='view-dropdown' class='dropdown-content collection with-header'>
@@ -47,27 +107,27 @@
                     </li>
                     <a href="#!" class="collection-item active"><span class="left-align">Editor View</span>
                         <span class="secondary-content valign-wrapper">
-                                <span class="collection-link">/pen/</span>
-                                <i class="material-icons">help_outline</i>
-                            </span>
+                            <span class="collection-link">/pen/</span>
+                            <i class="material-icons">help_outline</i>
+                        </span>
                     </a>
                     <a href="#!" class="collection-item"><span class="left-align">Details View</span>
                         <span class="secondary-content valign-wrapper">
-                                <span class="collection-link">/details/</span>
-                                <i class="material-icons">help_outline</i>
-                            </span>
+                            <span class="collection-link">/details/</span>
+                            <i class="material-icons">help_outline</i>
+                        </span>
                     </a>
                     <a href="#!" class="collection-item"><span class="left-align">Full Page View</span>
                         <span class="secondary-content valign-wrapper">
-                                <span class="collection-link">/full/</span>
-                                <i class="material-icons">help_outline</i>
-                            </span>
+                            <span class="collection-link">/full/</span>
+                            <i class="material-icons">help_outline</i>
+                        </span>
                     </a>
                     <a href="#!" class="collection-item"><span class="left-align">Debug Mode</span>
                         <span class="secondary-content valign-wrapper">
-                                <span class="collection-link">/debug/</span>
-                                <i class="material-icons">help_outline</i>
-                            </span>
+                            <span class="collection-link">/debug/</span>
+                            <i class="material-icons">help_outline</i>
+                        </span>
                     </a>
 
                     <li class="divider" tabindex="-1"></li>
@@ -90,17 +150,18 @@
 
                     <div id="editor-layout-collection" class="row">
                         <div class="layout-link-container col s4">
-                            <a href="#!" class="layout-link valign-wrapper" ><i class="material-icons">dashboard</i></a>
+                            <a href="#!" class="layout-link valign-wrapper"><i class="material-icons">dashboard</i></a>
                         </div>
                         <div class="layout-link-container col s4">
-                            <a href="#!" class="layout-link valign-wrapper active"><i class="material-icons">dashboard</i></a>
+                            <a href="#!" class="layout-link valign-wrapper active"><i
+                                    class="material-icons">dashboard</i></a>
                         </div>
                         <div class="layout-link-container col s4">
-                            <a href="#!"class="layout-link valign-wrapper" ><i class="material-icons">dashboard</i></a>
+                            <a href="#!" class="layout-link valign-wrapper"><i class="material-icons">dashboard</i></a>
                         </div>
                     </div>
 
-                    
+
 
                 </ul>
 

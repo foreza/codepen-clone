@@ -72,8 +72,6 @@ body {
     display: block;
     height: 100%;
     width: 100%;
-    background-color: green;
-
 }
 
 
@@ -92,16 +90,16 @@ div.resizable-editor {
 }
 
 div.vertical-resize-control{
-    width:10px;
+    width:15px;
     cursor: pointer;
-    background-color: bisque;
+    background-color: #333642;
 }
 
 
 div.horizontal-resize-control{
-    height:10px;
+    height:15px;
     cursor: pointer;
-    background-color: tomato;
+    background-color:#333642;
 }
 
 
@@ -187,3 +185,52 @@ div.horizontal-resize-control{
     padding: 5px 0px;
 }
 
+
+
+#pen-settings-modal {
+    background-color: rgb(19, 20, 23);
+}
+
+
+#pen-settings-modal ul.tabs {
+    height: auto;
+    background-color: transparent;
+    margin: inherit;
+}
+
+
+.tabs .indicator {
+    display: none !important;
+}
+
+#pen-settings-modal ul.tabs li.tab {
+    display: list-item;
+    text-align: left;
+}
+
+#pen-settings-modal .modal-content .modal-tab {
+    text-align: left;
+    padding: 10px;
+}
+
+#pen-settings-modal .modal-content div{
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+#pen-settings-modal .modal-content .modal-title {
+    font-size: 20px;
+}
+
+#pen-settings-modal .modal-content .modal-exit{
+   float: right;
+}
+
+#pen-settings-modal .tabs .tab {
+
+} 
+
+#pen-settings-modal .modal-footer a {
+    background: #47cf73;
+    color: #000;
+}

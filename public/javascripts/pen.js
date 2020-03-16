@@ -135,6 +135,10 @@ $(function () {
 
 
     $('.dropdown-trigger').dropdown();
+    $('.modal').modal();
+    $('.tabs').tabs();
+
+
 
     leftAnchor = $("#editor-resize-1");
     rightAnchor = $("#editor-resize-2");
