@@ -18,7 +18,7 @@ $(() => {
         // TODO: additional FE validation here, ideally against some schema 
 
 
-        $.post("/user", postData).then(res => {
+        $.post("/users", postData).then(res => {
             alert("Success");
         }).catch(error => {
             console.error(error);
