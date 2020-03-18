@@ -33,7 +33,6 @@ function handleEditorUpdate() {
 }
 
 function refreshRenderContent() {
-    console.log("refreshRenderContent");
     renderInIframe(formatDocument(leftEditor.getValue(), centerEditor.getValue(), rightEditor.getValue()));
 }
 
@@ -54,7 +53,7 @@ function monaco_configure() {
 function monaco_loadContentFromRemote() {
 
     leftEditorContent = [
-        '<html><h1>peace in my bodyyy</html>'
+        '<h1>peace in my bodyyy, virus begone</h1>'
     ].join('\n');
 
     centerEditorContent = [
@@ -95,20 +94,17 @@ function monaco_initializeEditors() {
 
         leftEditor.onDidChangeModelContent(e => {
             leftEditorContent = leftEditor.getValue();
-            // refreshRenderContent();
             handleEditorUpdate();
         })
 
         centerEditor.onDidChangeModelContent(e => {
             centerEditorContent = centerEditor.getValue();
-            // refreshRenderContent();
             handleEditorUpdate();
         })
 
         rightEditor.onDidChangeModelContent(e => {
             rightEditorContent = rightEditor.getValue();
             handleEditorUpdate();
-            // refreshRenderContent();
         })
     });
 
