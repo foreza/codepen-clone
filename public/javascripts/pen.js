@@ -15,6 +15,8 @@ var rightEditor;                                // Reference to right monaco edi
 var leftEditorContent;                          // Content for left monaco editor
 var centerEditorContent;                        // Content for center monaco editor
 var rightEditorContent;                         // Content for right monaco editor
+const timeBeforeEditorUpdate = 1000;              // Default time                     
+var updateTimerRef;
 
 // Monaco Editor config
 require.config({ paths: { 'vs': '../javascripts/monaco-editor/min/vs' } });
@@ -23,7 +25,15 @@ function formatDocument(html, css, javascript) {
     return `<html><head><style>${css}</style><body>${html}<script>${javascript}<\/script></body></html>`;
 }
 
+function handleEditorUpdate() {
+    if (updateTimerRef) {
+        clearTimeout(updateTimerRef);
+    }
+    updateTimerRef = setTimeout(refreshRenderContent, timeBeforeEditorUpdate);
+}
+
 function refreshRenderContent() {
+    console.log("refreshRenderContent");
     renderInIframe(formatDocument(leftEditor.getValue(), centerEditor.getValue(), rightEditor.getValue()));
 }
 
@@ -85,17 +95,20 @@ function monaco_initializeEditors() {
 
         leftEditor.onDidChangeModelContent(e => {
             leftEditorContent = leftEditor.getValue();
-            refreshRenderContent();
+            // refreshRenderContent();
+            handleEditorUpdate();
         })
 
         centerEditor.onDidChangeModelContent(e => {
             centerEditorContent = centerEditor.getValue();
-            refreshRenderContent();
+            // refreshRenderContent();
+            handleEditorUpdate();
         })
 
         rightEditor.onDidChangeModelContent(e => {
             rightEditorContent = rightEditor.getValue();
-            refreshRenderContent();
+            handleEditorUpdate();
+            // refreshRenderContent();
         })
     });
 
@@ -108,9 +121,7 @@ function monaco_refreshContent() {
 }
 
 function updateForResize() {
-
     monaco_refreshContent();
-
 }
 
 $(function () {
