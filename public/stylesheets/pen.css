@@ -2,11 +2,9 @@ body {
     overflow: hidden;
 }
 
-
 #pen-view-header {
     height: 55px;
 }
-
 
 #pen-logo {
     height: 25px;
@@ -19,12 +17,12 @@ body {
     margin-left: 20px;
 }
 
-#pen-name-editable{
+#pen-name-editable {
     height: 50%;
     font-size: 15px;
 }
 
-#pen-name-editable i{
+#pen-name-editable i {
     font-size: 15px;
 }
 
@@ -51,21 +49,18 @@ body {
     font-size: 14px;
 }
 
-
 .row {
     margin-bottom: 0px;
 }
 
-
 #editor-group {
-    display: flex;          
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     position: relative;
     align-items: stretch;
     min-height: 200px;
 }
-
 
 #result-group {
     position: relative;
@@ -74,34 +69,28 @@ body {
     width: 100%;
 }
 
-
 #results-window {
     background-color: white;
     height: 100%;
     width: 100%;
 }
 
-
 div.resizable-editor {
     width: 33%;
-    background-color: grey;
-    overflow-y: auto;
-
+    overflow: hidden;
 }
 
-div.vertical-resize-control{
-    width:15px;
+div.vertical-resize-control {
+    width: 15px;
     cursor: pointer;
     background-color: #333642;
 }
 
-
-div.horizontal-resize-control{
-    height:15px;
+div.horizontal-resize-control {
+    height: 15px;
     cursor: pointer;
-    background-color:#333642;
+    background-color: #333642;
 }
-
 
 #view-dropdown {
     top: 50px !important;
@@ -111,7 +100,6 @@ div.horizontal-resize-control{
     padding: 10px;
     border: none;
 }
-
 
 .collection.with-header .collection-header {
     padding: 0;
@@ -131,7 +119,6 @@ div.horizontal-resize-control{
     font-size: 12px;
 }
 
-
 .collection.with-header a, span.collection-link {
     color: white;
 }
@@ -143,8 +130,6 @@ div.horizontal-resize-control{
 .collection.with-header a:hover {
     background-color: #5a5f73 !important;
 }
-
-
 
 .collection-item .secondary-content i {
     font-size: 14px;
@@ -165,9 +150,9 @@ div.horizontal-resize-control{
     height: 40px;
 }
 
-#code-link-collection a.code-link{
+#code-link-collection a.code-link {
     padding: 10px 10px;
-    border-radius: 5px; 
+    border-radius: 5px;
 }
 
 #editor-layout-collection {
@@ -178,26 +163,22 @@ div.horizontal-resize-control{
     overflow: hidden;
 }
 
-#editor-layout-collection .layout-link-container a.layout-link  i {
+#editor-layout-collection .layout-link-container a.layout-link i {
     width: 100%;
     height: 100%;
     font-size: 30px;
     padding: 5px 0px;
 }
 
-
-
 #pen-settings-modal {
     background-color: rgb(19, 20, 23);
 }
-
 
 #pen-settings-modal ul.tabs {
     height: auto;
     background-color: transparent;
     margin: inherit;
 }
-
 
 .tabs .indicator {
     display: none !important;
@@ -213,7 +194,7 @@ div.horizontal-resize-control{
     padding: 10px;
 }
 
-#pen-settings-modal .modal-content div{
+#pen-settings-modal .modal-content div {
     text-align: left;
     margin-bottom: 20px;
 }
@@ -222,13 +203,11 @@ div.horizontal-resize-control{
     font-size: 20px;
 }
 
-#pen-settings-modal .modal-content .modal-exit{
-   float: right;
+#pen-settings-modal .modal-content .modal-exit {
+    float: right;
 }
 
-#pen-settings-modal .tabs .tab {
-
-} 
+#pen-settings-modal .tabs .tab {}
 
 #pen-settings-modal .modal-footer a {
     background: #47cf73;
