@@ -14,7 +14,7 @@ $(() => {
         // TODO: additional FE validation here, ideally against some schema 
 
 
-        $.get("/users/login", getData).then(res => {
+        $.get("/users/login", getData).then( () => {
             window.location.href = "/dashboard";
         }).catch(error => {
             alert(`${error.responseText} No valid account found with the provided information. `);

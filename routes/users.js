@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var db = require('../models/index')
 var userUtil = require('../dbUtils/userUtils')
+
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -12,19 +12,19 @@ router.get('/', function (req, res, next) {
 router.get('/login', async function (req, res, next) {
 
   // TODO: add BE validation check
+    const user = await userUtil.checkValidUser(req);
 
-    const user = await db.sequelize.query(userUtil.checkValidUser, {
-      replacements: { ...req.query},
-      type: db.sequelize.QueryTypes.SELECT
-    });
-
-    if (user.length > 0){
-      res.cookie('kookie', `${user[0].id}`)
-      res.redirect(301, '/dashboard');
-    } else {
+    if (user.length === 0){      
       res.sendStatus(401);
-    }
- 
+    } else {
+      console.log(`Matching: ${user[0].password} to ${req.query.password}`)
+      if (user[0].password === req.query.password){
+        req.session.user = user[0].id;      // use the id as the cookie value
+        res.sendStatus(200); // how do we redirect with ejs?
+      } else {
+        res.sendStatus(401);
+      }
+    } 
   
 });
 
@@ -33,12 +33,14 @@ router.post('/', [], async function (req, res, next) {
 
   // TODO: add BE validation check
 
-  await db.sequelize.query(userUtil.addUserQuery, {
-    replacements: { ...req.body, createdAt: new Date() },
-    type: db.sequelize.QueryTypes.INSERT
-  });
-
-  res.sendStatus(201);
+  const user = await userUtil.addUserQuery(req);
+  if (user.length === 0) {
+    // handle better
+    res.sendStatus(403);
+  } else {
+    res.sendStatus(201);
+  }
+  
 
 });
 

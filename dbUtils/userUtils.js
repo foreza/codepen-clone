@@ -1,8 +1,21 @@
-
+var db = require('../models/index')
 const util = {};
 
-util.addUserQuery = 'INSERT INTO "Users" ("fullName", "username", "email", "password", "createdAt") VALUES (:fullName, :username, :email, :password, :createdAt);'
+const addUserQuery = 'INSERT INTO "Users" ("fullName", "username", "email", "password", "createdAt") VALUES (:fullName, :username, :email, :password, :createdAt);'
+util.addUserQuery = (req) => db.sequelize.query(addUserQuery, {
+    replacements: { ...req.body, createdAt: new Date() },
+    type: db.sequelize.QueryTypes.INSERT
+});
 
-util.checkValidUser = 'SELECT * FROM "Users" WHERE (email=:usernameOrEmail OR username=:usernameOrEmail) AND password=:password'
+const checkValidUser = 'SELECT * FROM "Users" WHERE (email=:usernameOrEmail OR username=:usernameOrEmail);'
+util.checkValidUser = (req) => db.sequelize.query(checkValidUser, {
+    replacements: { ...req.query },
+    type: db.sequelize.QueryTypes.SELECT
+});
+
+
+util.checkUserSessionForID = (id) => db.sequelize.query(`SELECT * FROM "Users" WHERE (id=${id});`, {
+    type: db.sequelize.QueryTypes.SELECT
+});
 
 module.exports = util;
