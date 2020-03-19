@@ -9,6 +9,26 @@ router.get('/', function (req, res, next) {
 });
 
 
+router.get('/login', async function (req, res, next) {
+
+  // TODO: add BE validation check
+
+    const user = await db.sequelize.query(userUtil.checkValidUser, {
+      replacements: { ...req.query},
+      type: db.sequelize.QueryTypes.SELECT
+    });
+
+    if (user.length > 0){
+      res.cookie('kookie', `${user[0].id}`)
+      res.redirect(301, '/dashboard');
+    } else {
+      res.sendStatus(401);
+    }
+ 
+  
+});
+
+
 router.post('/', [], async function (req, res, next) {
 
   // TODO: add BE validation check
@@ -21,6 +41,9 @@ router.post('/', [], async function (req, res, next) {
   res.sendStatus(201);
 
 });
+
+
+
 
 
 module.exports = router;

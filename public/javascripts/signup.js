@@ -11,7 +11,7 @@ $(() => {
             fullName: formData.get("fullName").trim(),
             username: formData.get("username").trim(),
             email: formData.get("email").trim(),
-            password: formData.get("password").trim()
+            password: formData.get("password").trim(),
         }
 
         console.log(postData);
