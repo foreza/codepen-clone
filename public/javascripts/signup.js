@@ -19,7 +19,7 @@ $(() => {
 
 
         $.post("/users", postData).then(res => {
-            alert("Success");
+            window.location.href = "/login";
         }).catch(error => {
             console.error(error);
         })
