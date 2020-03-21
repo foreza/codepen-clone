@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var userUtil = require('../dbUtils/userUtils')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 /* GET users listing. */
@@ -12,36 +14,34 @@ router.get('/', function (req, res, next) {
 router.get('/login', async function (req, res, next) {
 
   // TODO: add BE validation check
-    const user = await userUtil.checkValidUser(req);
+  const user = await userUtil.checkValidUser(req);
 
-    if (user.length === 0){      
-      res.sendStatus(401);
+  if (user.length === 0) {
+    res.sendStatus(401);
+  } else {
+    const result = await bcrypt.compare(req.query.password, user[0].password);
+    if (result) {
+      req.session.user = user[0].id;      // use the id as the cookie value
+      res.sendStatus(200);                // how do we redirect with ejs?
     } else {
-      console.log(`Matching: ${user[0].password} to ${req.query.password}`)
-      if (user[0].password === req.query.password){
-        req.session.user = user[0].id;      // use the id as the cookie value
-        res.sendStatus(200); // how do we redirect with ejs?
-      } else {
-        res.sendStatus(401);
-      }
-    } 
-  
+      res.sendStatus(401);
+    }
+
+  }
+
 });
 
 
 router.post('/', [], async function (req, res, next) {
 
   // TODO: add BE validation check
+  const user = req.body;
 
-  const user = await userUtil.addUserQuery(req);
-  if (user.length === 0) {
-    // handle better
-    res.sendStatus(403);
-  } else {
+  bcrypt.hash(user.password, saltRounds, async (err, hash) => {
+    user.password = hash;
+    await userUtil.addUserQuery(user);
     res.sendStatus(201);
-  }
-  
-
+  });
 });
 
 
