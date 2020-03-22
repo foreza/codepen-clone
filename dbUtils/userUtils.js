@@ -10,8 +10,8 @@ util.addUserQuery = (user) => {
 }
 
 const checkValidUser = 'SELECT * FROM "Users" WHERE (email=:usernameOrEmail OR username=:usernameOrEmail) LIMIT 1;'
-util.checkValidUser = (req) => db.sequelize.query(checkValidUser, {
-    replacements: { ...req.body },
+util.checkValidUser = (user) => db.sequelize.query(checkValidUser, {
+    replacements: { ...user },
     type: db.sequelize.QueryTypes.SELECT
 });
 

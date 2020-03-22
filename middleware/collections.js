@@ -6,12 +6,12 @@ let userCreationSchema = yup.object().shape({
         .string()
         .required()
         .min(1)
-        .max(20),
+        .max(30),
     username: yup
         .string()
         .required()
         .min(1)
-        .max(20),
+        .max(30),
     email: yup
         .string()
         .email()
@@ -55,9 +55,11 @@ let userLoginSchema_username = yup.object().shape({
 middlewareCollection.validateUserLogin = async (req, res, next) => {
     let err = [];
 
-    if (await userLoginSchema_Email.validate(req.body).catch((e) => { err = e; })) {
+    console.log(req.query)
+
+    if (await userLoginSchema_Email.validate(req.query).catch((e) => { err = e; })) {
         next();
-    } else if (await userLoginSchema_username.validate(req.body).catch((e) => { err = e; })) {
+    } else if (await userLoginSchema_username.validate(req.query).catch((e) => { err = e; })) {
         next();
     } else {
         res.setHeader("Content-Type", "text/plain; charset=utf-8")
@@ -67,6 +69,7 @@ middlewareCollection.validateUserLogin = async (req, res, next) => {
 
 middlewareCollection.validateUserCreation = async (req, res, next) => {
     let err = [];
+
     if (await userCreationSchema.validate(req.body).catch((e) => { err = e; })) {
         next();
     } else {
