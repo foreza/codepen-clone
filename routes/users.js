@@ -12,18 +12,17 @@ router.get('/', function (req, res, next) {
 });
 
 
-router.get('/login', async function (req, res, next) {
-
-  const user = req.query;
-  const fetchedUser = await userUtil.checkValidUser(req.query);
+router.post('/login', async function (req, res, next) {
+  
+  const fetchedUser = await userUtil.checkValidUser(req.body);
 
   if (fetchedUser.length === 0) {
     res.sendStatus(401);
   } else {
-    const result = await bcrypt.compare(user.password, fetchedUser[0].password);
+    const result = await bcrypt.compare(req.body.password, fetchedUser[0].password);
     if (result) {
-      req.session.user = fetchedUser[0].id;      // use the id as the cookie value
-      res.redirect('../dashboard')
+      req.session.user = fetchedUser[0];      
+      res.sendStatus(200);
     } else {
       res.sendStatus(401);
     }

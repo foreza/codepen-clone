@@ -5,32 +5,24 @@ var userUtil = require('../dbUtils/userUtils')
 // Authentication Middleware
 
 middlewareCollection.checkUserExists = async (req, res, next) => {
-
-    console.log("authenticateUserID middleware called");
-    const user = await userUtil.checkUserSessionForID(req.session.user);   // ingest the id
-    if (user.length > 0) {
-        console.log("authenticateUserID: user exists");
-        res.locals.userExists = true;
-    } else {
-        console.log("authenticateUserID: user does not exist");
-        res.locals.userExists = false;
+    if (req.session && req.session.user) {
+        const user = await userUtil.checkUserSessionForID(req.session.user.id);   // ingest the id
+        if (user.length > 0) {
+            res.locals.userExists = true;
+        } else {
+            res.locals.userExists = false;
+        }
     }
     next();
 };
 
 middlewareCollection.checkAuthState = async (req, res, next) => {
-
-    console.log("checkAuthState middleware called");
-
     if (req.session && req.session.user && res.locals.userExists) {
-        console.log("session exists");
         next();
     } else {
         req.session.reset();
-        // res.send(301);
-        console.log("user is not authenticated or does not exist");
-        res.redirect(301, './login');
-    } 
+        res.redirect('/login');
+    }
 };
 
 
@@ -90,11 +82,9 @@ let userLoginSchema_username = yup.object().shape({
 middlewareCollection.validateUserLogin = async (req, res, next) => {
     let err = [];
 
-    console.log(req.query)
-
-    if (await userLoginSchema_Email.validate(req.query).catch((e) => { err = e; })) {
+    if (await userLoginSchema_Email.validate(req.body).catch((e) => { err = e; })) {
         next();
-    } else if (await userLoginSchema_username.validate(req.query).catch((e) => { err = e; })) {
+    } else if (await userLoginSchema_username.validate(req.body).catch((e) => { err = e; })) {
         next();
     } else {
         res.setHeader("Content-Type", "text/plain; charset=utf-8")
