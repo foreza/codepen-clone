@@ -1,7 +1,5 @@
 $(() => {
 
-
-
     $("#login-form").submit((e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -10,17 +8,11 @@ $(() => {
             password: formData.get("password").trim(),
         }
 
-        console.log(getData);
-        // TODO: additional FE validation here, ideally against some schema 
-
-
         $.get("/users/login", getData).then( () => {
-            window.location.href = "/dashboard";
+            // window.location.href = "/dashboard";
         }).catch(error => {
             alert(`${error.responseText} No valid account found with the provided information. `);
         })
-
-
 
     });
 

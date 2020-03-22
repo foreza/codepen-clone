@@ -1,5 +1,40 @@
 const middlewareCollection = {};
 const yup = require('yup');
+var userUtil = require('../dbUtils/userUtils')
+
+// Authentication Middleware
+
+middlewareCollection.checkUserExists = async (req, res, next) => {
+
+    console.log("authenticateUserID middleware called");
+    const user = await userUtil.checkUserSessionForID(req.session.user);   // ingest the id
+    if (user.length > 0) {
+        console.log("authenticateUserID: user exists");
+        res.locals.userExists = true;
+    } else {
+        console.log("authenticateUserID: user does not exist");
+        res.locals.userExists = false;
+    }
+    next();
+};
+
+middlewareCollection.checkAuthState = async (req, res, next) => {
+
+    console.log("checkAuthState middleware called");
+
+    if (req.session && req.session.user && res.locals.userExists) {
+        console.log("session exists");
+        next();
+    } else {
+        req.session.reset();
+        // res.send(301);
+        console.log("user is not authenticated or does not exist");
+        res.redirect(301, './login');
+    } 
+};
+
+
+// User validation Middleware
 
 let userCreationSchema = yup.object().shape({
     fullName: yup

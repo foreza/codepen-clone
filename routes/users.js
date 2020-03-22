@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
 });
 
 
-router.get('/login', [collections.validateUserLogin], async function (req, res, next) {
+router.get('/login', async function (req, res, next) {
 
   const user = req.query;
   const fetchedUser = await userUtil.checkValidUser(req.query);
@@ -23,7 +23,7 @@ router.get('/login', [collections.validateUserLogin], async function (req, res, 
     const result = await bcrypt.compare(user.password, fetchedUser[0].password);
     if (result) {
       req.session.user = fetchedUser[0].id;      // use the id as the cookie value
-      res.sendStatus(200);                // how do we redirect with ejs?
+      res.redirect('../dashboard')
     } else {
       res.sendStatus(401);
     }

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var userUtil = require('../dbUtils/userUtils')
+var collections = require('../middleware/collections')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -18,34 +18,14 @@ router.get('/login', function(req, res, next) {
 });
 
 /* GET Dashboard page. */
-router.get('/dashboard', async function(req, res, next) {
-
-  // TODO: move this into it's own middle ware so we can use this everywhere selectively
-  if (req.session && req.session.user) {
-
-    const user = await userUtil.checkUserSessionForID(req.session.user);   // ingest the id
-
-    if (user.length > 0) {
-      req.session.user = user[0].id;  
-      res.locals.user = user[0].id;
-      res.render('dashboard', { title: 'Dashboard' });
-      
-    } else {
-      req.session.reset();
-      res.redirect(301, '/login')
-    }
-
-
-
-
-  } else {
-    res.redirect(301, '/login')
-  }
+router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function(req, res, next) {
+  console.log("rendering da dashboard for: ", req.session.id);
+  res.render('dashboard', { title: `Dashboard for:  ${req.session.id}` });
+  // res.render('dashboard', { title: `Dashboard for:  ${req.session.user.fullName}` });
   
-
 });
 
-router.get('/pen', function(req, res, next) {
+router.get('/pen', async function(req, res, next) {
   res.render('pen', { title: 'Pen' });
 });
 
