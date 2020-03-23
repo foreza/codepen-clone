@@ -6,14 +6,33 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
+/* GET user by ID */
+router.get('/:id', async function (req, res, next) {
+
+  console.log("Lookup by this id: ", req.params.id);
+  const user = await userUtil.getUserById(req.params.id);
+
+  if (!user) {
+    res.sendStatus(404);
+  } else {
+    res.json(user)
+  }
+
 });
 
+/* POST new user */ 
+router.post('/', [collections.validateUserCreation], async function (req, res, next) {
+  const user = req.body;
+  bcrypt.hash(user.password, saltRounds, async (err, hash) => {
+    user.password = hash;
+    const ret = await userUtil.addUserQuery(user);
+    console.log("Posted new user: ", ret);
+    res.sendStatus(201);
+  });
+});
 
-router.post('/login', async function (req, res, next) {
-  
+router.post('/login', [collections.validateUserLogin], async function (req, res, next) {
+
   const fetchedUser = await userUtil.checkValidUser(req.body);
 
   if (fetchedUser.length === 0) {
@@ -21,7 +40,7 @@ router.post('/login', async function (req, res, next) {
   } else {
     const result = await bcrypt.compare(req.body.password, fetchedUser[0].password);
     if (result) {
-      req.session.user = fetchedUser[0];      
+      req.session.user = fetchedUser[0];
       res.sendStatus(200);
     } else {
       res.sendStatus(401);
@@ -32,14 +51,11 @@ router.post('/login', async function (req, res, next) {
 });
 
 
-router.post('/', [collections.validateUserCreation], async function (req, res, next) {
-  const user = req.body;
-  bcrypt.hash(user.password, saltRounds, async (err, hash) => {
-    user.password = hash;
-    await userUtil.addUserQuery(user);
-    res.sendStatus(201);
-  });
+router.get('/', function (req, res, next) {
+  res.sendStatus(200);
 });
+
+
 
 
 

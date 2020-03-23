@@ -6,7 +6,7 @@ var userUtil = require('../dbUtils/userUtils')
 
 middlewareCollection.checkUserExists = async (req, res, next) => {
     if (req.session && req.session.user) {
-        const user = await userUtil.checkUserSessionForID(req.session.user.id);   // ingest the id
+        const user = await userUtil.getUserById(req.session.user.id);   // ingest the id
         if (user.length > 0) {
             res.locals.userExists = true;
         } else {
