@@ -25,9 +25,9 @@ router.post('/', [collections.validateUserCreation], async function (req, res, n
   const user = req.body;
   bcrypt.hash(user.password, saltRounds, async (err, hash) => {
     user.password = hash;
-    const ret = await userUtil.addUserQuery(user);
-    console.log("Posted new user: ", ret);
-    res.sendStatus(201);
+    const newUser = await userUtil.addUser(user);
+    console.log(newUser[0][0]);
+    res.status(201).json(newUser[0][0]);
   });
 });
 

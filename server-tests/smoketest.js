@@ -24,7 +24,10 @@ describe('Users', function () {
 
   it('Add a user with the users a[o], verify response code (201)', async () => {
     try {
-      const response = await chai.request(app).post('/users').send(testParams.smokeTestUsers.test_user_0);
+      let tUser = testParams.smokeTestUsers.test_user_0;
+      const response = await chai.request(app).post('/users').send(tUser);
+      tUser.password = testUtils.hashPassword(tUser.password);
+      assert.shallowDeepEqual(response.body, tUser, 'User should match some of the info provided');
       assert.equal(response.status, 201, 'Response should be 201');
     } catch (err) {
       throw err;

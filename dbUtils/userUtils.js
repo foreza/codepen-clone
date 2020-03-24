@@ -6,26 +6,32 @@ const addUserQuery = `INSERT INTO "Users" (
                         ) 
                         VALUES (
                         :fullName, :username, :email, :password, :createdAt
-                        );`
-util.addUserQuery = (user) => {
-    db.sequelize.query(addUserQuery, {
+                        )
+                        RETURNING *
+                        ;`
+util.addUser = async (user) => {
+    const ret = await db.sequelize.query(addUserQuery, {
         replacements: { ...user, createdAt: new Date() },
         type: db.sequelize.QueryTypes.INSERT
     });
+
+    return ret;
 }
 
-const checkValidUser = `SELECT * FROM "Users" 
+const checkValidUserQuery = `SELECT * FROM "Users" 
                         WHERE (
                             email=:usernameOrEmail OR 
                             username=:usernameOrEmail
                             ) 
                         LIMIT 1;`
-util.checkValidUser = (user) => db.sequelize.query(checkValidUser, {
+util.checkValidUser = (user) => db.sequelize.query(checkValidUserQuery, {
     replacements: { ...user },
     type: db.sequelize.QueryTypes.SELECT
 });
 
-util.getUserById = (id) => db.sequelize.query(`SELECT * FROM "Users" WHERE (id=${id});`, {
+
+const getUserByIdQuery = (id) => { return `SELECT * FROM "Users" WHERE (id=${id});` };
+util.getUserById = (id) => db.sequelize.query(getUserByIdQuery(id), {
     type: db.sequelize.QueryTypes.SELECT
 });
 
