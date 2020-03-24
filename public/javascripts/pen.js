@@ -45,8 +45,8 @@ function renderInIframe(content) {
 }
 
 function monaco_configure() {
-    require(['vs/editor/editor.main'], () => {
-        monaco.editor.setTheme('vs-dark');
+    require(['vs/editor/editor.main'], async () => {
+        await monaco.editor.setTheme('vs-dark');
     });
 }
 
@@ -71,22 +71,22 @@ function monaco_loadContentFromRemote() {
 
 function monaco_initializeEditors() {
 
-    require(['vs/editor/editor.main'], () => {
+    require(['vs/editor/editor.main'], async () => {
 
-        leftEditor = monaco.editor.create(document.getElementById('editor-1'), {
+        leftEditor = await monaco.editor.create(document.getElementById('editor-1'), {
             value: leftEditorContent,
             language: 'html',
             automaticLayout: true
         });
 
-        centerEditor = monaco.editor.create(document.getElementById('editor-2'), {
+        centerEditor = await monaco.editor.create(document.getElementById('editor-2'), {
             value: centerEditorContent,
             language: 'css',
             automaticLayout: true
 
         });
 
-        rightEditor = monaco.editor.create(document.getElementById('editor-3'), {
+        rightEditor = await monaco.editor.create(document.getElementById('editor-3'), {
             value: rightEditorContent,
             language: 'javascript',
             automaticLayout: true
