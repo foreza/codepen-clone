@@ -1,7 +1,12 @@
 var db = require('../models/index')
 const util = {};
 
-const addUserQuery = 'INSERT INTO "Users" ("fullName", "username", "email", "password", "createdAt") VALUES (:fullName, :username, :email, :password, :createdAt);'
+const addUserQuery = `INSERT INTO "Users" (
+                        "fullName", "username", "email", "password", "createdAt"
+                        ) 
+                        VALUES (
+                        :fullName, :username, :email, :password, :createdAt
+                        );`
 util.addUserQuery = (user) => {
     db.sequelize.query(addUserQuery, {
         replacements: { ...user, createdAt: new Date() },
@@ -9,7 +14,12 @@ util.addUserQuery = (user) => {
     });
 }
 
-const checkValidUser = 'SELECT * FROM "Users" WHERE (email=:usernameOrEmail OR username=:usernameOrEmail) LIMIT 1;'
+const checkValidUser = `SELECT * FROM "Users" 
+                        WHERE (
+                            email=:usernameOrEmail OR 
+                            username=:usernameOrEmail
+                            ) 
+                        LIMIT 1;`
 util.checkValidUser = (user) => db.sequelize.query(checkValidUser, {
     replacements: { ...user },
     type: db.sequelize.QueryTypes.SELECT

@@ -1,7 +1,7 @@
 var db = require('../models/index')
 const testUtils = {};
 
-const deleteUserRowsQuery = 'DELETE FROM "Users";'
+const deleteUserRowsQuery = `DELETE FROM "Users";`
 testUtils.deleteUserRowsQuery = () => {
     db.sequelize.query(deleteUserRowsQuery, {
         type: db.sequelize.QueryTypes.DELETE
@@ -27,7 +27,7 @@ testUtils.getTestUserByUserName = async (name) => {
     }
 };
 
-const addTestUserQuery = 'INSERT INTO "Users" ("fullName", "username", "email", "password", "createdAt") VALUES (:fullName, :username, :email, :password, :createdAt);'
+const addTestUserQuery = `INSERT INTO "Users" ("fullName", "username", "email", "password", "createdAt") VALUES (:fullName, :username, :email, :password, :createdAt);`
 testUtils.addUserQuery = (user) => {
     db.sequelize.query(addTestUserQuery, {
         replacements: { ...user, createdAt: new Date() },
