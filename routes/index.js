@@ -7,6 +7,11 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/logout', function (req, res, next) {
+  req.session.reset();
+  res.redirect('/login');
+});
+
 /* GET signup page. */
 router.get('/signup', function(req, res, next) {
   res.render('signup', { title: 'Signup' });
