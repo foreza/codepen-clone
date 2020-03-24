@@ -13,9 +13,10 @@
 * user: postgres
 * pass: (none)
 
-*Note: (`tempSol.sh` moves monaco-editor to /public - to be removed)*
+
+#### Run commands:  
+
 ```
-bash tempSol.sh
 npm install
 npm start 
 ```
@@ -27,12 +28,9 @@ npm start
 * user: postgres
 * pass: (none)
 
+#### Run commands:  
 
-### R
-
-*Note: (`tempSol.sh` moves monaco-editor to /public - to be removed)*
 ```
-bash tempSol.sh
 npm install
 ```
 
@@ -43,7 +41,7 @@ npm test
 
 Run front-end tests: 
 ```
-npm fe-test
+npm run fe-test
 ```
 
 
