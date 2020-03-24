@@ -1,8 +1,7 @@
+# Ignore Sequelize config
+config/config.json 
 
-config/config.json
-
-*/javascripts/monaco-editor/
-
+# MacOS
 *.DS_Store
 
 # Logs

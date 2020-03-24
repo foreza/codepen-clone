@@ -19,7 +19,7 @@ const timeBeforeEditorUpdate = 1000;              // Default time
 var updateTimerRef;
 
 // Monaco Editor config
-require.config({ paths: { 'vs': '../javascripts/monaco-editor/min/vs' } });
+require.config({ paths: { 'vs': '/min/vs' } });
 
 function formatDocument(html, css, javascript) {
     return `<html><head><style>${css}</style><body>${html}<script>${javascript}<\/script></body></html>`;
@@ -45,8 +45,8 @@ function renderInIframe(content) {
 }
 
 function monaco_configure() {
-    require(['vs/editor/editor.main'], async () => {
-        await monaco.editor.setTheme('vs-dark');
+    require(['vs/editor/editor.main'], () => {
+        monaco.editor.setTheme('vs-dark');
     });
 }
 
@@ -71,22 +71,22 @@ function monaco_loadContentFromRemote() {
 
 function monaco_initializeEditors() {
 
-    require(['vs/editor/editor.main'], async () => {
+    require(['vs/editor/editor.main'], () => {
 
-        leftEditor = await monaco.editor.create(document.getElementById('editor-1'), {
+        leftEditor = monaco.editor.create(document.getElementById('editor-1'), {
             value: leftEditorContent,
             language: 'html',
             automaticLayout: true
         });
 
-        centerEditor = await monaco.editor.create(document.getElementById('editor-2'), {
+        centerEditor = monaco.editor.create(document.getElementById('editor-2'), {
             value: centerEditorContent,
             language: 'css',
             automaticLayout: true
 
         });
 
-        rightEditor = await monaco.editor.create(document.getElementById('editor-3'), {
+        rightEditor = monaco.editor.create(document.getElementById('editor-3'), {
             value: rightEditorContent,
             language: 'javascript',
             automaticLayout: true
