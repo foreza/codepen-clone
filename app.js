@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 const db = require('./models/index')
 var index = require('./routes/index');
 var users = require('./routes/users');
+var pens = require('./routes/pens');
+
 var session = require('client-sessions')
 var app = express();
 
@@ -45,6 +47,8 @@ app.use(express.static(path.join(__dirname, 'node_modules/monaco-editor')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/pens', pens);
+
 
 
 
