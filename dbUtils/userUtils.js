@@ -1,14 +1,7 @@
 var db = require('../models/index')
 const util = {};
 
-const addUserQuery = `INSERT INTO "Users" (
-                        "fullName", "username", "email", "password", "createdAt"
-                        ) 
-                        VALUES (
-                        :fullName, :username, :email, :password, :createdAt
-                        )
-                        RETURNING *
-                        ;`
+const addUserQuery = `INSERT INTO "Users" ( "fullName", "username", "email", "password", "createdAt") VALUES (:fullName, :username, :email, :password, :createdAt)RETURNING *;`
 util.addUser = async (user) => {
     const ret = await db.sequelize.query(addUserQuery, {
         replacements: { ...user, createdAt: new Date() },
