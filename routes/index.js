@@ -24,12 +24,18 @@ router.get('/login', function(req, res, next) {
 
 /* GET Dashboard page. */
 router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function(req, res, next) {
-  res.render('dashboard', { title: `Dashboard for:  ${req.session.user.fullName}` });
+  res.render('dashboard', { title: `Dashboard for:  ${req.session.user.fullName}`, userId: `${req.session.user.id}` });
 });
 
-/* GET Pen page. */
+/* GET Pen page (for new pens) */
 router.get('/pen', [collections.checkUserExists, collections.checkAuthState], function(req, res, next) {
   res.render('pen', { title: 'Pen' });
 });
+
+
+/* GET Pen page (for existing pen) */
+router.get('/:userId/pen/:penId'), (req, res, next) => {
+
+}
 
 module.exports = router;

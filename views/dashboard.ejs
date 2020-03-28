@@ -34,7 +34,7 @@
       <li><a href="#!">Dashboard</a></li>
       <li><a href="#!">Profile</a></li>
       <li class="divider" tabindex="-1"></li>
-      <li><a href="#!">New Pen</a></li>
+      <li><a href="/pen">New Pen</a></li>
       <li class="divider" tabindex="-1"></li>
       <li><a href="#!"><i class="material-icons">view_module</i>Settings</a></li>
       <li><a href="/logout"><i class="material-icons">cloud</i>Log out</a></li>
@@ -235,9 +235,9 @@
 
       <!-- Sample Grid view -->
 
-      <div class="row">
+      <div id="pen-card-view" class="row">
 
-        <div class="col s12 m6 l4">
+        <!-- <div class="col s12 m6 l4">
           <div class="card">
             <div class="card-image">
               <div class="placeholder"></div>
@@ -379,7 +379,7 @@
             </div>
 
           </div>
-        </div>
+        </div> -->
 
 
 
@@ -425,22 +425,18 @@
 
 <footer>
 
+
+  <% if (userId) { %>
+    <script>
+       var userId = <%= userId %>            
+    </script>
+  <% } %>
+
   <script type="text/javascript" src="/javascripts/jquery-3.4.1.js"></script>
   <script type="text/javascript" src="/javascripts/materialize.js"></script>
+  <script type="text/javascript" src="/javascripts/dashboard.js"></script>
 
-  <!-- TODO: Create a javascript file  -->
-  <script>
 
-    $(document).ready(function () {
-      $('.tabs').tabs();
-      $('select').formSelect();
-      $('.dropdown-trigger').dropdown();
-      $('.sidenav').sidenav();
-      $('.collapsible').collapsible();
-
-    });
-
-  </script>
 
 </footer>
 

@@ -50,23 +50,61 @@ function monaco_configure() {
     });
 }
 
-function monaco_loadContentFromRemote() {
 
-    leftEditorContent = [
-        '<h1>peace in my bodyyy, virus begone</h1>'
-    ].join('\n');
+function displayPenContent(htmlContent, cssContent, jsContent) {
+    leftEditorContent = [htmlContent].join('\n');
+    centerEditorContent = [cssContent].join('\n');
+    rightEditorContent = [jsContent].join('\n');
+}
 
-    centerEditorContent = [
-        'body {',
-        '\t margin-left: 0;',
-        '}'
-    ].join('\n');
 
-    rightEditorContent = [
-        'function x() {',
-        '\tconsole.log("Hello world!");',
-        '}'
-    ].join('\n');
+// Pen API calls  - to finish
+
+function getPenForUser(userId, penId) {
+    // TODO: implement
+    $.get(`/${userId}/pen/${penId}`).then((data) => {
+        console.log(data);
+    }).catch(error => {
+        alert(`${error.responseText} No valid account found with the provided information. `);
+    })
+}
+
+
+function createNewPen(userId, penName, htmlContent, cssContent, jsContent) {
+
+    // TODO: finalize
+    const newPen = {
+        "userId": userId,
+        "penName": penName,
+        "cssContent": cssContent,
+        "jsContent": jsContent,
+        "htmlContent": htmlContent
+    }
+
+    $.post('/pen', newPen).then((data) => {
+        console.log(data);
+    }).catch(error => {
+        // Handle error
+    })
+
+}
+
+function updatePenContent(penId, penName, htmlContent, cssContent, jsContent) {
+
+     // TODO: finalize
+     const updatedPen = {
+        "penId": penId,
+        "penName": penName,
+        "cssContent": cssContent,
+        "jsContent": jsContent,
+        "htmlContent": htmlContent
+    }
+
+    $.put(`/pen/${penId}`, updatedPen).then((data) => {
+        console.log(data);
+    }).catch(error => {
+        // Handle error
+    })
 }
 
 function monaco_initializeEditors() {
@@ -121,6 +159,29 @@ function updateForResize() {
 }
 
 $(function () {
+
+     // Add a "put" and "delete" shortcut since it's already supported.
+     jQuery.each(["put", "delete"], function (i, method) {
+
+
+        jQuery[method] = function (url, data, callback, type) {
+            if (jQuery.isFunction(data)) {
+                type = type || callback;
+                callback = data;
+                data = undefined;
+            }
+
+            // GET/POST shortcuts are already supported. 
+            // We'll add 2 additional dataTypes when we call put/delete.
+            return jQuery.ajax({
+                url: url,
+                type: method,
+                dataType: type,
+                data: data,
+                success: callback
+            });
+        };
+    });
 
     $('.dropdown-trigger').dropdown();
     $('.modal').modal();
@@ -183,7 +244,6 @@ $(function () {
     });
 
     monaco_configure();
-    monaco_loadContentFromRemote();
     monaco_initializeEditors();
 
 });

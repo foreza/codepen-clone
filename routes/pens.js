@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var penUtil = require('../dbUtils/penUtils')
 
-
 const penLimit = 50;
 
 // Get Pen given a pen ID
