@@ -4,14 +4,16 @@
 ## Project Requirements:
 * PostGres (recommended: v12+)
 * Node.js (recommended: v12.14.+)
+* (Windows only) win-node-env: https://github.com/laggingreflex/win-node-env
 
 
 ## Run Development environment
 
 #### Create PostGres db:  
 * DB Name: **codepen-dev**
-* user: postgres
-* pass: (none)
+
+Remember to update your `config.json` with the correct DB name.
+If you don't have a config, initialize with: `sequelize init`
 
 
 #### Run commands:  
@@ -25,8 +27,7 @@ npm start
 
 #### Create PostGres db:  
 * DB Name: **codepen-test** 
-* user: postgres
-* pass: (none)
+
 
 #### Run commands:  
 
@@ -40,6 +41,10 @@ npm test
 ```
 
 Run front-end tests: 
+
+**Ensure that you have `testcafe` installed. Preferably globally. 
+https://www.npmjs.com/package/testcafe
+
 ```
 npm run fe-test
 ```
