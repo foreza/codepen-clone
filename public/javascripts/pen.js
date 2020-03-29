@@ -16,7 +16,7 @@ var htmlEditorContent;                          // Content for left monaco edito
 var cssEditorContent;                           // Content for center monaco editor
 var jsEditorContent;                            // Content for right monaco editor
 const timeBeforeEditorUpdate = 1000;            // Default time                     
-var updateTimerRef;                                 
+var updateTimerRef;
 
 // Monaco Editor config
 require.config({ paths: { 'vs': '/min/vs' } });
@@ -71,9 +71,11 @@ $(() => {
 
     // If 'pen' was provided, set content
     if (typeof pen !== 'undefined') {
-        setPenContentForMonaco(pen);
+        htmlEditorContent = pen.htmlContent;
+        cssEditorContent = pen.cssContent;
+        jsEditorContent = pen.jsContent;
     } else {
-        setPenContentForMonaco("","","");
+        htmlEditorContent = cssEditorContent = jsEditorContent = "";
     }
 
     // Render content provided from remote
@@ -114,14 +116,6 @@ function renderInIframe(content) {
     iFrame.document.write(content);
     iFrame.document.close();
 }
-
-
-function setPenContentForMonaco(pen) {
-    htmlEditorContent = pen.htmlContent;
-    cssEditorContent = pen.cssContent;
-    jsEditorContent = pen.jsContent;
-}
-
 
 // Pen API calls
 
