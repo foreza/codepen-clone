@@ -12,10 +12,10 @@ var tWidth;                                     // Global store temporary width 
 var leftEditor;                                 // Reference to left monaco editor
 var centerEditor;                               // Reference to center monaco editor
 var rightEditor;                                // Reference to right monaco editor
-var leftEditorContent;                          // Content for left monaco editor
-var centerEditorContent;                        // Content for center monaco editor
-var rightEditorContent;                         // Content for right monaco editor
-const timeBeforeEditorUpdate = 1000;              // Default time                     
+var htmlEditorContent;                          // Content for left monaco editor
+var cssEditorContent;                        // Content for center monaco editor
+var jsEditorContent;                         // Content for right monaco editor
+const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
 
 // Monaco Editor config
@@ -52,56 +52,60 @@ function monaco_configure() {
 
 
 function displayPenContent(htmlContent, cssContent, jsContent) {
-    leftEditorContent = [htmlContent].join('\n');
-    centerEditorContent = [cssContent].join('\n');
-    rightEditorContent = [jsContent].join('\n');
+    htmlEditorContent = [htmlContent].join('\n');
+    cssEditorContent = [cssContent].join('\n');
+    jsEditorContent = [jsContent].join('\n');
 }
 
 
 // Pen API calls  - to finish
 
-function getPenForUser(userId, penId) {
+function getPenForUser(penId) {
+
     // TODO: implement
-    $.get(`/${userId}/pen/${penId}`).then((data) => {
-        console.log(data);
+    $.get(`/pens/${penId}`, (data) => {
+
+        // undo any special encode/decoding we've done 
+        const html = util_decodeSingleQuote(data.htmlContent);
+        const css = util_decodeSingleQuote(data.cssContent);
+        const js = util_decodeSingleQuote(data.jsContent);
+
+        displayPenContent(html, css, js);
     }).catch(error => {
-        alert(`${error.responseText} No valid account found with the provided information. `);
+        alert(`${error.responseText} No valid pen found with the provided information. `);
     })
 }
 
 
 function createNewPen(userId, penName, htmlContent, cssContent, jsContent) {
 
-    // TODO: finalize
-    const newPen = {
-        "userId": userId,
-        "penName": penName,
-        "cssContent": cssContent,
-        "jsContent": jsContent,
-        "htmlContent": htmlContent
+    var newPen = {
+        userId: userId,
+        penName: penName,
+        cssContent: util_encodeSingleQuote(cssContent),
+        jsContent: util_encodeSingleQuote(jsContent),
+        htmlContent: util_encodeSingleQuote(htmlContent)
     }
 
-    $.post('/pen', newPen).then((data) => {
-        console.log(data);
-    }).catch(error => {
-        // Handle error
+    $.post('/pens', newPen, (data) => {
+        window.location.href = `/${userId}/pen/${data.penId}`;
     })
 
 }
 
 function updatePenContent(penId, penName, htmlContent, cssContent, jsContent) {
 
-     // TODO: finalize
-     const updatedPen = {
-        "penId": penId,
-        "penName": penName,
-        "cssContent": cssContent,
-        "jsContent": jsContent,
-        "htmlContent": htmlContent
+ 
+    const updatedPen = {
+        penId: penId,
+        penName: penName,
+        cssContent: util_encodeSingleQuote(cssContent),
+        jsContent: util_encodeSingleQuote(jsContent),
+        htmlContent: util_encodeSingleQuote(htmlContent)
     }
 
-    $.put(`/pen/${penId}`, updatedPen).then((data) => {
-        console.log(data);
+    $.put(`/pens/${penId}`, updatedPen, (data) => {
+        // TODO
     }).catch(error => {
         // Handle error
     })
@@ -112,36 +116,36 @@ function monaco_initializeEditors() {
     require(['vs/editor/editor.main'], () => {
 
         leftEditor = monaco.editor.create(document.getElementById('editor-1'), {
-            value: leftEditorContent,
+            value: htmlEditorContent,
             language: 'html',
             automaticLayout: true
         });
 
         centerEditor = monaco.editor.create(document.getElementById('editor-2'), {
-            value: centerEditorContent,
+            value: cssEditorContent,
             language: 'css',
             automaticLayout: true
 
         });
 
         rightEditor = monaco.editor.create(document.getElementById('editor-3'), {
-            value: rightEditorContent,
+            value: jsEditorContent,
             language: 'javascript',
             automaticLayout: true
         });
 
         leftEditor.onDidChangeModelContent(e => {
-            leftEditorContent = leftEditor.getValue();
+            htmlEditorContent = leftEditor.getValue();
             handleEditorUpdate();
         })
 
         centerEditor.onDidChangeModelContent(e => {
-            centerEditorContent = centerEditor.getValue();
+            cssEditorContent = centerEditor.getValue();
             handleEditorUpdate();
         })
 
         rightEditor.onDidChangeModelContent(e => {
-            rightEditorContent = rightEditor.getValue();
+            jsEditorContent = rightEditor.getValue();
             handleEditorUpdate();
         })
     });
@@ -158,43 +162,14 @@ function updateForResize() {
     monaco_refreshContent();
 }
 
-$(function () {
-
-     // Add a "put" and "delete" shortcut since it's already supported.
-     jQuery.each(["put", "delete"], function (i, method) {
-
-
-        jQuery[method] = function (url, data, callback, type) {
-            if (jQuery.isFunction(data)) {
-                type = type || callback;
-                callback = data;
-                data = undefined;
-            }
-
-            // GET/POST shortcuts are already supported. 
-            // We'll add 2 additional dataTypes when we call put/delete.
-            return jQuery.ajax({
-                url: url,
-                type: method,
-                dataType: type,
-                data: data,
-                success: callback
-            });
-        };
-    });
-
-    $('.dropdown-trigger').dropdown();
-    $('.modal').modal();
-    $('.tabs').tabs();
+function setupMonacoResizing() {
 
     leftAnchor = $("#editor-resize-1");
     rightAnchor = $("#editor-resize-2");
     bottomAnchor = $("#results-resize");
-
     leftPane = $("#editor-1");
     centerPane = $("#editor-2");
     rightPane = $("#editor-3");
-
     editorPane = $("#editor-group");
     bottomPane = $("#result-group");
 
@@ -243,10 +218,70 @@ $(function () {
         }
     });
 
+}
+
+$(() => {
+
+
+    if (typeof penId !== 'undefined') {
+        getPenForUser(penId);
+    }
+
+    // Add a "put" and "delete" shortcut since it's already supported.
+    jQuery.each(["put", "delete"], function (i, method) {
+
+
+        jQuery[method] = function (url, data, callback, type) {
+            if (jQuery.isFunction(data)) {
+                type = type || callback;
+                callback = data;
+                data = undefined;
+            }
+
+            // GET/POST shortcuts are already supported. 
+            // We'll add 2 additional dataTypes when we call put/delete.
+            return jQuery.ajax({
+                url: url,
+                type: method,
+                dataType: type,
+                data: data,
+                success: callback
+            });
+        };
+    });
+
+    $('.dropdown-trigger').dropdown();
+    $('.modal').modal();
+    $('.tabs').tabs();
+
+    // Pen creation/saving logic 
+    $("#save-pen").click(() => {
+        if (typeof penId !== 'undefined') {
+            // TODO: Change this to actually reflect the title edit / change
+            updatePenContent(penId, "i modified dis", htmlEditorContent, cssEditorContent, jsEditorContent);
+        } else {
+            // TODO: Change this to actually do title edit / change
+            createNewPen(userId, "default name", htmlEditorContent, cssEditorContent, jsEditorContent);
+        }
+
+    });
+
+    setupMonacoResizing();
     monaco_configure();
     monaco_initializeEditors();
 
 });
+
+
+function util_encodeSingleQuote(string){
+    return string.replace(/'/g, "%27");
+}
+
+function util_decodeSingleQuote(string){
+    return string.replace(/%27/g, "'");
+}
+
+
 
 
 

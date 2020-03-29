@@ -11,7 +11,7 @@ router.get('/:id', async (req, res, next) => {
     if (!pen) {
       res.sendStatus(404);
     } else {
-      res.json(pen);
+      res.json(pen[0]);
     }
 });
 

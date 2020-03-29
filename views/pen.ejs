@@ -32,7 +32,7 @@
             <div id="pen-view-options" class="right-align">
                 <button id="" class="btn"><i class="material-icons">favorite</i>
                 </button>
-                <button id="" class="btn"><i class="material-icons">cloud</i>Save
+                <button id="save-pen" class="btn"><i class="material-icons">cloud</i>Save
                 </button>
                 <button id="" href="#pen-settings-modal" class="btn modal-trigger"><i class="material-icons">settings</i>Settings
                 </button>
@@ -211,10 +211,24 @@
 
 
     <footer>
+
         <script type="text/javascript" src="/javascripts/jquery-3.4.1.js"></script>
         <script type="text/javascript" src="/javascripts/materialize.js"></script>
         <script type="text/javascript" src="/min/vs/loader.js"></script>
+
+        <% if (userId) { %>
+            <script>
+               const userId = <%= userId %>            
+            </script>
+          <% } %>
+          <% if (penId) { %>
+            <script>
+               const penId = <%= penId %>            
+            </script>
+          <% } %>
+
         <script type="text/javascript" src="/javascripts/pen.js"></script>
+    
     </footer>
 
 

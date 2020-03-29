@@ -8,7 +8,7 @@ VALUES (:userId, :penName, :cssContent, :jsContent,  :htmlContent)
 RETURNING *;`
 util.addNewPen = async (pen) => {
     const ret = await db.sequelize.query(addNewPenQuery, {
-        replacements: { ...pen, cssContent: "", jsContent: "",  htmlContent: ""},
+        replacements: { ...pen},
         type: db.sequelize.QueryTypes.INSERT
     });
 

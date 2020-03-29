@@ -4,7 +4,7 @@ var collections = require('../middleware/collections')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.redirect('/dashboard');
 });
 
 router.get('/logout', function (req, res, next) {
@@ -28,14 +28,15 @@ router.get('/dashboard', [collections.checkUserExists, collections.checkAuthStat
 });
 
 /* GET Pen page (for new pens) */
-router.get('/pen', [collections.checkUserExists, collections.checkAuthState], function(req, res, next) {
-  res.render('pen', { title: 'Pen' });
+router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (req, res, next) => {
+  res.render('pen', { title: 'Pen', userId: req.session.user.id, penId: null});
+});
+
+/* GET Pen page (for existing pen) */
+router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.checkAuthState],  function (req, res, next) {
+  res.render('pen', { title: 'Pen', userId: req.session.user.id, penId: req.params.penId});
 });
 
 
-/* GET Pen page (for existing pen) */
-router.get('/:userId/pen/:penId'), (req, res, next) => {
-
-}
 
 module.exports = router;
