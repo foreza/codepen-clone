@@ -53,3 +53,15 @@ npm run fe-test
 ## Run Production environment
 
 
+
+
+## Troubleshooting:
+
+On Windows - if port 3000 is already in use by prior process , open cmd and run:
+```
+taskkill /F /IM node.exe
+```
+
+On Windows - if `nodemon` doesn't work...
+
+TBD
