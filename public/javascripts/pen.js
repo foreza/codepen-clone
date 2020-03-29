@@ -13,15 +13,76 @@ var leftEditor;                                 // Reference to left monaco edit
 var centerEditor;                               // Reference to center monaco editor
 var rightEditor;                                // Reference to right monaco editor
 var htmlEditorContent;                          // Content for left monaco editor
-var cssEditorContent;                        // Content for center monaco editor
-var jsEditorContent;                         // Content for right monaco editor
+var cssEditorContent;                           // Content for center monaco editor
+var jsEditorContent;                            // Content for right monaco editor
 const timeBeforeEditorUpdate = 1000;            // Default time                     
-var updateTimerRef;
+var updateTimerRef;                                 
 
 // Monaco Editor config
 require.config({ paths: { 'vs': '/min/vs' } });
 
-function formatDocument(html, css, javascript) {
+
+$(() => {
+
+    // Add a "put" and "delete" shortcut since it's already supported.
+    jQuery.each(["put", "delete"], function (i, method) {
+        jQuery[method] = function (url, data, callback, type) {
+            if (jQuery.isFunction(data)) {
+                type = type || callback;
+                callback = data;
+                data = undefined;
+            }
+
+            // GET/POST shortcuts are already supported. 
+            // We'll add 2 additional dataTypes when we call put/delete.
+            return jQuery.ajax({
+                url: url,
+                type: method,
+                dataType: type,
+                data: data,
+                success: callback
+            });
+        };
+    });
+
+    // Materialize component init
+    $('.dropdown-trigger').dropdown();
+    $('.modal').modal();
+    $('.tabs').tabs();
+
+    // Pen creation/saving logic 
+    $("#save-pen").click(() => {
+
+        if (typeof penId !== 'undefined') {
+            if (pen && pen.penId) {
+                // TODO: Change this to actually reflect the title edit / change
+                putPenUpdate(pen.penId, "i modified dis", htmlEditorContent, cssEditorContent, jsEditorContent);
+            }
+        } else {
+            // TODO: Change this to actually do title edit / change
+            postNewPen(userId, "todothis", htmlEditorContent, cssEditorContent, jsEditorContent);
+        }
+
+    });
+
+    // Setup Monaco Editor view
+    monaco_setupMonacoResizing();
+    monaco_configure();
+
+    // If 'pen' was provided, set content
+    if (typeof pen !== 'undefined') {
+        setPenContentForMonaco(pen);
+    } else {
+        setPenContentForMonaco("","","");
+    }
+
+    // Render content provided from remote
+    monaco_initializeEditors();
+
+});
+
+
+function returnRenderContentForiFrame(html, css, javascript) {
     return `<html>
                 <head>
                 <style>${css}</style>
@@ -40,7 +101,7 @@ function handleEditorUpdate() {
 }
 
 function refreshRenderContent() {
-    renderInIframe(formatDocument(
+    renderInIframe(returnRenderContentForiFrame(
         leftEditor.getValue(),
         centerEditor.getValue(),
         rightEditor.getValue()));
@@ -54,11 +115,6 @@ function renderInIframe(content) {
     iFrame.document.close();
 }
 
-function monaco_configure() {
-    require(['vs/editor/editor.main'], () => {
-        monaco.editor.setTheme('vs-dark');
-    });
-}
 
 function setPenContentForMonaco(pen) {
     htmlEditorContent = pen.htmlContent;
@@ -67,24 +123,7 @@ function setPenContentForMonaco(pen) {
 }
 
 
-// Pen API calls  - to finish
-
-// function getPenForUser(penId) {
-
-//     // TODO: implement
-//     $.get(`/pens/${penId}`, (data) => {
-
-//         // undo any special encode/decoding we've done 
-//         const html = util_decodeSingleQuote(data.htmlContent);
-//         const css = util_decodeSingleQuote(data.cssContent);
-//         const js = util_decodeSingleQuote(data.jsContent);
-
-//         displayPenContent(html, css, js);
-//     }).catch(error => {
-//         alert(`${error.responseText} No valid pen found with the provided information. `);
-//     })
-// }
-
+// Pen API calls
 
 function postNewPen(userId, penName, htmlContent, cssContent, jsContent) {
 
@@ -120,84 +159,13 @@ function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent) {
 }
 
 
-
-$(() => {
-
-
-    // if (typeof penId !== 'undefined') {
-    //     getPenForUser(penId);
-    // }
-
-    // Add a "put" and "delete" shortcut since it's already supported.
-    jQuery.each(["put", "delete"], function (i, method) {
-
-
-        jQuery[method] = function (url, data, callback, type) {
-            if (jQuery.isFunction(data)) {
-                type = type || callback;
-                callback = data;
-                data = undefined;
-            }
-
-            // GET/POST shortcuts are already supported. 
-            // We'll add 2 additional dataTypes when we call put/delete.
-            return jQuery.ajax({
-                url: url,
-                type: method,
-                dataType: type,
-                data: data,
-                success: callback
-            });
-        };
-    });
-
-    $('.dropdown-trigger').dropdown();
-    $('.modal').modal();
-    $('.tabs').tabs();
-
-    // Pen creation/saving logic 
-    $("#save-pen").click(() => {
-
-        if (typeof penId !== 'undefined') {
-            if (pen && pen.penId) {
-                // TODO: Change this to actually reflect the title edit / change
-                putPenUpdate(pen.penId, "i modified dis", htmlEditorContent, cssEditorContent, jsEditorContent);
-            }
-        } else {
-            // TODO: Change this to actually do title edit / change
-            postNewPen(userId, "todothis", htmlEditorContent, cssEditorContent, jsEditorContent);
-        }
-
-    });
-
-    setupMonacoResizing();
-    monaco_configure();
-
-    if (typeof penId !== 'undefined') {
-        setPenContentForMonaco(pen);
-    }
-
-    monaco_initializeEditors();
-
-});
-
-
-// function util_encodeSingleQuote(string){
-//     return string.replace(/'/g, "%27");
-// }
-
-// function util_decodeSingleQuote(string){
-//     return string.replace(/%27/g, "'");
-// }
-
-
-
-
-
-
-
-
 // Monaco Specific functions:
+
+function monaco_configure() {
+    require(['vs/editor/editor.main'], () => {
+        monaco.editor.setTheme('vs-dark');
+    });
+}
 
 function monaco_initializeEditors() {
 
@@ -246,11 +214,11 @@ function monaco_refreshContent() {
     rightEditor.layout();
 }
 
-function updateForResize() {
+function monaco_resizeWindow() {
     monaco_refreshContent();
 }
 
-function setupMonacoResizing() {
+function monaco_setupMonacoResizing() {
 
     leftAnchor = $("#editor-resize-1");
     rightAnchor = $("#editor-resize-2");
@@ -302,7 +270,7 @@ function setupMonacoResizing() {
                 bottomPane.height(`${val}px`);
                 editorPane.height(`${e.pageY}px`);
             }
-            updateForResize();
+            monaco_resizeWindow();
         }
     });
 
