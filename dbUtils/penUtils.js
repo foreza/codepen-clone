@@ -31,7 +31,7 @@ util.updatePenContentByPenID = async (pen) => {
 
 const getPenByPenIDQuery = (id) => { return `SELECT * FROM "Pens" WHERE ("penId"=${id});` };
 util.getPenByPenID = (id) => db.sequelize.query(getPenByPenIDQuery(id), {
-    type: db.sequelize.QueryTypes.SELECT
+    type: db.sequelize.QueryTypes.SELECT,
 });
 
 

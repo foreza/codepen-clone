@@ -22,7 +22,14 @@ var updateTimerRef;
 require.config({ paths: { 'vs': '/min/vs' } });
 
 function formatDocument(html, css, javascript) {
-    return `<html><head><style>${css}</style><body>${html}<script>${javascript}<\/script></body></html>`;
+    return `<html>
+                <head>
+                <style>${css}</style>
+                </head>
+                <body>${html}
+                    <script>${javascript}</script>
+                </body>
+            </html>`;
 }
 
 function handleEditorUpdate() {
@@ -33,7 +40,10 @@ function handleEditorUpdate() {
 }
 
 function refreshRenderContent() {
-    renderInIframe(formatDocument(leftEditor.getValue(), centerEditor.getValue(), rightEditor.getValue()));
+    renderInIframe(formatDocument(
+        leftEditor.getValue(),
+        centerEditor.getValue(),
+        rightEditor.getValue()));
 }
 
 function renderInIframe(content) {
@@ -50,41 +60,40 @@ function monaco_configure() {
     });
 }
 
-
-function displayPenContent(htmlContent, cssContent, jsContent) {
-    htmlEditorContent = [htmlContent].join('\n');
-    cssEditorContent = [cssContent].join('\n');
-    jsEditorContent = [jsContent].join('\n');
+function setPenContentForMonaco(pen) {
+    htmlEditorContent = pen.htmlContent;
+    cssEditorContent = pen.cssContent;
+    jsEditorContent = pen.jsContent;
 }
 
 
 // Pen API calls  - to finish
 
-function getPenForUser(penId) {
+// function getPenForUser(penId) {
 
-    // TODO: implement
-    $.get(`/pens/${penId}`, (data) => {
+//     // TODO: implement
+//     $.get(`/pens/${penId}`, (data) => {
 
-        // undo any special encode/decoding we've done 
-        const html = util_decodeSingleQuote(data.htmlContent);
-        const css = util_decodeSingleQuote(data.cssContent);
-        const js = util_decodeSingleQuote(data.jsContent);
+//         // undo any special encode/decoding we've done 
+//         const html = util_decodeSingleQuote(data.htmlContent);
+//         const css = util_decodeSingleQuote(data.cssContent);
+//         const js = util_decodeSingleQuote(data.jsContent);
 
-        displayPenContent(html, css, js);
-    }).catch(error => {
-        alert(`${error.responseText} No valid pen found with the provided information. `);
-    })
-}
+//         displayPenContent(html, css, js);
+//     }).catch(error => {
+//         alert(`${error.responseText} No valid pen found with the provided information. `);
+//     })
+// }
 
 
-function createNewPen(userId, penName, htmlContent, cssContent, jsContent) {
+function postNewPen(userId, penName, htmlContent, cssContent, jsContent) {
 
     var newPen = {
         userId: userId,
         penName: penName,
-        cssContent: util_encodeSingleQuote(cssContent),
-        jsContent: util_encodeSingleQuote(jsContent),
-        htmlContent: util_encodeSingleQuote(htmlContent)
+        cssContent: cssContent,
+        jsContent: jsContent,
+        htmlContent: htmlContent
     }
 
     $.post('/pens', newPen, (data) => {
@@ -93,15 +102,14 @@ function createNewPen(userId, penName, htmlContent, cssContent, jsContent) {
 
 }
 
-function updatePenContent(penId, penName, htmlContent, cssContent, jsContent) {
+function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent) {
 
- 
     const updatedPen = {
         penId: penId,
         penName: penName,
-        cssContent: util_encodeSingleQuote(cssContent),
-        jsContent: util_encodeSingleQuote(jsContent),
-        htmlContent: util_encodeSingleQuote(htmlContent)
+        cssContent: cssContent,
+        jsContent: jsContent,
+        htmlContent: htmlContent
     }
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
@@ -110,6 +118,86 @@ function updatePenContent(penId, penName, htmlContent, cssContent, jsContent) {
         // Handle error
     })
 }
+
+
+
+$(() => {
+
+
+    // if (typeof penId !== 'undefined') {
+    //     getPenForUser(penId);
+    // }
+
+    // Add a "put" and "delete" shortcut since it's already supported.
+    jQuery.each(["put", "delete"], function (i, method) {
+
+
+        jQuery[method] = function (url, data, callback, type) {
+            if (jQuery.isFunction(data)) {
+                type = type || callback;
+                callback = data;
+                data = undefined;
+            }
+
+            // GET/POST shortcuts are already supported. 
+            // We'll add 2 additional dataTypes when we call put/delete.
+            return jQuery.ajax({
+                url: url,
+                type: method,
+                dataType: type,
+                data: data,
+                success: callback
+            });
+        };
+    });
+
+    $('.dropdown-trigger').dropdown();
+    $('.modal').modal();
+    $('.tabs').tabs();
+
+    // Pen creation/saving logic 
+    $("#save-pen").click(() => {
+
+        if (typeof penId !== 'undefined') {
+            if (pen && pen.penId) {
+                // TODO: Change this to actually reflect the title edit / change
+                putPenUpdate(pen.penId, "i modified dis", htmlEditorContent, cssEditorContent, jsEditorContent);
+            }
+        } else {
+            // TODO: Change this to actually do title edit / change
+            postNewPen(userId, "todothis", htmlEditorContent, cssEditorContent, jsEditorContent);
+        }
+
+    });
+
+    setupMonacoResizing();
+    monaco_configure();
+
+    if (typeof penId !== 'undefined') {
+        setPenContentForMonaco(pen);
+    }
+
+    monaco_initializeEditors();
+
+});
+
+
+// function util_encodeSingleQuote(string){
+//     return string.replace(/'/g, "%27");
+// }
+
+// function util_decodeSingleQuote(string){
+//     return string.replace(/%27/g, "'");
+// }
+
+
+
+
+
+
+
+
+// Monaco Specific functions:
 
 function monaco_initializeEditors() {
 
@@ -219,72 +307,3 @@ function setupMonacoResizing() {
     });
 
 }
-
-$(() => {
-
-
-    if (typeof penId !== 'undefined') {
-        getPenForUser(penId);
-    }
-
-    // Add a "put" and "delete" shortcut since it's already supported.
-    jQuery.each(["put", "delete"], function (i, method) {
-
-
-        jQuery[method] = function (url, data, callback, type) {
-            if (jQuery.isFunction(data)) {
-                type = type || callback;
-                callback = data;
-                data = undefined;
-            }
-
-            // GET/POST shortcuts are already supported. 
-            // We'll add 2 additional dataTypes when we call put/delete.
-            return jQuery.ajax({
-                url: url,
-                type: method,
-                dataType: type,
-                data: data,
-                success: callback
-            });
-        };
-    });
-
-    $('.dropdown-trigger').dropdown();
-    $('.modal').modal();
-    $('.tabs').tabs();
-
-    // Pen creation/saving logic 
-    $("#save-pen").click(() => {
-        if (typeof penId !== 'undefined') {
-            // TODO: Change this to actually reflect the title edit / change
-            updatePenContent(penId, "i modified dis", htmlEditorContent, cssEditorContent, jsEditorContent);
-        } else {
-            // TODO: Change this to actually do title edit / change
-            createNewPen(userId, "default name", htmlEditorContent, cssEditorContent, jsEditorContent);
-        }
-
-    });
-
-    setupMonacoResizing();
-    monaco_configure();
-    monaco_initializeEditors();
-
-});
-
-
-function util_encodeSingleQuote(string){
-    return string.replace(/'/g, "%27");
-}
-
-function util_decodeSingleQuote(string){
-    return string.replace(/%27/g, "'");
-}
-
-
-
-
-
-
-
-

@@ -23,10 +23,10 @@
             <img id="pen-logo" src="/images/codepen-logo.svg" />
             <div id="pen-info">
                 <div id="pen-name-editable" class="valign-wrapper">
-                    <span>thitle <a href="#"><i class="material-icons">edit</i></a></span>
+                    <span><%= title %> <a href="#"><i class="material-icons">edit</i></a></span>
                 </div>
                 <div id="pen-author-name">
-                    <span>A PEN BY <a href="#">doki</a></span>
+                    <span>A PEN BY <a href="#"><%= userId %></a></span>
                 </div>
             </div>
             <div id="pen-view-options" class="right-align">
@@ -174,7 +174,7 @@
                     <li><a href="#!">Dashboard</a></li>
                     <li><a href="#!">Profile</a></li>
                     <li class="divider" tabindex="-1"></li>
-                    <li><a href="#!">New Pen</a></li>
+                    <li><a href="/pen">New Pen</a></li>
                     <li class="divider" tabindex="-1"></li>
                     <li><a href="#!"><i class="material-icons">view_module</i>Settings</a></li>
                     <li><a href="/logout"><i class="material-icons">cloud</i>Log out</a></li>
@@ -218,12 +218,12 @@
 
         <% if (userId) { %>
             <script>
-               const userId = <%= userId %>            
+               const userId = <%= userId %>;            
             </script>
           <% } %>
-          <% if (penId) { %>
+          <% if (pen) { %>
             <script>
-               const penId = <%= penId %>            
+               const pen = JSON.parse('<%- pen %>');
             </script>
           <% } %>
 

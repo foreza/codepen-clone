@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var collections = require('../middleware/collections')
+var penUtil = require('../dbUtils/penUtils')
+
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.redirect('/dashboard');
 });
 
@@ -13,28 +15,61 @@ router.get('/logout', function (req, res, next) {
 });
 
 /* GET signup page. */
-router.get('/signup', function(req, res, next) {
+router.get('/signup', function (req, res, next) {
   res.render('signup', { title: 'Signup' });
 });
 
 /* GET Login page. */
-router.get('/login', function(req, res, next) {
+router.get('/login', function (req, res, next) {
   res.render('login', { title: 'Login' });
 });
 
 /* GET Dashboard page. */
-router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function(req, res, next) {
+router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function (req, res, next) {
   res.render('dashboard', { title: `Dashboard for:  ${req.session.user.fullName}`, userId: `${req.session.user.id}` });
 });
 
 /* GET Pen page (for new pens) */
 router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (req, res, next) => {
-  res.render('pen', { title: 'Pen', userId: req.session.user.id, penId: null});
+  
+  let renderParams = {
+    "userId": req.session.user.id,
+    "title": 'New Pen',
+    "pen": null
+  }
+
+  res.render('pen', renderParams);
 });
 
 /* GET Pen page (for existing pen) */
-router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.checkAuthState],  function (req, res, next) {
-  res.render('pen', { title: 'Pen', userId: req.session.user.id, penId: req.params.penId});
+router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
+
+  const pen = (await penUtil.getPenByPenID(req.params.penId))[0];
+
+  if (!pen) {
+    res.sendStatus(404);
+  } else {
+
+    let renderParams = {
+      "userId": req.session.user.id,
+      "title": pen.penName,
+      "pen": JSON.stringify(pen)
+    }
+
+    console.log("rneder param:", renderParams);
+      
+
+    res.render('pen', renderParams);
+    // res.render('pen', { title: 'Pen', userId: req.session.user.id, penId: req.params.penId});
+  }
+
+
+});
+
+
+// TODO: 
+router.get('/:userId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
+  res.redirect('/dashboard');
 });
 
 
