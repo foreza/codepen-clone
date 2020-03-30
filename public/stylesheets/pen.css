@@ -213,3 +213,18 @@ div.horizontal-resize-control {
     background: #47cf73;
     color: #000;
 }
+
+#pen-name-edit-container{
+    display: none;
+    width: 200px;
+}
+
+input#penName {
+    margin: 0px;
+    border: none;
+    border-radius: 0;
+    height: 15px;
+    line-height: 15px;
+    font-size: 15px;
+    width: 150px;
+}

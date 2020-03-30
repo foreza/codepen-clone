@@ -23,7 +23,15 @@
             <img id="pen-logo" src="/images/codepen-logo.svg" />
             <div id="pen-info">
                 <div id="pen-name-editable" class="valign-wrapper">
-                    <span><%= title %> <a href="#"><i class="material-icons">edit</i></a></span>
+                    <div id="pen-name-show-container">
+                        <span id="pen-name-value"><%= title %> 
+                        </span>
+                        <a id="edit-pen-name" href="#"><i class="material-icons">edit</i></a>
+                    </div>
+                    <div id="pen-name-edit-container">
+                        <input minlength="1" name="penName" id="penName" maxlength="30" type="text" value="<%= title %>" required="true" class="validate"/>
+                        <span><a id="save-pen-name" href="#"><i class="material-icons">save</i></a></span>
+                    </div>
                 </div>
                 <div id="pen-author-name">
                     <span>A PEN BY <a href="#"><%= userId %></a></span>
@@ -224,7 +232,7 @@
           <% } %>
           <% if (pen) { %>
             <script>
-               const pen = <%- pen %>;
+               let pen = <%- pen %>;
             </script>
           <% } %>
 

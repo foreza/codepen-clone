@@ -15,6 +15,12 @@ var rightEditor;                                // Reference to right monaco edi
 var htmlEditorContent;                          // Content for left monaco editor
 var cssEditorContent;                           // Content for center monaco editor
 var jsEditorContent;                            // Content for right monaco editor
+let editingName = false;
+let penShowContainer;
+let penEditContainer;
+let penNameInput;
+let penNameView;
+
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
 
@@ -50,17 +56,46 @@ $(() => {
     $('.modal').modal();
     $('.tabs').tabs();
 
+    editingName = false;
+    penShowContainer = $("#pen-name-show-container");
+    penEditContainer = $("#pen-name-edit-container");
+    penNameInput = $("#penName");
+    penNameView = $("#pen-name-value");
+
+    // Pen update name - change state
+    $("#edit-pen-name").click(() => {
+        if (!editingName) {
+            editingName = true;
+            penShowContainer.hide();
+            penEditContainer.show();
+        }
+    })
+
+    // Pen update name - do a PUT
+    $("#save-pen-name").click(() => {
+        if (editingName) {
+            editingName = false;
+            const updatedPenName = penNameInput.val();
+
+            if (typeof pen !== 'undefined' && pen && pen.penId) {
+                penNameView.text(updatedPenName);
+                putPenUpdate(pen.penId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent);
+            } else {
+                postNewPen(userId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent);
+            }
+            penShowContainer.show();
+            penEditContainer.hide();
+        }
+
+    })
+
     // Pen creation/saving logic 
     $("#save-pen").click(() => {
 
-        if (typeof penId !== 'undefined') {
-            if (pen && pen.penId) {
-                // TODO: Change this to actually reflect the title edit / change
-                putPenUpdate(pen.penId, "i modified dis", htmlEditorContent, cssEditorContent, jsEditorContent);
-            }
+        if (typeof penId !== 'undefined' && pen && pen.penId) {
+            putPenUpdate(pen.penId, pen.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
         } else {
-            // TODO: Change this to actually do title edit / change
-            postNewPen(userId, "todothis", htmlEditorContent, cssEditorContent, jsEditorContent);
+            postNewPen(userId, pen.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
         }
 
     });
@@ -146,7 +181,7 @@ function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent) {
     }
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
-        // TODO
+        pen = data;
     }).catch(error => {
         // Handle error
     })

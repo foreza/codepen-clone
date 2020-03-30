@@ -37,7 +37,6 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
     "title": 'New Pen',
     "pen": null
   }
-
   res.render('pen', renderParams);
 });
 
@@ -56,11 +55,7 @@ router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.chec
       "pen": JSON.stringify(pen)
     }
 
-    console.log("rneder param:", renderParams);
-      
-
     res.render('pen', renderParams);
-    // res.render('pen', { title: 'Pen', userId: req.session.user.id, penId: req.params.penId});
   }
 
 
