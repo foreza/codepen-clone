@@ -92,7 +92,7 @@ $(() => {
     // Pen creation/saving logic 
     $("#save-pen").click(() => {
 
-        if (typeof penId !== 'undefined' && pen && pen.penId) {
+        if (typeof pen !== 'undefined' && pen && pen.penId) {
             putPenUpdate(pen.penId, pen.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
         } else {
             postNewPen(userId, pen.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
@@ -105,7 +105,7 @@ $(() => {
     monaco_configure();
 
     // If 'pen' was provided, set content
-    if (typeof pen !== 'undefined') {
+    if (typeof pen !== 'undefined' && pen && pen.penId) {
         htmlEditorContent = pen.htmlContent;
         cssEditorContent = pen.cssContent;
         jsEditorContent = pen.jsContent;

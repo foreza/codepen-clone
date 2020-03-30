@@ -34,7 +34,7 @@ router.put('/:id', async (req, res, next) => {
     if (!updatedPen) {
       res.sendStatus(404);
     } else {
-      res.json(updatedPen);
+      res.json(updatedPen[0][0]);
     }
 });
 
