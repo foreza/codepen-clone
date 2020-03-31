@@ -12,26 +12,27 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      cssContent: {
+      hashId: {
         allowNull: false,
-        type: Sequelize.TEXT
+        type: Sequelize.STRING
       },
-      jsContent: {
-        allowNull: false,
-        type: Sequelize.TEXT
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users', 
+          key: 'id', 
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
-      htmlContent: {
-        allowNull: false,
-        type: Sequelize.TEXT
+      numFavorites: {
+        type: Sequelize.INTEGER
       },
-      cssExternal: {
-        type: Sequelize.ARRAY(Sequelize.TEXT)
+      numComments: {
+        type: Sequelize.INTEGER
       },
-      htmlExternal: {
-        type: Sequelize.ARRAY(Sequelize.TEXT)
-      },
-      jsExternal: {
-        type: Sequelize.ARRAY(Sequelize.TEXT)
+      numViews: {
+        type: Sequelize.INTEGER
       }
     });
   },

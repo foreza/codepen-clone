@@ -4,17 +4,15 @@ module.exports = (sequelize, DataTypes) => {
     penId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
     penName: DataTypes.STRING,
-    cssContent: DataTypes.TEXT,
-    jsContent: DataTypes.TEXT,
-    htmlContent: DataTypes.TEXT,
-    cssExternal: DataTypes.ARRAY(DataTypes.TEXT),
-    htmlExternal: DataTypes.ARRAY(DataTypes.TEXT),
-    jsExternal: DataTypes.ARRAY(DataTypes.TEXT)
+    hashId: DataTypes.STRING,
+    numFavorites: DataTypes.INTEGER,
+    numComments: DataTypes.INTEGER,
+    numViews: DataTypes.INTEGER,
   }, {});
-  Pen.associate = function(models) {
-    // associations can be defined here
+  Pen.associate = function (models) {
     Pen.belongsTo(models.User);
-
   };
   return Pen;
 };
+
+
