@@ -29,6 +29,10 @@ module.exports = {
       },
       htmlHead: {
         type: Sequelize.STRING
+      }, 
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },
