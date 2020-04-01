@@ -20,7 +20,16 @@ If you don't have a config, initialize with: `sequelize init`
 
 ```
 npm install
+npm run dev-migration-down
+npm run dev-migration-up
 npm start 
+```
+
+*If you want to use some initial seed data for sample users/pens:*
+
+```
+npm run dev-seed-down
+npm run dev-seed-up
 ```
 
 ## Run Test environment
@@ -35,7 +44,7 @@ npm start
 npm install
 ```
 
-Run backend tests: 
+*Run backend tests: (test migrations will be done automatically) *
 ```
 npm test
 ```
