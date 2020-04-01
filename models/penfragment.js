@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     htmlHead: DataTypes.STRING
   }, {});
   PenFragment.associate = function(models) {
-    PenExternal.belongsTo(models.Pen);
+    PenFragment.belongsTo(models.Pen);
   };
   return PenFragment;
 };

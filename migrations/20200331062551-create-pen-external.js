@@ -11,11 +11,11 @@ module.exports = {
       penId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Pens', 
-          key: 'penId', 
+          model: 'Pens',
+          key: 'penId',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',      
+        onDelete: 'SET NULL',
       },
       externalType: {
         type: Sequelize.INTEGER,
@@ -29,5 +29,6 @@ module.exports = {
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('PenExternals');
+
   }
 };

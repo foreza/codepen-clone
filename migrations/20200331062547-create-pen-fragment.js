@@ -11,15 +11,18 @@ module.exports = {
       penId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Pens', 
-          key: 'penId', 
+          model: 'Pens',
+          key: 'penId',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',      
+        onDelete: 'SET NULL',
       },
       fragmentType: {
         type: Sequelize.INTEGER,
         allowNull: false,
+      },
+      body: {
+        type: Sequelize.STRING
       },
       htmlClass: {
         type: Sequelize.STRING
@@ -31,5 +34,6 @@ module.exports = {
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('PenFragments');
+
   }
 };
