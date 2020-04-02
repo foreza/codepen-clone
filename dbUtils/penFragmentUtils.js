@@ -28,11 +28,11 @@ const util = {};
 // RETURNING *;
 
 const createPenFragmentQuery = `INSERT INTO "PenFragments" ( 
-    "penId", "fragmentType", "body", "htmlClass", "htmlHead") 
-VALUES (:penId, :fragmentType,  :body, :htmlClass, :htmlHead)
+    "penId", "fragmentType", "body", "htmlClass", "htmlHead", "createdAt") 
+VALUES (:penId, :fragmentType,  :body, :htmlClass, :htmlHead, :createdAt)
 RETURNING *;`
 util.createPenFragment = async (fragment) => {
-    const ret = await db.sequelize.query(createPenFragment, {
+    const ret = await db.sequelize.query(createPenFragmentQuery, {
         replacements: { ...fragment},
         type: db.sequelize.QueryTypes.INSERT
     });
@@ -63,14 +63,14 @@ util.createPenFragment = async (fragment) => {
 // WHERE ("fragmentId"=1)
 // RETURNING *;
 
-const updatePenFragmentQuery = (update) => { return `UPDATE "PenFragments" 
-SET "body"='${update.body}, 
-htmlClass"='${update.htmlClass}', 
-"htmlHead"='${update.htmlHead} 
-WHERE ("fragmentId"=${update.fragmentId})
-RETURNING *;` };
+
+const updatePenFragmentQuery = `UPDATE "PenFragments" 
+SET "body"=:body, "htmlClass"=:htmlClass, "htmlHead"=:htmlHead
+WHERE ("fragmentId"=:fragmentId)
+RETURNING *;`
 util.updatePenFragment = async (update) => {
-    const ret = await db.sequelize.query(updatePenFragmentQuery(update), {
+    const ret = await db.sequelize.query(updatePenFragmentQuery, {
+        replacements: { ...update},
         type: db.sequelize.QueryTypes.UPDATE
     });
 
@@ -89,7 +89,7 @@ util.updatePenFragment = async (update) => {
 
 // SELECT * FROM "PenFragments" WHERE ("penId"=2);
 
-const getFragmentsByPenIdQuery = (penId) => { return `SELECT * FROM "PenFragments" WHERE ("penId"=${penId});` };
+const getFragmentsByPenIdQuery = (penId) => { return `SELECT * FROM "PenFragments" WHERE ("penId"=${penId}) ORDER BY "fragmentType" ASC;` };
 util.getFragmentsByPenId = (penId) => db.sequelize.query(getFragmentsByPenIdQuery(penId), {
     type: db.sequelize.QueryTypes.SELECT,
 });

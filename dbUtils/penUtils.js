@@ -60,7 +60,7 @@ util.addNewPen = async (pen) => {
 
 const updatePenInfoByPenIDQuery = (update) => {
     return `UPDATE "Pens" 
-SET "penName"='${update.penName}', "numFavorites"='${update.cssContent}', "numComments"='${update.jsContent}', "numViews"='${update.htmlContent}'
+SET "penName"='${update.penName}', "numFavorites"='${update.numFavorites}', "numComments"='${update.numComments}', "numViews"='${update.numViews}'
 WHERE ("penId"=${update.penId})
 RETURNING *;` };
 util.updatePenContentByPenID = async (update) => {
