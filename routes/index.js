@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var collections = require('../middleware/collections')
 var penUtil = require('../dbUtils/penUtils')
+var penFragmentUtil = require('../dbUtils/penFragmentUtils')
+
 
 
 /* GET home page. */
@@ -43,18 +45,27 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 /* GET Pen page (for existing pen) */
 router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
 
+ // Building around this
+  // const body = {
+  //   penInfo: pen[0],
+  //   penFragments: penFragments
+  // };
+
   const pen = (await penUtil.getPenByPenID(req.params.penId))[0];
 
   if (!pen) {
     res.sendStatus(404);
   } else {
-
+    const penFragments = await penFragmentUtil.getFragmentsByPenId(req.params.penId);
+    
     let renderParams = {
       "userId": req.session.user.id,
       "title": pen.penName,
-      "pen": JSON.stringify(pen)
+      "pen": {
+        "penInfo": JSON.stringify(pen),
+        "penFragments": JSON.stringify(penFragments)
+      }
     }
-
     res.render('pen', renderParams);
   }
 

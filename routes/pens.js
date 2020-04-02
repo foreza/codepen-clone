@@ -34,13 +34,6 @@ router.get('/user/:userId', async (req, res, next) => {
 
 // Update everything about a pen given a pen ID
 router.put('/:penId', async (req, res, next) => {
-  console.log("Update pen by this penId: ", req.params.penId);
-
-  // Building around this
-  // const body = {
-  //   penInfo: pen[0],
-  //   penFragments: penFragments
-  // };
 
   const updatedPen = await penUtil.updatePenContentByPenID(req.body.penInfo);
   if (!updatedPen || updatedPen.length <= 0) {
@@ -68,11 +61,8 @@ router.put('/:penId', async (req, res, next) => {
 router.post('/', [], async (req, res, next) => {
   console.log("Adding new pen. Req body: ", req.body);
 
-  // Building around this
-  // const body = {
-  //   penInfo: pen[0],
-  //   penFragments: penFragments
-  // };
+  // TODO: Generate the HASHID at this step. We'll do a temporary hashID for now.
+  req.body.penInfo.hashId = "t3mpt3mp";
 
   const pen = req.body.penInfo;
   const newPen = (await penUtil.addNewPen(pen))[0];

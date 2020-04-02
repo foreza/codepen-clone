@@ -77,9 +77,9 @@ $(() => {
             editingName = false;
             const updatedPenName = penNameInput.val();
 
-            if (typeof pen !== 'undefined' && pen && pen.penId) {
+            if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
                 penNameView.text(updatedPenName);
-                putPenUpdate(pen.penId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent);
+                putPenUpdate(penInfo.penId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent);
             } else {
                 postNewPen(userId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent);
             }
@@ -92,10 +92,10 @@ $(() => {
     // Pen creation/saving logic 
     $("#save-pen").click(() => {
 
-        if (typeof pen !== 'undefined' && pen && pen.penId) {
-            putPenUpdate(pen.penId, pen.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
+        if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
+            putPenUpdate(penInfo.penId, penInfo.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
         } else {
-            postNewPen(userId, pen.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
+            postNewPen(userId, penNameView.val(), htmlEditorContent, cssEditorContent, jsEditorContent);
         }
 
     });
@@ -105,10 +105,20 @@ $(() => {
     monaco_configure();
 
     // If 'pen' was provided, set content
-    if (typeof pen !== 'undefined' && pen && pen.penId) {
-        htmlEditorContent = pen.htmlContent;
-        cssEditorContent = pen.cssContent;
-        jsEditorContent = pen.jsContent;
+    if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
+        for (var i = 0; i < penFragments.length; ++i) {
+            switch (penFragments[i].fragmentType) {
+                case 0:
+                    htmlEditorContent = penFragments[i].body;
+                    break;
+                case 1:
+                    cssEditorContent = penFragments[i].body;
+                    break;
+                case 2:
+                    jsEditorContent = penFragments[i].body;
+                    break;
+            }
+        }
     } else {
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
     }
@@ -156,12 +166,34 @@ function renderInIframe(content) {
 
 function postNewPen(userId, penName, htmlContent, cssContent, jsContent) {
 
-    var newPen = {
-        userId: userId,
-        penName: penName,
-        cssContent: cssContent,
-        jsContent: jsContent,
-        htmlContent: htmlContent
+    const newPen = {
+        penInfo: {
+            userId: userId,
+            penName: penName,
+            numFavorites: 0,
+            numComments: 0,
+            numViews: 0
+        },
+        penFragments: [
+            {
+                fragmentType: 0,
+                body: htmlContent,
+                htmlClass: null,
+                htmlHead: null
+            },
+            {
+                fragmentType: 1,
+                body: cssContent,
+                htmlClass: null,
+                htmlHead: null
+            },
+            {
+                fragmentType: 2,
+                body: jsContent,
+                htmlClass: null,
+                htmlHead: null
+            }
+        ]
     }
 
     $.post('/pens', newPen, (data) => {
@@ -172,16 +204,34 @@ function postNewPen(userId, penName, htmlContent, cssContent, jsContent) {
 
 function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent) {
 
+    // Update the local pen fragments object.
+    for (var i = 0; i < penFragments.length; ++i) {
+        switch (penFragments[i].fragmentType) {
+            case 0:
+                penFragments[i].body = htmlContent;
+                break;
+            case 1:
+                penFragments[i].body = cssContent;
+                break;
+            case 2:
+                penFragments[i].body = jsContent;
+                break;
+        }
+    }
+
     const updatedPen = {
-        penId: penId,
-        penName: penName,
-        cssContent: cssContent,
-        jsContent: jsContent,
-        htmlContent: htmlContent
+        penInfo: {
+            penId: penId,
+            penName: penName,
+            numFavorites: 99,   // TODO: implement
+            numComments: 99,    // TODO: implement
+            numViews: 99        // TODO: implement
+        },
+        penFragments: penFragments
     }
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
-        pen = data;
+        // TODO: Use this if we need it.
     }).catch(error => {
         // Handle error
     })
