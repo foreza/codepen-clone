@@ -25,6 +25,17 @@ const penPost = {
           "body":"console.log(\"Take your time on your loan!\")",
           "htmlClass":null,
           "htmlHead":null
-       }
-    ]
+       },
+    ],
+    "penExternals":[
+      {
+         "externalType":0,
+         "url":"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css",
+      },
+      {
+         "externalType":1,
+         "url":"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js",
+      }
+   ]
+   
 }

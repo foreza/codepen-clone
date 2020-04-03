@@ -21,12 +21,24 @@ let penShowContainer;
 let penEditContainer;
 let penNameInput;
 let penNameView;
-
+let externalsString = "";
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
 
 // Monaco Editor config
 require.config({ paths: { 'vs': '/min/vs' } });
+
+// Temporary:
+let testExternals = [
+    {
+        "externalType": 0,
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css",
+    },
+    {
+        "externalType": 1,
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js",
+    }
+]
 
 
 $(() => {
@@ -102,6 +114,8 @@ $(() => {
     });
 
 
+    externalsString = generateLocalExternals(testExternals);
+
     // If 'pen' was provided, set content
     if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
         for (var i = 0; i < penFragments.length; ++i) {
@@ -132,15 +146,44 @@ $(() => {
 });
 
 
-function returnRenderContentForiFrame(html, css, javascript) {
-    return `<html>
-                <head>
-                <style>${css}</style>
-                </head>
-                <body>${html}
-                    <script>${javascript}</script>
-                </body>
-            </html>`;
+function generateLocalExternals(externalsList) {
+    let externals = "";
+    for (var i = 0; i < externalsList.length; ++i) {
+        switch (externalsList[i].externalType) {
+            case 0: // css
+                externals += `<link type="text/css" rel="stylesheet" href='${externalsList[i].url}' />`
+                break;
+            case 1: // js
+                externals += `<script type="text/javascript" src='${externalsList[i].url}'></script>`
+                break;
+        }
+
+        externals += "\n"
+    }
+
+    // console.log("externals string: ", externals);
+    return externals;
+
+
+}
+
+function returnRenderContentForiFrame(html, css, javascript, externalString) {
+
+    const template = `<html>
+    <head>
+    ${externalString}
+    <style>${css}</style>
+    </head>
+    <body>${html}
+        <script>${javascript}</script>
+    </body>
+</html>`;
+
+    console.log("generated:", template);
+
+
+
+    return template;
 }
 
 function handleEditorUpdate() {
@@ -150,11 +193,18 @@ function handleEditorUpdate() {
     updateTimerRef = setTimeout(refreshRenderContent, timeBeforeEditorUpdate);
 }
 
+
+
+
+
 function refreshRenderContent() {
-    renderInIframe(returnRenderContentForiFrame(
-        leftEditor.getValue(),
-        centerEditor.getValue(),
-        rightEditor.getValue()));
+    renderInIframe(
+        returnRenderContentForiFrame(
+            leftEditor.getValue(),
+            centerEditor.getValue(),
+            rightEditor.getValue(), 
+            externalsString)
+        );
 }
 
 function renderInIframe(content) {
