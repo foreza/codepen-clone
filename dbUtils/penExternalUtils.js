@@ -88,7 +88,7 @@ util.getexternalsByPenId = (penId) => db.sequelize.query(getExternalsByPenIdQuer
 
 
 /*
-    GET PEN External by externalId  (url):
+    GET PEN External by externalId :
 
     Required params:
     * externalId (primary key)
@@ -96,12 +96,31 @@ util.getexternalsByPenId = (penId) => db.sequelize.query(getExternalsByPenIdQuer
 
 // SELECT * FROM "PenExternals" WHERE ("externalId"=2);
 
-const getExternalsByExternalIdQuery = (penId) => {
-    return `SELECT * FROM "PenExternals" W
-    HERE ("penId"=${penId});`
+const getExternalsByExternalIdQuery = (externalId) => {
+    return `SELECT * FROM "PenExternals" 
+    WHERE ("externalId"=${externalId});`
 };
-util.getExternalById = (penId) => db.sequelize.query(getExternalsByExternalIdQuery(penId), {
+util.getExternalById = (externalId) => db.sequelize.query(getExternalsByExternalIdQuery(externalId), {
     type: db.sequelize.QueryTypes.SELECT,
+});
+
+
+/*
+    DELETE PEN External by externalId:
+
+    Required params:
+    * externalId (primary key)
+*/
+
+// DELETE FROM "PenExternals" WHERE ("externalId"=3);
+
+
+const deleteExternalByExternalIdQuery = (externalId) => {
+    return `DELETE FROM "PenExternals" 
+    WHERE ("externalId"=${externalId});`
+};
+util.getExternalById = (externalId) => db.sequelize.query(deleteExternalByExternalIdQuery(externalId), {
+    type: db.sequelize.QueryTypes.DELETE,
 });
 
 
