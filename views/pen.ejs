@@ -1,22 +1,15 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title><%= title %></title>
-
-
-    <!-- Materialize dependency -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="/stylesheets/materialize.css" media="screen,projection" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/pen.css' />
-
 </head>
 
 <body>
-
     <header>
 
         <div id="pen-view-header" class="valign-wrapper">
@@ -253,9 +246,6 @@
         </div>
         </div>
 
-
-
-
     </main>
 
 
@@ -273,14 +263,8 @@
         <% } %>
         <% if (pen) { %>
         <script>
-
-            console.log("debug");
-
-            let penInfo = <% - pen.penInfo %>;
-            let penFragments = <% - pen.penFragments %>;
-
-            console.log("penInfo:", penInfo)
-            console.log("penFragments:", penFragments)
+            let penInfo = <%- pen.penInfo %>;
+            let penFragments = <%- pen.penFragments %>;
         </script>
         <% } %>
         <script type="text/javascript" src="/javascripts/pen.js"></script>

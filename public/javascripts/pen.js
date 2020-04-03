@@ -31,8 +31,6 @@ require.config({ paths: { 'vs': '/min/vs' } });
 
 $(() => {
 
-
-
     // Add a "put" and "delete" shortcut since it's already supported.
     jQuery.each(["put", "delete"], function (i, method) {
         jQuery[method] = function (url, data, callback, type) {
@@ -103,7 +101,6 @@ $(() => {
 
     });
 
-  
 
     // If 'pen' was provided, set content
     if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
@@ -121,6 +118,7 @@ $(() => {
             }
         }
     } else {
+        alert("no content provided");
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
     }
 
@@ -131,10 +129,6 @@ $(() => {
 
     // Render content provided from remote
     monaco_initializeEditors();
-
-
-    console.log("done loading")
-
 });
 
 
