@@ -24,12 +24,13 @@
             <div id="pen-info">
                 <div id="pen-name-editable" class="valign-wrapper">
                     <div id="pen-name-show-container">
-                        <span id="pen-name-value"><%= title %> 
+                        <span id="pen-name-value"><%= title %>
                         </span>
                         <a id="edit-pen-name" href="#"><i class="material-icons">edit</i></a>
                     </div>
                     <div id="pen-name-edit-container">
-                        <input minlength="1" name="penName" id="penName" maxlength="30" type="text" value="<%= title %>" required="true" class="validate"/>
+                        <input minlength="1" name="penName" id="penName" maxlength="30" type="text" value="<%= title %>"
+                            required="true" class="validate" />
                         <span><a id="save-pen-name" href="#"><i class="material-icons">save</i></a></span>
                     </div>
                 </div>
@@ -42,7 +43,8 @@
                 </button>
                 <button id="save-pen" class="btn"><i class="material-icons">cloud</i>Save
                 </button>
-                <button id="" href="#pen-settings-modal" class="btn modal-trigger"><i class="material-icons">settings</i>Settings
+                <button id="" href="#pen-settings-modal" class="btn modal-trigger"><i
+                        class="material-icons">settings</i>Settings
                 </button>
                 <button id="" class="btn dropdown-trigger" data-target='view-dropdown'><i
                         class="material-icons">visibility</i>Change View
@@ -54,51 +56,56 @@
                         <div class="row">
                             <span class="modal-title">Pen Settings</span>
                             <span class="modal-exit"><a class="modal-close" href="#">
-                                <i class="material-icons">cancel</i></a>
+                                    <i class="material-icons">cancel</i></a>
                         </div>
                         </span>
-                            <div class="row">
-                                <div class="col s3">
-                                    <ul class="tabs">
-                                        <li class="tab col s12"><a href="#tab-html">HTML</a></li>
-                                        <li class="tab col s12"><a href="#tab-css">CSS</a></li>
-                                        <li class="tab col s12"><a href="#tab-js">JS</a></li>
-                                        <li class="tab col s12"><a class="active" href="#tab-details">Pen Details</a></li>
+                        <div class="row">
+                            <div class="col s3">
+                                <ul class="tabs">
+                                    <li class="tab col s12"><a href="#tab-html">HTML</a></li>
+                                    <li class="tab col s12"><a href="#tab-css">CSS</a></li>
+                                    <li class="tab col s12"><a href="#tab-js">JS</a></li>
+                                    <li class="tab col s12"><a class="active" href="#tab-details">Pen Details</a></li>
 
-                                      </ul>
-                                </div>
-                                <div class="col s9">
-                                    <div class="modal-tab" id="tab-html" class="col s12">
-                                        <div>
-                                            <p>HTML Preprocessor</p>
-                                            <p>Add Class(es) to &lt;html&gt;</p>
-                                            <p>Stuff for &lt;head&gt;</p>
-                                        </div>
-                                    </div>
-                                    <div class="modal-tab" id="tab-css" class="col s12">
-                                        <div>
-                                            <p>CSS Preprocessor</p>
-                                            <p>CSS Base</p>
-                                            <p>Add External Stylesheets/Pens</p>
-                                            <p>Any URL's added here will be added as <link>s in order, and before the CSS in the editor. If you link to another Pen, it will include the CSS from that Pen. If the preprocessor matches, it will attempt to combine them before processing.</p>
-                                        </div>
-                                    </div>
-                                    <div class="modal-tab" id="tab-js" class="col s12">
-                                        <div>
-                                            <p>JavaScript Preprocessor</p>
-                                            <p>Add External Scripts/Pens</p>
-                                            <p>Any URL's added here will be added as &lt;script&gt;s in order, and run before the JavaScript in the editor. You can use the URL of any other Pen and it will include the JavaScript from that Pen.</p>
-                                        </div>
-                                    </div>
-                                    <div class="modal-tab" id="tab-details" class="col s12">
-                                        <div>
-                                            <h6>Pen Title</h6>
-                                            <input type="text" placeholder="Untitled"/>
-                                            <h6>Pen Description</h6>
-                                            <textarea></textarea>
-                                        </div>
+                                </ul>
+                            </div>
+                            <div class="col s9">
+                                <div class="modal-tab" id="tab-html" class="col s12">
+                                    <div>
+                                        <p>HTML Preprocessor</p>
+                                        <p>Add Class(es) to &lt;html&gt;</p>
+                                        <p>Stuff for &lt;head&gt;</p>
                                     </div>
                                 </div>
+                                <div class="modal-tab" id="tab-css" class="col s12">
+                                    <div>
+                                        <p>CSS Preprocessor</p>
+                                        <p>CSS Base</p>
+                                        <p>Add External Stylesheets/Pens</p>
+                                        <p>Any URL's added here will be added as
+                                            <link>s in order, and before the CSS in the editor. If you link to another
+                                            Pen, it will include the CSS from that Pen. If the preprocessor matches, it
+                                            will attempt to combine them before processing.</p>
+                                    </div>
+                                </div>
+                                <div class="modal-tab" id="tab-js" class="col s12">
+                                    <div>
+                                        <p>JavaScript Preprocessor</p>
+                                        <p>Add External Scripts/Pens</p>
+                                        <p>Any URL's added here will be added as &lt;script&gt;s in order, and run
+                                            before the JavaScript in the editor. You can use the URL of any other Pen
+                                            and it will include the JavaScript from that Pen.</p>
+                                    </div>
+                                </div>
+                                <div class="modal-tab" id="tab-details" class="col s12">
+                                    <div>
+                                        <h6>Pen Title</h6>
+                                        <input type="text" placeholder="Untitled" />
+                                        <h6>Pen Description</h6>
+                                        <textarea></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -196,11 +203,45 @@
     <main>
 
         <div id="editor-group" class="row">
-            <div id="editor-1" class="col resizable-editor"></div>
+            <div id="editor-1" class="col resizable-editor">
+                <div class="editor-top-row">
+                    <span class="editor-tool">
+                        <a href="#pen-settings-modal" class="btn modal-trigger"><i class="material-icons">settings</i></a>
+                    </span>
+                    <span class="editor-name">HTML</span>
+                    <span class="editor-drop">
+                        <a href="#" class="btn"><i class="material-icons">keyboard_arrow_down</i></a>
+                    </span>
+                </div>
+                <div id="editor-1-ide" class="editor-monaco"></div>
+            </div>
             <div id="editor-resize-1" class="col vertical-resize-control"></div>
-            <div id="editor-2" class="col resizable-editor"></div>
+            <div id="editor-2" class="col resizable-editor">
+                <div class="editor-top-row">
+                    <span class="editor-tool">
+                        <a href="#pen-settings-modal" class="btn modal-trigger"><i class="material-icons">settings</i></a>
+                    </span>
+                    <span class="editor-name">CSS</span>
+                    <span class="editor-drop">
+                        <a href="#" class="btn"><i class="material-icons">keyboard_arrow_down</i></a>
+                    </span>
+                </div>
+                <div id="editor-2-ide" class="editor-monaco"></div>
+
+            </div>
             <div id="editor-resize-2" class="col vertical-resize-control"></div>
-            <div id="editor-3" class="col resizable-editor"></div>
+            <div id="editor-3" class="col resizable-editor">
+                <div class="editor-top-row">
+                    <span class="editor-tool">
+                        <a href="#pen-settings-modal" class="btn modal-trigger"><i class="material-icons">settings</i></a>
+                    </span>
+                    <span class="editor-name">JS</span>
+                    <span class="editor-drop">
+                        <a href="#" class="btn"><i class="material-icons">keyboard_arrow_down</i></a>
+                    </span>
+                </div>
+                <div id="editor-3-ide" class="editor-monaco"></div>
+            </div>
         </div>
 
         <div id="results-resize" class="horizontal-resize-control">
@@ -226,18 +267,24 @@
 
         <!-- Inject these variables so we can use them (can we do this another way) -->
         <% if (userId) { %>
-            <script>
-               const userId = <%= userId %>;            
-            </script>
-          <% } %>
-          <% if (pen) { %>
-            <script>
-               let penInfo = <%- pen.penInfo %>;
-               let penFragments = <%- pen.penFragments %>;
-            </script>
-          <% } %>
+        <script>
+            const userId = <%= userId %>;            
+        </script>
+        <% } %>
+        <% if (pen) { %>
+        <script>
+
+            console.log("debug");
+
+            let penInfo = <% - pen.penInfo %>;
+            let penFragments = <% - pen.penFragments %>;
+
+            console.log("penInfo:", penInfo)
+            console.log("penFragments:", penFragments)
+        </script>
+        <% } %>
         <script type="text/javascript" src="/javascripts/pen.js"></script>
-    
+
     </footer>
 
 

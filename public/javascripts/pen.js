@@ -9,6 +9,7 @@ var resizeLeft = false;                         // Track whether currently resiz
 var resizeRight = false;                        // Track whether currently resizing with rightAnchor
 var resizeBottom = false;                       // Track whether currently resizing with bottomAnchor
 var tWidth;                                     // Global store temporary width for left/right anchor operations
+var tHeight;
 var leftEditor;                                 // Reference to left monaco editor
 var centerEditor;                               // Reference to center monaco editor
 var rightEditor;                                // Reference to right monaco editor
@@ -29,6 +30,8 @@ require.config({ paths: { 'vs': '/min/vs' } });
 
 
 $(() => {
+
+
 
     // Add a "put" and "delete" shortcut since it's already supported.
     jQuery.each(["put", "delete"], function (i, method) {
@@ -100,9 +103,7 @@ $(() => {
 
     });
 
-    // Setup Monaco Editor view
-    monaco_setupMonacoResizing();
-    monaco_configure();
+  
 
     // If 'pen' was provided, set content
     if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
@@ -123,8 +124,16 @@ $(() => {
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
     }
 
+
+    // Setup Monaco Editor view
+    monaco_setupMonacoResizing();
+    monaco_configure();
+
     // Render content provided from remote
     monaco_initializeEditors();
+
+
+    console.log("done loading")
 
 });
 
@@ -250,20 +259,20 @@ function monaco_initializeEditors() {
 
     require(['vs/editor/editor.main'], () => {
 
-        leftEditor = monaco.editor.create(document.getElementById('editor-1'), {
+        leftEditor = monaco.editor.create(document.getElementById('editor-1-ide'), {
             value: htmlEditorContent,
             language: 'html',
             automaticLayout: true
         });
 
-        centerEditor = monaco.editor.create(document.getElementById('editor-2'), {
+        centerEditor = monaco.editor.create(document.getElementById('editor-2-ide'), {
             value: cssEditorContent,
             language: 'css',
             automaticLayout: true
 
         });
 
-        rightEditor = monaco.editor.create(document.getElementById('editor-3'), {
+        rightEditor = monaco.editor.create(document.getElementById('editor-3-ide'), {
             value: jsEditorContent,
             language: 'javascript',
             automaticLayout: true
@@ -299,6 +308,8 @@ function monaco_resizeWindow() {
 
 function monaco_setupMonacoResizing() {
 
+    console.log("monaco_setupMonacoResizing")
+
     leftAnchor = $("#editor-resize-1");
     rightAnchor = $("#editor-resize-2");
     bottomAnchor = $("#results-resize");
@@ -308,7 +319,7 @@ function monaco_setupMonacoResizing() {
     editorPane = $("#editor-group");
     bottomPane = $("#result-group");
 
-    bottomPane.height(window.innerHeight - editorPane.height());
+    bottomPane.height(`${window.innerHeight - editorPane.height()}px`);
 
     bottomAnchor.mousedown(() => {
         resizeLeft = resizeRight = false;
@@ -319,12 +330,14 @@ function monaco_setupMonacoResizing() {
         resizeRight = resizeBottom = false;
         resizeLeft = true;
         tWidth = leftPane.width() + centerPane.width();
+        tHeight = editorPane.height();
     });
 
     rightAnchor.mousedown(() => {
         resizeRight = true;
         resizeLeft = resizeBottom = false;
         tWidth = centerPane.width() + rightPane.width();
+        tHeight = editorPane.height();
     });
 
     $(document).mouseup(() => {
@@ -339,11 +352,13 @@ function monaco_setupMonacoResizing() {
                 leftPane.width(`${val}%`);
                 const val2 = ((tWidth / window.innerWidth) * 100) - val;
                 centerPane.width(`${val2}%`);
+                editorPane.height(tHeight)
             } else if (resizeRight) {
                 const val = ((e.pageX - leftPane.width()) / window.innerWidth) * 100;
                 centerPane.width(`${val}%`);
                 const val2 = ((tWidth / window.innerWidth) * 100) - val;
                 rightPane.width(`${val2}%`);
+                editorPane.height(tHeight)
             } else if (resizeBottom) {
                 const val = window.innerHeight - e.pageY;
                 bottomPane.height(`${val}px`);

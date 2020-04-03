@@ -45,12 +45,6 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 /* GET Pen page (for existing pen) */
 router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
 
- // Building around this
-  // const body = {
-  //   penInfo: pen[0],
-  //   penFragments: penFragments
-  // };
-
   const pen = (await penUtil.getPenByPenID(req.params.penId))[0];
 
   if (!pen) {
@@ -62,10 +56,12 @@ router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.chec
       "userId": req.session.user.id,
       "title": pen.penName,
       "pen": {
-        "penInfo": JSON.stringify(pen),
-        "penFragments": JSON.stringify(penFragments)
+        "penInfo": pen,
+        "penFragments": penFragments
       }
     }
+
+    console.log("renderParams: ", renderParams);
     res.render('pen', renderParams);
   }
 

@@ -80,6 +80,10 @@ div.resizable-editor {
     overflow: hidden;
 }
 
+div.editor-monaco {
+    height: 100%;
+}
+
 div.vertical-resize-control {
     width: 15px;
     cursor: pointer;
@@ -227,4 +231,39 @@ input#penName {
     line-height: 15px;
     font-size: 15px;
     width: 150px;
+}
+
+
+.editor-top-row {
+    background-color: #1a1b1f;
+    padding: 5px;   
+}
+
+.editor-top-row span.editor-name{
+    font-size: 20px;
+    color: #aaaebb;
+}
+
+.editor-top-row span.editor-name{
+    font-size: 20px;
+    color: #aaaebb;
+}
+
+
+.editor-top-row .btn{
+    background-color: gray;
+    margin: 0;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: top;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.editor-top-row i{
+    font-size: 12px;
+}
+
+.editor-drop {
+    float: right;
 }
