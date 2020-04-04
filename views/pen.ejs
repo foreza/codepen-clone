@@ -94,6 +94,12 @@
                                         <p>Any URL's added here will be added as &lt;script&gt;s in order, and run
                                             before the JavaScript in the editor. You can use the URL of any other Pen
                                             and it will include the JavaScript from that Pen.</p>
+                                            <ul id="modal-js-externals" class="external-collection collection with-header">
+                                                <!-- Should be dynamically generated -->
+                                                </ul>
+                                                <button class="externals-list-add" id="modal-js-externals-add">
+                                                    <p>+ add another resource</p>
+                                                </button>
                                     </div>
                                 </div>
                                 <!-- <div class="modal-tab" id="tab-details" class="col s12">
@@ -273,6 +279,10 @@
             let penInfo = <%- pen.penInfo %>;
             let penFragments = <%- pen.penFragments %>;
             let penExternals = <%- pen.penExternals %>;
+        </script>
+        <% } else { %>
+        <script>
+             let penExternals = <%= [] %>;
         </script>
         <% } %>
         <script type="text/javascript" src="/javascripts/pen.js"></script>

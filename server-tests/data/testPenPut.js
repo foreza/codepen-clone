@@ -34,6 +34,14 @@ const penPut_a = {
         {
             "externalType": 0,
             "url":"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+        },
+        {
+            "externalType": 0,
+            "url":"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+        },
+        {
+            "externalType": 0,
+            "url":"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
         }
     ]
 }

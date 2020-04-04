@@ -62,11 +62,13 @@ router.put('/:penId', async (req, res, next) => {
     const externalUpdates = req.body.penExternals;
     for (var i = 0; i < externalUpdates.length; ++i) {
 
+      console.log("processing: ", externalUpdates[i])
+
       // If the ID exists (meaning, not new)
       if (externalUpdates[i].externalId){
 
         // If this ID was marked for deletion
-        if (externalUpdates[i].delete == true) {
+        if (externalUpdates[i].delete) {
           console.log("Removing external: ", externalUpdates[i].externalId)
           await penExternalUtil.deleteExternalByExternalId(externalUpdates[i].externalId);
         } else {

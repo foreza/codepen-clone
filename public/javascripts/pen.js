@@ -25,24 +25,10 @@ let externalsString = "";
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
 
-var cssExternalListGroup;
-var cssExternalDisplayCount;
-var jsExternalListGroup;
+
 
 // Monaco Editor config
 require.config({ paths: { 'vs': '/min/vs' } });
-
-// Temporary:
-let testExternals = [
-    {
-        "externalType": 0,
-        "url": "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css",
-    },
-    {
-        "externalType": 1,
-        "url": "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js",
-    }
-]
 
 
 $(() => {
@@ -96,9 +82,9 @@ $(() => {
 
             if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
                 penNameView.text(updatedPenName);
-                putPenUpdate(penInfo.penId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent);
+                putPenUpdate(penInfo.penId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
             } else {
-                postNewPen(userId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent);
+                postNewPen(userId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
             }
             penShowContainer.show();
             penEditContainer.hide();
@@ -110,15 +96,12 @@ $(() => {
     $("#save-pen").click(() => {
 
         if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
-            putPenUpdate(penInfo.penId, penInfo.penName, htmlEditorContent, cssEditorContent, jsEditorContent);
+            putPenUpdate(penInfo.penId, penInfo.penName, htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
         } else {
-            postNewPen(userId, penNameView.val(), htmlEditorContent, cssEditorContent, jsEditorContent);
+            postNewPen(userId, penNameView.val(), htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
         }
 
     });
-
-
-    externalsString = generateLocalExternals(testExternals);
 
     // If 'pen' was provided, set content
     if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
@@ -140,6 +123,8 @@ $(() => {
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
     }
 
+    // Import remote externals and make string for template:
+    externalsString = generateLocalExternals(penExternals);
 
     // Setup Monaco Editor view
     monaco_setupMonacoResizing();
@@ -170,8 +155,6 @@ function generateLocalExternals(externalsList) {
 
     // console.log("externals string: ", externals);
     return externals;
-
-
 }
 
 function returnRenderContentForiFrame(html, css, javascript, externalString) {
@@ -209,9 +192,9 @@ function refreshRenderContent() {
         returnRenderContentForiFrame(
             leftEditor.getValue(),
             centerEditor.getValue(),
-            rightEditor.getValue(), 
+            rightEditor.getValue(),
             externalsString)
-        );
+    );
 }
 
 function renderInIframe(content) {
@@ -224,7 +207,7 @@ function renderInIframe(content) {
 
 // Pen API calls
 
-function postNewPen(userId, penName, htmlContent, cssContent, jsContent) {
+function postNewPen(userId, penName, htmlContent, cssContent, jsContent, externals) {
 
     const newPen = {
         penInfo: {
@@ -253,7 +236,8 @@ function postNewPen(userId, penName, htmlContent, cssContent, jsContent) {
                 htmlClass: null,
                 htmlHead: null
             }
-        ]
+        ],
+        penExternals: externals
     }
 
     $.post('/pens', newPen, (data) => {
@@ -262,7 +246,7 @@ function postNewPen(userId, penName, htmlContent, cssContent, jsContent) {
 
 }
 
-function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent) {
+function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent, externals) {
 
     // Update the local pen fragments object.
     for (var i = 0; i < penFragments.length; ++i) {
@@ -287,8 +271,12 @@ function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent) {
             numComments: 99,    // TODO: implement
             numViews: 99        // TODO: implement
         },
-        penFragments: penFragments
+        penFragments: penFragments,
+        penExternals: externals
     }
+
+
+    console.log('updated pen:', updatedPen);
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
         // TODO: Use this if we need it.
@@ -359,8 +347,6 @@ function monaco_resizeWindow() {
 
 function monaco_setupMonacoResizing() {
 
-    console.log("monaco_setupMonacoResizing")
-
     leftAnchor = $("#editor-resize-1");
     rightAnchor = $("#editor-resize-2");
     bottomAnchor = $("#results-resize");
@@ -370,10 +356,8 @@ function monaco_setupMonacoResizing() {
     editorPane = $("#editor-group");
     bottomPane = $("#result-group");
 
-
-
     bottomPane.height(`${window.innerHeight - editorPane.height()}px`);
-    
+
     // TODO : Do a RCA to find out why this line is needed
     tHeight = editorPane.height();
     editorPane.height(tHeight);
@@ -431,35 +415,99 @@ function monaco_setupMonacoResizing() {
 
 // Pen externals handling:
 
-function addNewRowForExternal(modalRef) {
-    modalRef.append(generateNewDisplayRow("3", "css"));
+
+
+
+var cssExternalListGroup;
+var jsExternalListGroup;
+var newExternalCount = 0;
+
+
+
+function sortLocalExternalsAndPopulate(externalsList) {
+
+    for (var i = 0; i < externalsList.length; ++i) {
+
+        switch (externalsList[i].externalType) {
+            case 0:
+                cssExternalListGroup.append(generateNewDisplayRow(externalsList[i].externalId, externalsList[i].url));
+                break;
+            case 1:
+                jsExternalListGroup.append(generateNewDisplayRow(externalsList[i].externalId, externalsList[i].url));
+                break;
+        }
+
+    }
+
 }
 
 
-function generateNewDisplayRow(refId, groupString) {
+function generateNewDisplayRow(id, content) {
 
-    const tId = `temp-${groupString}-${refId}`
-    const tempRow = `<li id="${tId}" class="collection-item">
+    const tempRow = `<li id="${id}" class="collection-item">
     <a href="#!"><i class="material-icons">menu</i></a>    
-    <input name="new-external" type="text" value=""
+    <input name="source-${id}" type="text" value="${content}"
 required="true" class="external-input validate"/>   
     <div class="row secondary-content">
         <div class="col s12">
             <a href="#!"><i class="material-icons">send</i></a>    
         </div>
         <div class="col s12">
-            <a onclick="deleteModalCollectionRow('${tId}')" href="#!"><i class="material-icons">delete</i></a>   
+            <a onclick="deleteModalCollectionRow('${id}')" href="#"><i class="material-icons">delete</i></a>   
         </div>
     </div>          
 </li>`
-return tempRow;
+    return tempRow;
 }
 
-function deleteModalCollectionRow(id){
-    $(`#${id}`).remove();
+function deleteModalCollectionRow(id) {
+    $(`#${id}`).remove();       // Remove from view
+    
+    // TODO: fix this naive approach of searching the array
+    for (var i = 0; i < penExternals.length; ++i) {
+        console.log("called on:", id);
+        console.log("iterating through ids:", penExternals[i].externalId)
+        if (penExternals[i].externalId == id){
+            penExternals[i].delete = true;
+            console.log("found, set remove param to true");
+            break;
+        }
+    }
+
 }
 
-function setupExternalModals(){
+
+function generateExternalsObject(tempExtId, type) {
+
+    const newObj = {
+        externalId: tempExtId,
+        externalType: type
+    }
+
+    return newObj;
+}
+
+function setupExternalModals() {
+
+    cssExternalListGroup = $("#modal-css-externals");
+    jsExternalListGroup = $("#modal-js-externals");
+
+    $("#modal-css-externals-add").click(() => {
+        newExternalCount++;
+        id = `new-external-${newExternalCount}`;
+        cssExternalListGroup.append(
+            generateNewDisplayRow(id, '<link>'));
+        penExternals.push(generateExternalsObject(id, 0))
+    });
+
+    $("#modal-js-externals-add").click(() => {
+        newExternalCount++;
+        id = `new-external-${newExternalCount}`;
+        jsExternalListGroup.append(
+            generateNewDisplayRow(null, "<script>"));
+        penExternals.push(generateExternalsObject(id, 1))
+    });
+
 
     // Set up links to the modals 
     $('#modal-css-link').click(() => {
@@ -474,13 +522,10 @@ function setupExternalModals(){
         $('.tabs').tabs('select', 'tab-js');
     });
 
-    cssExternalListGroup = $("#modal-css-externals");
-    // jsExternalListGroup = $("#modal-js-externals");
 
-    cssExternalDisplayCount = 0;
 
-    $("#modal-css-externals-add").click(() => {
-        addNewRowForExternal(cssExternalListGroup, cssExternalDisplayCount++);
-    });
+
+
+    sortLocalExternalsAndPopulate(penExternals);
 
 }
