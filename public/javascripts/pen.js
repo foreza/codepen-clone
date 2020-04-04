@@ -25,6 +25,10 @@ let externalsString = "";
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
 
+var cssExternalListGroup;
+var cssExternalDisplayCount;
+var jsExternalListGroup;
+
 // Monaco Editor config
 require.config({ paths: { 'vs': '/min/vs' } });
 
@@ -143,6 +147,9 @@ $(() => {
 
     // Render content provided from remote
     monaco_initializeEditors();
+
+    // Setup modals
+    setupExternalModals();
 });
 
 
@@ -363,7 +370,14 @@ function monaco_setupMonacoResizing() {
     editorPane = $("#editor-group");
     bottomPane = $("#result-group");
 
+
+
     bottomPane.height(`${window.innerHeight - editorPane.height()}px`);
+    
+    // TODO : Do a RCA to find out why this line is needed
+    tHeight = editorPane.height();
+    editorPane.height(tHeight);
+
 
     bottomAnchor.mousedown(() => {
         resizeLeft = resizeRight = false;
@@ -410,6 +424,50 @@ function monaco_setupMonacoResizing() {
             }
             monaco_resizeWindow();
         }
+    });
+
+}
+
+
+// Pen externals handling:
+
+function addNewRowForExternal(modalRef) {
+    modalRef.append(generateNewDisplayRow("3", "css"));
+}
+
+
+function generateNewDisplayRow(refId, groupString) {
+
+    const tId = `temp-${groupString}-${refId}`
+    const tempRow = `<li id="${tId}" class="collection-item">
+    <a href="#!"><i class="material-icons">menu</i></a>    
+    <input name="new-external" type="text" value=""
+required="true" class="external-input validate"/>   
+    <div class="row secondary-content">
+        <div class="col s12">
+            <a href="#!"><i class="material-icons">send</i></a>    
+        </div>
+        <div class="col s12">
+            <a onclick="deleteModalCollectionRow('${tId}')" href="#!"><i class="material-icons">delete</i></a>   
+        </div>
+    </div>          
+</li>`
+return tempRow;
+}
+
+function deleteModalCollectionRow(id){
+    $(`#${id}`).remove();
+}
+
+function setupExternalModals(){
+
+    cssExternalListGroup = $("#modal-css-externals");
+    // jsExternalListGroup = $("#modal-js-externals");
+
+    cssExternalDisplayCount = 0;
+
+    $("#modal-css-externals-add").click(() => {
+        addNewRowForExternal(cssExternalListGroup, cssExternalDisplayCount++);
     });
 
 }

@@ -3,6 +3,8 @@ var router = express.Router();
 var collections = require('../middleware/collections')
 var penUtil = require('../dbUtils/penUtils')
 var penFragmentUtil = require('../dbUtils/penFragmentUtils')
+var penExternalUtil = require('../dbUtils/penExternalUtils')
+
 
 
 
@@ -51,19 +53,20 @@ router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.chec
     res.sendStatus(404);
   } else {
     const penFragments = await penFragmentUtil.getFragmentsByPenId(req.params.penId);
+    const penExternals = await penExternalUtil.getExternalsByPenId(req.params.penId);
     
     let renderParams = {
       "userId": req.session.user.id,
       "title": pen.penName,
       "pen": {
         "penInfo": JSON.stringify(pen),
-        "penFragments": JSON.stringify(penFragments)
+        "penFragments": JSON.stringify(penFragments),
+        "penExternals": JSON.stringify(penExternals)
       }
     }
 
     res.render('pen', renderParams);
   }
-
 
 });
 

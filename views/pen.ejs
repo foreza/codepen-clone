@@ -58,8 +58,7 @@
                                     <li class="tab col s12"><a href="#tab-html">HTML</a></li>
                                     <li class="tab col s12"><a href="#tab-css">CSS</a></li>
                                     <li class="tab col s12"><a href="#tab-js">JS</a></li>
-                                    <li class="tab col s12"><a class="active" href="#tab-details">Pen Details</a></li>
-
+                                    <!-- <li class="tab col s12"><a href="#tab-details">Pen Details</a></li> -->
                                 </ul>
                             </div>
                             <div class="col s9">
@@ -72,13 +71,20 @@
                                 </div>
                                 <div class="modal-tab" id="tab-css" class="col s12">
                                     <div>
-                                        <p>CSS Preprocessor</p>
-                                        <p>CSS Base</p>
                                         <p>Add External Stylesheets/Pens</p>
                                         <p>Any URL's added here will be added as
                                             <link>s in order, and before the CSS in the editor. If you link to another
                                             Pen, it will include the CSS from that Pen. If the preprocessor matches, it
                                             will attempt to combine them before processing.</p>
+                                    </div>
+                                    <div>
+
+                                        <ul id="modal-css-externals" class="external-collection collection with-header">
+                                        <!-- Should be dynamically generated -->
+                                        </ul>
+                                        <button class="externals-list-add" id="modal-css-externals-add">
+                                            <p>+ add another resource</p>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="modal-tab" id="tab-js" class="col s12">
@@ -90,14 +96,14 @@
                                             and it will include the JavaScript from that Pen.</p>
                                     </div>
                                 </div>
-                                <div class="modal-tab" id="tab-details" class="col s12">
+                                <!-- <div class="modal-tab" id="tab-details" class="col s12">
                                     <div>
                                         <h6>Pen Title</h6>
                                         <input type="text" placeholder="Untitled" />
                                         <h6>Pen Description</h6>
                                         <textarea></textarea>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -265,6 +271,7 @@
         <script>
             let penInfo = <%- pen.penInfo %>;
             let penFragments = <%- pen.penFragments %>;
+            let penExternals = <%- pen.penExternals %>;
         </script>
         <% } %>
         <script type="text/javascript" src="/javascripts/pen.js"></script>

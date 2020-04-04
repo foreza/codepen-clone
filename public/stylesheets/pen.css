@@ -200,7 +200,6 @@ div.horizontal-resize-control {
 
 #pen-settings-modal .modal-content div {
     text-align: left;
-    margin-bottom: 20px;
 }
 
 #pen-settings-modal .modal-content .modal-title {
@@ -266,4 +265,27 @@ input#penName {
 
 .editor-drop {
     float: right;
+}
+
+
+.collection .external-input {
+    width: 80% !important;
+    line-height: 20px !important;
+    height: 25px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+.collection {
+    list-style: none;
+}
+
+.external-collection .collection-item {
+    overflow: auto;
+}
+
+
+button .externals-list-add p{
+    color: white;
 }
