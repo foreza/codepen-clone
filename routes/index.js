@@ -30,14 +30,22 @@ router.get('/login', function (req, res, next) {
 
 /* GET Dashboard page. */
 router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function (req, res, next) {
-  res.render('dashboard', { title: `Dashboard for:  ${req.session.user.fullName}`, userId: `${req.session.user.id}` });
+  
+  let renderParams = {
+    "user": JSON.stringify(req.session.user),
+    "title": `Dashboard for:  ${req.session.user.fullName}`,
+    "pen": null
+  }
+
+  res.render('dashboard', renderParams);
 });
 
 /* GET Pen page (for new pens) */
 router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (req, res, next) => {
   
   let renderParams = {
-    "userId": req.session.user.id,
+    "user": JSON.stringify(req.session.user),
+    "username": req.session.user.username,
     "title": 'New Pen',
     "pen": null
   }
@@ -45,8 +53,10 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 });
 
 /* GET Pen page (for existing pen) */
-router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
+router.get('/:username/pen/:penId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
   
+  // Note: username param is not used at present
+
   const pen = (await penUtil.getPenByPenID(req.params.penId))[0];
 
   if (!pen) {
@@ -56,7 +66,8 @@ router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.chec
     const penExternals = await penExternalUtil.getExternalsByPenId(req.params.penId);
     
     let renderParams = {
-      "userId": req.session.user.id,
+      "user": JSON.stringify(req.session.user),
+      "username": req.session.user.username,
       "title": pen.penName,
       "pen": {
         "penInfo": JSON.stringify(pen),
@@ -64,6 +75,8 @@ router.get('/:userId/pen/:penId', [collections.checkUserExists, collections.chec
         "penExternals": JSON.stringify(penExternals)
       }
     }
+
+    console.log(renderParams);
 
     res.render('pen', renderParams);
   }

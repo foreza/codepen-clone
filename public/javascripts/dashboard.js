@@ -7,7 +7,8 @@ $(document).ready(function () {
     $('.sidenav').sidenav();
     $('.collapsible').collapsible();
 
-    getPensForUser(userId);
+    // User ID is provided in EJS template
+    getPensForUser(user.id);
 
 });
 
@@ -43,7 +44,7 @@ function generatePenCardDom(pen){
     return `<div class="col s12 m6 l4">
                 <div class="card">
                     <div class="card-image">
-                        <a class="pen-title-link" href="/${pen.hashId}/pen/${pen.penId}">
+                        <a class="pen-title-link" href="/${user.username}/pen/${pen.penId}">
                             <div class="placeholder">
                             </div>
                         </a>   
@@ -51,7 +52,7 @@ function generatePenCardDom(pen){
                 </div>
                 <div class="card-content">
                     <div class="row card-info">
-                    <a class="pen-title-link" href="/${pen.hashId}/pen/${pen.penId}">
+                    <a class="pen-title-link" href="/${user.username}/pen/${pen.penId}">
                         <span>${pen.penName}</span>
                     </a>
                     <span class="card-options">

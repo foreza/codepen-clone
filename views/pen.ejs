@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div id="pen-author-name">
-                    <span>A PEN BY <a href="#"><%= userId %></a></span>
+                    <span>A PEN BY <a href="#"><%= username %></a></span>
                 </div>
             </div>
             <div id="pen-view-options" class="right-align">
@@ -262,9 +262,10 @@
         <script type="text/javascript" src="/min/vs/loader.js"></script>
 
         <!-- Inject these variables so we can use them (can we do this another way) -->
-        <% if (userId) { %>
+        <% if (user) { %>
         <script>
-            const userId = <%= userId %>;            
+            const userId = <%- user.id %>;            
+            const username = <%- user.username %>;            
         </script>
         <% } %>
         <% if (pen) { %>
