@@ -30,10 +30,10 @@ router.get('/login', function (req, res, next) {
 
 /* GET Dashboard page. */
 router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function (req, res, next) {
-  
+
   let renderParams = {
     "user": JSON.stringify(req.session.user),
-    "title": `Dashboard for:  ${req.session.user.fullName}`,
+    "title": `Dashboard for: ${req.session.user.fullName}`,
     "pen": null
   }
 
@@ -42,7 +42,7 @@ router.get('/dashboard', [collections.checkUserExists, collections.checkAuthStat
 
 /* GET Pen page (for new pens) */
 router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (req, res, next) => {
-  
+
   let renderParams = {
     "user": JSON.stringify(req.session.user),
     "username": req.session.user.username,
@@ -54,7 +54,7 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 
 /* GET Pen page (for existing pen) */
 router.get('/:username/pen/:penId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
-  
+
   // Note: username param is not used at present
 
   const pen = (await penUtil.getPenByPenID(req.params.penId))[0];
@@ -64,7 +64,7 @@ router.get('/:username/pen/:penId', [collections.checkUserExists, collections.ch
   } else {
     const penFragments = await penFragmentUtil.getFragmentsByPenId(req.params.penId);
     const penExternals = await penExternalUtil.getExternalsByPenId(req.params.penId);
-    
+
     let renderParams = {
       "user": JSON.stringify(req.session.user),
       "username": req.session.user.username,
