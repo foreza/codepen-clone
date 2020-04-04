@@ -8,7 +8,7 @@ $(document).ready(function () {
     $('.collapsible').collapsible();
 
     // User ID is provided in EJS template
-    getPensForUser(user.id);
+    getPensForUser(userId);
 
 });
 
@@ -44,7 +44,7 @@ function generatePenCardDom(pen){
     return `<div class="col s12 m6 l4">
                 <div class="card">
                     <div class="card-image">
-                        <a class="pen-title-link" href="/${user.username}/pen/${pen.penId}">
+                        <a class="pen-title-link" href="/${username}/pen/${pen.penId}">
                             <div class="placeholder">
                             </div>
                         </a>   
@@ -52,7 +52,7 @@ function generatePenCardDom(pen){
                 </div>
                 <div class="card-content">
                     <div class="row card-info">
-                    <a class="pen-title-link" href="/${user.username}/pen/${pen.penId}">
+                    <a class="pen-title-link" href="/${username}/pen/${pen.penId}">
                         <span>${pen.penName}</span>
                     </a>
                     <span class="card-options">

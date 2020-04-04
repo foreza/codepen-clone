@@ -44,7 +44,7 @@
                 </button>
 
                 <!-- Pen Settings Modal Structure -->
-                <div id="pen-settings-modal" class="modal">
+                <div id="pen-settings-modal" class="modal modal-fixed-footer">
                     <div class="modal-content">
                         <div class="row">
                             <span class="modal-title">Pen Settings</span>
@@ -205,7 +205,7 @@
             <div id="editor-1" class="col resizable-editor">
                 <div class="editor-top-row">
                     <span class="editor-tool">
-                        <a href="#pen-settings-modal" class="waves-effect btn modal-trigger"><i class="material-icons">settings</i></a>
+                        <a id="modal-html-link" href="#pen-settings-modal" class="waves-effect btn modal-trigger"><i class="material-icons">settings</i></a>
                     </span>
                     <span class="editor-name">HTML</span>
                     <span class="editor-drop">
@@ -218,7 +218,7 @@
             <div id="editor-2" class="col resizable-editor">
                 <div class="editor-top-row">
                     <span class="editor-tool">
-                        <a href="#pen-settings-modal" class="waves-effect btn modal-trigger"><i class="material-icons">settings</i></a>
+                        <a id="modal-css-link" href="#pen-settings-modal" class="waves-effect btn modal-trigger"><i class="material-icons">settings</i></a>
                     </span>
                     <span class="editor-name">CSS</span>
                     <span class="editor-drop">
@@ -232,7 +232,7 @@
             <div id="editor-3" class="col resizable-editor">
                 <div class="editor-top-row">
                     <span class="editor-tool">
-                        <a href="#pen-settings-modal" class="btn waves-effect modal-trigger"><i class="material-icons">settings</i></a>
+                        <a id="modal-js-link" href="#pen-settings-modal" class="btn waves-effect modal-trigger"><i class="material-icons">settings</i></a>
                     </span>
                     <span class="editor-name">JS</span>
                     <span class="editor-drop">
@@ -262,10 +262,10 @@
         <script type="text/javascript" src="/min/vs/loader.js"></script>
 
         <!-- Inject these variables so we can use them (can we do this another way) -->
-        <% if (user) { %>
+        <% if (userId && username ) { %>
         <script>
-            const userId = <%- user.id %>;            
-            const username = <%- user.username %>;            
+            let userId = <%- userId %>;            
+            let username = `<%- username %>`;            
         </script>
         <% } %>
         <% if (pen) { %>

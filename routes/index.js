@@ -32,10 +32,13 @@ router.get('/login', function (req, res, next) {
 router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function (req, res, next) {
 
   let renderParams = {
-    "user": JSON.stringify(req.session.user),
+    "userId": req.session.user.id,
+    "username": req.session.user.username,
     "title": `Dashboard for: ${req.session.user.fullName}`,
     "pen": null
   }
+
+  console.log(renderParams);
 
   res.render('dashboard', renderParams);
 });
@@ -44,7 +47,7 @@ router.get('/dashboard', [collections.checkUserExists, collections.checkAuthStat
 router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (req, res, next) => {
 
   let renderParams = {
-    "user": JSON.stringify(req.session.user),
+    "userId": req.session.user.id,
     "username": req.session.user.username,
     "title": 'New Pen',
     "pen": null
@@ -66,7 +69,7 @@ router.get('/:username/pen/:penId', [collections.checkUserExists, collections.ch
     const penExternals = await penExternalUtil.getExternalsByPenId(req.params.penId);
 
     let renderParams = {
-      "user": JSON.stringify(req.session.user),
+      "userId": req.session.user.id,
       "username": req.session.user.username,
       "title": pen.penName,
       "pen": {

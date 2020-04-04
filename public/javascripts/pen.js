@@ -461,6 +461,19 @@ function deleteModalCollectionRow(id){
 
 function setupExternalModals(){
 
+    // Set up links to the modals 
+    $('#modal-css-link').click(() => {
+        $('.tabs').tabs('select', 'tab-css');
+    });
+
+    $('#modal-html-link').click(() => {
+        $('.tabs').tabs('select', 'tab-html');
+    });
+
+    $('#modal-js-link').click(() => {
+        $('.tabs').tabs('select', 'tab-js');
+    });
+
     cssExternalListGroup = $("#modal-css-externals");
     // jsExternalListGroup = $("#modal-js-externals");
 

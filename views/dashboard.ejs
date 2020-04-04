@@ -277,9 +277,10 @@
 <footer>
 
 
-  <% if (user) { %>
+  <% if (userId && username) { %>
     <script>
-       const user = <%- user %>            
+       const userId = <%- userId %>
+       const username = `<%- username %>`                        
     </script>
   <% } %>
 
