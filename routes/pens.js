@@ -176,18 +176,20 @@ router.post('/', [], async (req, res, next) => {
     }
 
     const externals = req.body.penExternals;
-    for (var i = 0; i < externals.length; ++i) {
+    if (externals) {
+      for (var i = 0; i < externals.length; ++i) {
 
-      const newExternal = {
-        penId: newPen[0].penId,
-        externalType: externals[i].externalType,
-        url: externals[i].url
+        const newExternal = {
+          penId: newPen[0].penId,
+          externalType: externals[i].externalType,
+          url: externals[i].url
+        }
+        
+        await penExternalUtil.createPenExternal(newExternal);
+  
       }
-      
-      await penExternalUtil.createPenExternal(newExternal);
-
-
     }
+   
 
     res.status(201).json(newPen[0]);
   }

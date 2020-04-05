@@ -21,6 +21,10 @@ let penShowContainer;
 let penEditContainer;
 let penNameInput;
 let penNameView;
+let htmlClassInput;                             // Global Reference to modal's html class content
+let htmlHeadInput;                              // Global Reference to modal's html head content
+let htmlClassValue;
+let htmlHeadValue;
 let externalsString = "";
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
@@ -65,6 +69,12 @@ $(() => {
     penNameInput = $("#penName");
     penNameView = $("#pen-name-value");
 
+    htmlClassInput = $("#modal-html-classes");
+    htmlHeadInput = $("#modal-html-content");
+
+
+
+
     // Pen update name - change state
     $("#edit-pen-name").click(() => {
         if (!editingName) {
@@ -82,9 +92,13 @@ $(() => {
 
             if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
                 penNameView.text(updatedPenName);
-                putPenUpdate(penInfo.penId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
+                putPenUpdate(penInfo.penId, updatedPenName, 
+                    htmlEditorContent, cssEditorContent, jsEditorContent, 
+                    penExternals, htmlClassValue, htmlHeadValue);
             } else {
-                postNewPen(userId, updatedPenName, htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
+                postNewPen(userId, updatedPenName, 
+                    htmlEditorContent, cssEditorContent, jsEditorContent, 
+                    penExternals, htmlClassValue , htmlHeadValue);
             }
             penShowContainer.show();
             penEditContainer.hide();
@@ -96,9 +110,13 @@ $(() => {
     $("#save-pen").click(() => {
 
         if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
-            putPenUpdate(penInfo.penId, penInfo.penName, htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
+            putPenUpdate(penInfo.penId, penInfo.penName, 
+                htmlEditorContent, cssEditorContent, jsEditorContent, 
+                penExternals, htmlClassValue, htmlHeadValue);
         } else {
-            postNewPen(userId, penNameView.val(), htmlEditorContent, cssEditorContent, jsEditorContent, penExternals);
+            postNewPen(userId, penNameView.val(), 
+            htmlEditorContent, cssEditorContent, jsEditorContent, 
+            penExternals, htmlClassValue, htmlHeadValue);
         }
 
     });
@@ -109,6 +127,8 @@ $(() => {
             switch (penFragments[i].fragmentType) {
                 case 0:
                     htmlEditorContent = penFragments[i].body;
+                    htmlClassValue = penFragments[i].htmlClass;
+                    htmlHeadValue = penFragments[i].htmlHead;
                     break;
                 case 1:
                     cssEditorContent = penFragments[i].body;
@@ -121,6 +141,7 @@ $(() => {
     } else {
         alert("Let's make a new pen!");
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
+        htmlHeadValue = htmlClassValue = "";
     }
 
 
@@ -171,10 +192,12 @@ function generateExternalsRenderString(externalsList) {
 }
 
 // Function that returns content to be rendered given snippets/external sources
-function returnRenderContentForiFrame(html, css, javascript, externalString) {
+function returnRenderContentForiFrame(html, css, javascript, 
+    externalString, htmlClass, htmlHead) {
 
-    const template = `<html>
+    const template = `<html class="${htmlClass}">
     <head>
+    ${htmlHead}
     ${externalString}
     <style>${css}</style>
     </head>
@@ -202,7 +225,10 @@ function refreshRenderContent() {
             leftEditor.getValue(),
             centerEditor.getValue(),
             rightEditor.getValue(),
-            externalsString)
+            externalsString,
+            htmlClassValue,
+            htmlHeadValue
+            )
     );
 }
 
@@ -217,7 +243,9 @@ function renderInIframe(content) {
 
 // Pen API calls
 
-function postNewPen(userId, penName, htmlContent, cssContent, jsContent, externals) {
+function postNewPen(userId, penName, 
+    htmlContent, cssContent, jsContent, 
+    externals, htmlClass, htmlHead) {
 
     const newPen = {
         penInfo: {
@@ -231,8 +259,8 @@ function postNewPen(userId, penName, htmlContent, cssContent, jsContent, externa
             {
                 fragmentType: 0,
                 body: htmlContent,
-                htmlClass: null,
-                htmlHead: null
+                htmlClass: htmlClass,
+                htmlHead: htmlHead
             },
             {
                 fragmentType: 1,
@@ -250,19 +278,25 @@ function postNewPen(userId, penName, htmlContent, cssContent, jsContent, externa
         penExternals: externals
     }
 
+    console.log ('posting new pen:', newPen);
+
     $.post('/pens', newPen, (data) => {
         window.location.href = `/${userId}/pen/${data.penId}`;
     })
 
 }
 
-function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent, externals) {
+function putPenUpdate(penId, penName, 
+    htmlContent, cssContent, jsContent, 
+    externals , htmlClass, htmlHead) {
 
     // Update the local pen fragments object.
     for (var i = 0; i < penFragments.length; ++i) {
         switch (penFragments[i].fragmentType) {
             case 0:
                 penFragments[i].body = htmlContent;
+                penFragments[i].htmlClass = htmlClass,
+                penFragments[i].htmlHead = htmlHead
                 break;
             case 1:
                 penFragments[i].body = cssContent;
@@ -430,7 +464,7 @@ function monaco_setupMonacoResizing() {
 }
 
 
-// Pen externals handling:
+// Pen externals
 
 var cssExternalListGroup;                   // Global Reference to modal's css external list
 var jsExternalListGroup;                    // Global Reference to modal's js external list
@@ -445,10 +479,16 @@ function setupExternalModals() {
     cssExternalListGroup = $("#modal-css-externals");
     jsExternalListGroup = $("#modal-js-externals");
 
+    htmlClassInput.val(htmlClassValue);
+    htmlHeadInput.val(htmlHeadValue);
+
     sortLocalExternalsAndPopulate(penExternals);
 
     // When the "save" button is clicked, sync the updates with the updated / changed list
     $("#modal-stage-update").click(() => {
+
+        htmlClassValue = htmlClassInput.val() ? htmlClassInput.val() : "";
+        htmlHeadValue = htmlHeadInput.val() ? htmlHeadInput.val() : "";
 
         if (cssExternalListGroup.find(".invalid").length > 0){
             alert("Please correct all external css errors before submission")
