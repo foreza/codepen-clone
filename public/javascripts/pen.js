@@ -550,10 +550,10 @@ function generateNewDisplayRow(id, content) {
         class="external-input validate"/>   
         <div class="row secondary-content">
             <div class="col s12">
-                <a href="#!"><i class="material-icons">send</i></a>    
+                <a target="_blank" href="${content}"><i class="material-icons">send</i></a>    
             </div>
             <div class="col s12">
-                <a onclick="deleteModalCollectionRow('${id}')" href="#">
+                <a onclick="deleteModalCollectionRow('${id}')">
                 <i class="material-icons">delete</i></a>   
             </div>
         </div>          

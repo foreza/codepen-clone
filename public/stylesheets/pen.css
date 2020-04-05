@@ -287,7 +287,13 @@ input#penName {
     overflow: auto;
 }
 
+button.externals-list-add {
+    padding: 0px;
+    border: 1px solid grey;
+}
 
-button .externals-list-add p{
+button.externals-list-add p{
     color: white;
+    background-color: black;
+    padding: 2px;
 }
