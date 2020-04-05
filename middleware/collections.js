@@ -1,6 +1,29 @@
 const middlewareCollection = {};
 const yup = require('yup');
 var userUtil = require('../dbUtils/userUtils')
+const Hashids = require('hashids/cjs')
+const hashids = new Hashids()
+
+
+
+// HashID Help function
+
+// middlewareCollection.util_encodeToHashId = (penID) => {
+//     const unhashedPenId = penID;
+//     const hashedPenId = hashids.encode(unhashedPenId);
+//     console.log(`[encodeToHashId] - Converted ${unhashedPenId} to ${hashedPenId} `);
+//     return hashedPenId;
+// }
+
+middlewareCollection.decodeToPenId = async (req, res, next) => {
+    const hashedPenId = req.params.hashId;        
+    const unhashedPenId = (hashids.decode(hashedPenId))[0];
+    console.log(`[decodeToPenId] - Converted ${hashedPenId} to ${unhashedPenId} `);
+    req.params.penId = unhashedPenId;
+    next();
+}
+
+
 
 // Authentication Middleware
 

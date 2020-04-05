@@ -1,8 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var collections = require('../middleware/collections')
 var penUtil = require('../dbUtils/penUtils')
 var penFragmentUtil = require('../dbUtils/penFragmentUtils')
 var penExternalUtil = require('../dbUtils/penExternalUtils')
+const Hashids = require('hashids/cjs')
+const hashids = new Hashids()
 
 const penLimit = 50;
 
@@ -36,7 +39,7 @@ router.get('/user/:userId', async (req, res, next) => {
 
 
 // Update everything about a pen given a pen ID
-router.put('/:penId', async (req, res, next) => {
+router.put('/:penId', [], async (req, res, next) => {
 
   const updatedPen = await penUtil.updatePenContentByPenID(req.body.penInfo);
   if (!updatedPen || updatedPen.length <= 0) {
@@ -114,30 +117,6 @@ router.put('/:penId', async (req, res, next) => {
 });
 
 
-
-
-
-// // Create multiple externa
-// router.post('/:penId/external/:externalId', async (req, res, next) => {
-
-//   const externalBody = {
-//     penId: newPen[0].penId,
-//     externalType: externalType[i].fragmentType,
-//     body: fragments[i].body ? fragments[i].body : null,
-//     htmlClass: fragments[i].htmlClass ? fragments[i].htmlClass : null,
-//     htmlHead: fragments[i].htmlHead ? fragments[i].htmlHead : null,
-//     createdAt: new Date()
-//   }
-
-//   try {
-//     penExternalUtil.createPenExternal(req.params.penId)
-//   } catch (e) {
-//     res.sendStatus(404)
-//   }
-//   res.sendStatus(200);
-// });
-
-
 // Update everything about a pen given a pen ID
 router.delete('/:penId/external/:externalId', async (req, res, next) => {
   try {
@@ -151,17 +130,28 @@ router.delete('/:penId/external/:externalId', async (req, res, next) => {
 
 // Create a new pen
 router.post('/', [], async (req, res, next) => {
-  console.log("Adding new pen. Req body: ", req.body);
-
-  // TODO: Generate the HASHID at this step. We'll do a temporary hashID for now.
-  req.body.penInfo.hashId = "t3mpt3mp";
 
   const pen = req.body.penInfo;
-  const newPen = (await penUtil.addNewPen(pen))[0];
+
+   // This will be set later once we retrieve the new pen ID
+  req.body.penInfo.hashId = '000000';    
+  let newPen = (await penUtil.addNewPen(pen))[0];
+
+  console.log("Added new pen: ", newPen);
 
   if (!newPen || newPen.length <= 0) {
     res.sendStatus(404);
   } else {
+
+    const newhashId = hashids.encode(newPen[0].penId);
+    console.log(`[encodeToHashId] - Converted ${newPen[0].penId} to ${newhashId}`);
+
+    newPen = (await penUtil.updatePenWithHashId({
+      penId: newPen[0].penId,
+      hashId: newhashId
+    }))[0];
+
+    
     const fragments = req.body.penFragments;
     for (var i = 0; i < fragments.length; ++i) {
       const fragmentBody = {
@@ -190,7 +180,6 @@ router.post('/', [], async (req, res, next) => {
       }
     }
    
-
     res.status(201).json(newPen[0]);
   }
 

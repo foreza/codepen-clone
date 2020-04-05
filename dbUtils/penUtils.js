@@ -37,6 +37,19 @@ util.addNewPen = async (pen) => {
     return ret;
 }
 
+const updatePenWithHashQuery = `UPDATE "Pens" 
+    SET "hashId"=:hashId WHERE ("penId"=:penId)
+    RETURNING *;`
+
+util.updatePenWithHashId = async (update) => {
+    const ret = await db.sequelize.query(updatePenWithHashQuery, {
+        replacements: { ...update },
+        type: db.sequelize.QueryTypes.UPDATE
+    })
+
+    return ret;
+}
+
 
 
 /* 

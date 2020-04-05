@@ -23,8 +23,8 @@ let penNameInput;
 let penNameView;
 let htmlClassInput;                             // Global Reference to modal's html class content
 let htmlHeadInput;                              // Global Reference to modal's html head content
-let htmlClassValue;
-let htmlHeadValue;
+let htmlClassValue = "";
+let htmlHeadValue = "";
 let externalsString = "";
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
@@ -127,8 +127,8 @@ $(() => {
             switch (penFragments[i].fragmentType) {
                 case 0:
                     htmlEditorContent = penFragments[i].body;
-                    htmlClassValue = penFragments[i].htmlClass;
-                    htmlHeadValue = penFragments[i].htmlHead;
+                    htmlClassValue = (penFragments[i].htmlClass != null) ? penFragments[i].htmlClass : "" ;
+                    htmlHeadValue = (penFragments[i].htmlHead != null) ? penFragments[i].htmlHead : "";
                     break;
                 case 1:
                     cssEditorContent = penFragments[i].body;
@@ -246,6 +246,7 @@ function renderInIframe(content) {
 function postNewPen(userId, penName, 
     htmlContent, cssContent, jsContent, 
     externals, htmlClass, htmlHead) {
+        
 
     const newPen = {
         penInfo: {
@@ -265,14 +266,10 @@ function postNewPen(userId, penName,
             {
                 fragmentType: 1,
                 body: cssContent,
-                htmlClass: null,
-                htmlHead: null
             },
             {
                 fragmentType: 2,
                 body: jsContent,
-                htmlClass: null,
-                htmlHead: null
             }
         ],
         penExternals: externals
@@ -281,7 +278,7 @@ function postNewPen(userId, penName,
     console.log ('posting new pen:', newPen);
 
     $.post('/pens', newPen, (data) => {
-        window.location.href = `/${userId}/pen/${data.penId}`;
+        window.location.href = `/${username}/pen/${data.hashId}`;
     })
 
 }
@@ -479,6 +476,8 @@ function setupExternalModals() {
     cssExternalListGroup = $("#modal-css-externals");
     jsExternalListGroup = $("#modal-js-externals");
 
+    console.log("htmlClassValue set", htmlClassValue);
+
     htmlClassInput.val(htmlClassValue);
     htmlHeadInput.val(htmlHeadValue);
 
@@ -487,8 +486,8 @@ function setupExternalModals() {
     // When the "save" button is clicked, sync the updates with the updated / changed list
     $("#modal-stage-update").click(() => {
 
-        htmlClassValue = htmlClassInput.val() ? htmlClassInput.val() : "";
-        htmlHeadValue = htmlHeadInput.val() ? htmlHeadInput.val() : "";
+        htmlClassValue = (htmlClassInput.val() != null) ? htmlClassInput.val() : "";
+        htmlHeadValue = (htmlHeadInput.val() != null) ? htmlHeadInput.val() : "";
 
         if (cssExternalListGroup.find(".invalid").length > 0){
             alert("Please correct all external css errors before submission")
