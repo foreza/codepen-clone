@@ -297,3 +297,25 @@ button.externals-list-add p{
     background-color: black;
     padding: 2px;
 }
+
+.html-input {
+    height: auto !important;
+    font-size: 15px !important;
+    background-color: #d5d7de;
+    border: 0px !important;
+    border-radius: 5px !important;
+    margin: 0 !important;
+    margin-top: 10px !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 5px !important;
+    padding-top: 5px !important;
+
+}
+
+.help-container-icon {
+    float: right;
+}
+
+.help-container-icon a {
+    color: white;
+}
