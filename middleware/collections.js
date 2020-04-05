@@ -4,6 +4,15 @@ var userUtil = require('../dbUtils/userUtils')
 
 // Authentication Middleware
 
+middlewareCollection.checkValidityOfPenId = async (req, res, next) => {
+    const eval = Number(req.params.penId);
+    if (isNaN(eval)) {
+        res.sendStatus(400);     
+    } else {
+        next();
+    }
+}
+
 middlewareCollection.checkUserExists = async (req, res, next) => {
     if (req.session && req.session.user) {
         const user = await userUtil.getUserById(req.session.user.id);   // ingest the id

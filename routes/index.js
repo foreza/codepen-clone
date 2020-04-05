@@ -56,7 +56,7 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 });
 
 /* GET Pen page (for existing pen) */
-router.get('/:username/pen/:penId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
+router.get('/:username/pen/:penId', [collections.checkUserExists, collections.checkAuthState, collections.checkValidityOfPenId], async (req, res, next) => {
 
   // Note: username param is not used at present
 

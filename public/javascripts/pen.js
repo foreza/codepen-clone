@@ -119,12 +119,12 @@ $(() => {
             }
         }
     } else {
-        alert("no content provided");
+        alert("Let's make a new pen!");
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
     }
 
-    // Import remote externals and make string for template:
-    externalsString = generateLocalExternals(penExternals);
+
+
 
     // Setup Monaco Editor view
     monaco_setupMonacoResizing();
@@ -133,30 +133,44 @@ $(() => {
     // Render content provided from remote
     monaco_initializeEditors();
 
-    // Setup modals
+    // Setup modals (also sets up externalsDictionary)
     setupExternalModals();
+
+    // Import remote externals and make string for template:
+    externalsString = generateExternalsRenderString(externalsDictionary);
+
 });
 
+function generateExternalsRenderString(externalsList) {
 
-function generateLocalExternals(externalsList) {
+    let keys = Object.keys(externalsList);
     let externals = "";
-    for (var i = 0; i < externalsList.length; ++i) {
-        switch (externalsList[i].externalType) {
-            case 0: // css
-                externals += `<link type="text/css" rel="stylesheet" href='${externalsList[i].url}' />`
-                break;
-            case 1: // js
-                externals += `<script type="text/javascript" src='${externalsList[i].url}'></script>`
-                break;
+
+    for (var i = 0; i < keys.length; ++i){
+        console.log("scanning:", externalsList[keys[i]]);
+        
+
+        // Skip rendering anything marked for deletion
+        if (!externalsList[keys[i]].delete) {
+            switch (externalsList[keys[i]].externalType) {
+                case 0: // css
+                    externals += `<link type="text/css" rel="stylesheet" href='${externalsList[keys[i]].url}' />`
+                    break;
+                case 1: // js
+                    externals += `<script type="text/javascript" src='${externalsList[keys[i]].url}'></script>`
+                    break;
+            }
         }
 
         externals += "\n"
+
     }
 
-    // console.log("externals string: ", externals);
+    console.log("externals string: ", externals);
     return externals;
 }
 
+// Function that returns content to be rendered given snippets/external sources
 function returnRenderContentForiFrame(html, css, javascript, externalString) {
 
     const template = `<html>
@@ -170,12 +184,10 @@ function returnRenderContentForiFrame(html, css, javascript, externalString) {
 </html>`;
 
     console.log("generated:", template);
-
-
-
     return template;
 }
 
+// Resets timer before a new iFrame render
 function handleEditorUpdate() {
     if (updateTimerRef) {
         clearTimeout(updateTimerRef);
@@ -183,10 +195,7 @@ function handleEditorUpdate() {
     updateTimerRef = setTimeout(refreshRenderContent, timeBeforeEditorUpdate);
 }
 
-
-
-
-
+// Function to invoke rendering with provided content + externals in iframe
 function refreshRenderContent() {
     renderInIframe(
         returnRenderContentForiFrame(
@@ -197,6 +206,7 @@ function refreshRenderContent() {
     );
 }
 
+// Function to render some specified content in iframe
 function renderInIframe(content) {
     let iFrame = document.getElementById('results-window');
     iFrame = iFrame.contentWindow || iFrame.contentDocument.document || iFrame.contentDocument;
@@ -279,9 +289,12 @@ function putPenUpdate(penId, penName, htmlContent, cssContent, jsContent, extern
     console.log('updated pen:', updatedPen);
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
-        // TODO: Use this if we need it.
+        console.log("Returned pen external data:", data.penExternals)
+        penExternals = data.penExternals;
+        sortLocalExternalsAndPopulate(penExternals);
+
     }).catch(error => {
-        // Handle error
+        alert('something happened');
     })
 }
 
@@ -331,6 +344,10 @@ function monaco_initializeEditors() {
             jsEditorContent = rightEditor.getValue();
             handleEditorUpdate();
         })
+
+
+        refreshRenderContent();     // do an initial render
+
     });
 
 }
@@ -415,101 +432,65 @@ function monaco_setupMonacoResizing() {
 
 // Pen externals handling:
 
+var cssExternalListGroup;                   // Global Reference to modal's css external list
+var jsExternalListGroup;                    // Global Reference to modal's js external list
+var newExternalCount = 0;                   // Keeps track of any new external sources made
+const externalsDictionary = {};             // Local collection of externals to sync with `penExternals` provided by the server
 
 
-
-var cssExternalListGroup;
-var jsExternalListGroup;
-var newExternalCount = 0;
-
-
-
-function sortLocalExternalsAndPopulate(externalsList) {
-
-    for (var i = 0; i < externalsList.length; ++i) {
-
-        switch (externalsList[i].externalType) {
-            case 0:
-                cssExternalListGroup.append(generateNewDisplayRow(externalsList[i].externalId, externalsList[i].url));
-                break;
-            case 1:
-                jsExternalListGroup.append(generateNewDisplayRow(externalsList[i].externalId, externalsList[i].url));
-                break;
-        }
-
-    }
-
-}
-
-
-function generateNewDisplayRow(id, content) {
-
-    const tempRow = `<li id="${id}" class="collection-item">
-    <a href="#!"><i class="material-icons">menu</i></a>    
-    <input name="source-${id}" type="text" value="${content}"
-required="true" class="external-input validate"/>   
-    <div class="row secondary-content">
-        <div class="col s12">
-            <a href="#!"><i class="material-icons">send</i></a>    
-        </div>
-        <div class="col s12">
-            <a onclick="deleteModalCollectionRow('${id}')" href="#"><i class="material-icons">delete</i></a>   
-        </div>
-    </div>          
-</li>`
-    return tempRow;
-}
-
-function deleteModalCollectionRow(id) {
-    $(`#${id}`).remove();       // Remove from view
-    
-    // TODO: fix this naive approach of searching the array
-    for (var i = 0; i < penExternals.length; ++i) {
-        console.log("called on:", id);
-        console.log("iterating through ids:", penExternals[i].externalId)
-        if (penExternals[i].externalId == id){
-            penExternals[i].delete = true;
-            console.log("found, set remove param to true");
-            break;
-        }
-    }
-
-}
-
-
-function generateExternalsObject(tempExtId, type) {
-
-    const newObj = {
-        externalId: tempExtId,
-        externalType: type
-    }
-
-    return newObj;
-}
-
+// Function to get references to the external list groups, bind click events
+// Should be run only once initially on page load
 function setupExternalModals() {
 
     cssExternalListGroup = $("#modal-css-externals");
     jsExternalListGroup = $("#modal-js-externals");
 
+    sortLocalExternalsAndPopulate(penExternals);
+
+    // When the "save" button is clicked, sync the updates with the updated / changed list
+    $("#modal-stage-update").click(() => {
+
+        if (cssExternalListGroup.find(".invalid").length > 0){
+            alert("Please correct all external css errors before submission")
+        } else if (jsExternalListGroup.find(".invalid").length > 0) {
+            alert("Please correct all external js errors before submission")
+        } else {
+            updateExternalsDictionaryFromList(cssExternalListGroup);
+            updateExternalsDictionaryFromList(jsExternalListGroup);
+            externalsString = generateExternalsRenderString(externalsDictionary);
+            syncExternalContentWithPenExternals();
+            refreshRenderContent();
+        }
+
+
+    })
+
+    // TODO: Exiting out of the modal should revert everything back to a prior state.
+    // Currently, this isn't supported.
+
+
+    // When a new external css/js is added, ensure we're keeping an updated ID in the local object
     $("#modal-css-externals-add").click(() => {
-        newExternalCount++;
-        id = `new-external-${newExternalCount}`;
+        newExternalCount++; 
+        const id = `new-external-${newExternalCount}`;
         cssExternalListGroup.append(
-            generateNewDisplayRow(id, '<link>'));
-        penExternals.push(generateExternalsObject(id, 0))
+            generateNewDisplayRow(id, '*.css'));
+        
+        externalsDictionary[id] = generateExternalsObject(id, 0);
     });
 
     $("#modal-js-externals-add").click(() => {
         newExternalCount++;
-        id = `new-external-${newExternalCount}`;
+        const id = `new-external-${newExternalCount}`;
         jsExternalListGroup.append(
-            generateNewDisplayRow(null, "<script>"));
-        penExternals.push(generateExternalsObject(id, 1))
+            generateNewDisplayRow(id, "*.js"));
+        
+        externalsDictionary[id] = generateExternalsObject(id, 1);
     });
 
 
     // Set up links to the modals 
+
     $('#modal-css-link').click(() => {
         $('.tabs').tabs('select', 'tab-css');
     });
@@ -522,10 +503,128 @@ function setupExternalModals() {
         $('.tabs').tabs('select', 'tab-js');
     });
 
+}
 
 
+// Iterates through a provided externalsList (penExternals)
+// Should be called ONLY on page load or page update (via put) to do an initial populate
+function sortLocalExternalsAndPopulate(externalsList) {
 
+    cssExternalListGroup.empty();
+    jsExternalListGroup.empty();
 
-    sortLocalExternalsAndPopulate(penExternals);
+    // Generate under the correct display group (CSS or JS)
+    // display this out based off of CSS or JS: O(n)
+    for (var i = 0; i < externalsList.length; ++i) {
+
+        switch (externalsList[i].externalType) {
+            case 0:
+                cssExternalListGroup.append(
+                    generateNewDisplayRow(
+                        externalsList[i].externalId, 
+                        externalsList[i].url));
+                break;
+            case 1:
+                jsExternalListGroup.append(
+                    generateNewDisplayRow(
+                        externalsList[i].externalId, 
+                        externalsList[i].url));
+                break;
+        }
+
+        // Populate externalsDictionary, using the DB's external ID as key
+        // This allows O(1) lookup time
+        externalsDictionary[(externalsList[i].externalId)] = externalsList[i];
+    }
 
 }
+
+
+// Function to generate DOM for a new externals list display row
+function generateNewDisplayRow(id, content) {
+
+    const tempRow = 
+    `<li id="${id}" class="collection-item">
+        <a href="#!"><i class="material-icons">menu</i></a>    
+        <input name="source-${id}" type="text" value="${content}" required="true" 
+        class="external-input validate"/>   
+        <div class="row secondary-content">
+            <div class="col s12">
+                <a href="#!"><i class="material-icons">send</i></a>    
+            </div>
+            <div class="col s12">
+                <a onclick="deleteModalCollectionRow('${id}')" href="#">
+                <i class="material-icons">delete</i></a>   
+            </div>
+        </div>          
+    </li>`
+
+    return tempRow;
+}
+
+// Function to delete from DOM and the local dictionary
+// Each externals list item will be able to invoke this function
+function deleteModalCollectionRow(id) {
+    $(`#${id}`).remove();                       // Remove from view
+    externalsDictionary[id].delete = true;      // Set deletion flag (server will clean up)
+}
+
+// Function to sync the externalsDictionary with the content actually entered
+// TODO: A validation step should be done prior
+function updateExternalsDictionaryFromList(listGroup){
+
+    inputRows = listGroup.children();               // Get the list of rows for the list group
+
+    // For each row, find the relevant entry in the dictionary and update the value (O(n))
+    for (var i = 0; i < inputRows.length; ++i ){
+        const id = inputRows[i].id;
+        const url = $(inputRows[i]).find(".external-input")[0].value;
+        externalsDictionary[id].url = url;
+    }
+
+}
+
+
+function syncExternalContentWithPenExternals(){
+    
+    // externalsDictionary => penExternals on save
+    penExternals = [];          // Reset this to empty - our dictionary is source of truth
+
+    let keys = Object.keys(externalsDictionary);
+
+    for (var i = 0; i < keys.length; ++i){
+        console.log("scanning:", externalsDictionary[keys[i]]);
+
+        // If this has a penId, this indicates this was stored in the backend
+        if (externalsDictionary[keys[i]].penId){
+            console.log("had existed: ", externalsDictionary[keys[i]].externalId)
+            penExternals.push(externalsDictionary[keys[i]]);
+
+
+        } else {
+            // If this is new content (doesn't have a penId), omit the ID so we can get a proper one from the server
+            console.log("addition: ", externalsDictionary[keys[i]].externalId)
+
+            const insertObj = {
+                externalType: externalsDictionary[keys[i]].externalType,
+                url: externalsDictionary[keys[i]].url
+            }
+            
+            penExternals.push(insertObj);
+        }
+
+    }
+
+    console.log(penExternals);
+
+}
+
+// Helper function to generate a new externals object
+function generateExternalsObject(tempExtId, type) {
+    const newObj = {
+        externalId: tempExtId,
+        externalType: type
+    }
+    return newObj;
+}
+

@@ -60,6 +60,7 @@ router.put('/:penId', async (req, res, next) => {
 
     // Handling external update/deletion/creation
     const externalUpdates = req.body.penExternals;
+    const updatedExternals = [];
     for (var i = 0; i < externalUpdates.length; ++i) {
 
       console.log("processing: ", externalUpdates[i])
@@ -77,7 +78,8 @@ router.put('/:penId', async (req, res, next) => {
             url: externalUpdates[i].url
           }
           console.log("Updating external: ", externalUpdates[i].externalId)
-          await penExternalUtil.updatePenExternal(externalUpdate);
+          const updatedExternal = await penExternalUtil.updatePenExternal(externalUpdate);
+          updatedExternals.push(updatedExternal[0][0]);
         }
         
       } else {
@@ -89,14 +91,23 @@ router.put('/:penId', async (req, res, next) => {
         }
         console.log("Creating new external: ", externalUpdates[i].url)
 
-        await penExternalUtil.createPenExternal(newExternal)
+        const createdExternal = await (penExternalUtil.createPenExternal(newExternal))
+        console.log("pushing this: ", createdExternal[0][0]);
+        updatedExternals.push(createdExternal[0][0]);
       }
 
 
     }
 
+    const updatedPenPayload = {
+      penInfo : updatedPen[0][0],
+      penExternals : updatedExternals
+    }
 
-    res.json(updatedPen[0][0]);
+    // res.json(updatedPen[0][0]);
+
+    console.log("updatedPenPayload: ", updatedPenPayload)
+    res.json(updatedPenPayload);
 
   }
 
@@ -106,25 +117,25 @@ router.put('/:penId', async (req, res, next) => {
 
 
 
-// Create multiple externa
-router.post('/:penId/external/:externalId', async (req, res, next) => {
+// // Create multiple externa
+// router.post('/:penId/external/:externalId', async (req, res, next) => {
 
-  const externalBody = {
-    penId: newPen[0].penId,
-    externalType: externalType[i].fragmentType,
-    body: fragments[i].body ? fragments[i].body : null,
-    htmlClass: fragments[i].htmlClass ? fragments[i].htmlClass : null,
-    htmlHead: fragments[i].htmlHead ? fragments[i].htmlHead : null,
-    createdAt: new Date()
-  }
+//   const externalBody = {
+//     penId: newPen[0].penId,
+//     externalType: externalType[i].fragmentType,
+//     body: fragments[i].body ? fragments[i].body : null,
+//     htmlClass: fragments[i].htmlClass ? fragments[i].htmlClass : null,
+//     htmlHead: fragments[i].htmlHead ? fragments[i].htmlHead : null,
+//     createdAt: new Date()
+//   }
 
-  try {
-    penExternalUtil.createPenExternal(req.params.penId)
-  } catch (e) {
-    res.sendStatus(404)
-  }
-  res.sendStatus(200);
-});
+//   try {
+//     penExternalUtil.createPenExternal(req.params.penId)
+//   } catch (e) {
+//     res.sendStatus(404)
+//   }
+//   res.sendStatus(200);
+// });
 
 
 // Update everything about a pen given a pen ID
@@ -152,9 +163,7 @@ router.post('/', [], async (req, res, next) => {
     res.sendStatus(404);
   } else {
     const fragments = req.body.penFragments;
-
     for (var i = 0; i < fragments.length; ++i) {
-
       const fragmentBody = {
         penId: newPen[0].penId,
         fragmentType: fragments[i].fragmentType,
@@ -163,10 +172,23 @@ router.post('/', [], async (req, res, next) => {
         htmlHead: fragments[i].htmlHead ? fragments[i].htmlHead : null,
         createdAt: new Date()
       }
-
       await penFragmentUtil.createPenFragment(fragmentBody);
+    }
+
+    const externals = req.body.penExternals;
+    for (var i = 0; i < externals.length; ++i) {
+
+      const newExternal = {
+        penId: newPen[0].penId,
+        externalType: externals[i].externalType,
+        url: externals[i].url
+      }
+      
+      await penExternalUtil.createPenExternal(newExternal);
+
 
     }
+
     res.status(201).json(newPen[0]);
   }
 
