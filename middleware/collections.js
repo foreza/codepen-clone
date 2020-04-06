@@ -21,6 +21,18 @@ middlewareCollection.decodeToPenId = async (req, res, next) => {
 
 }
 
+middlewareCollection.checkPenIDValidity = async (req, res, next) => {
+
+    // do a cast to number
+
+    if (isNaN(parseInt(req.params.id))) {
+        res.sendStatus(400);
+    } else {
+        next();
+    }
+
+}
+
 
 // Authentication Middleware
 

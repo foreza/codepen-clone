@@ -10,7 +10,7 @@ const hashids = new Hashids()
 const penLimit = 50;
 
 // Get Pen and associated Pen fragments given pen ID
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', [collections.checkPenIDValidity], async (req, res, next) => {
   const pen = await penUtil.getPenByPenID(req.params.id);
   if (!pen || pen.length === 0) {
     res.sendStatus(404);

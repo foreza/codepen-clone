@@ -111,4 +111,23 @@ describe('Users', function () {
   })
 
 
+  it('Try to get a pen with a non-existing pen ID, verify error code (404)', async () => {
+    try {
+      const response = await chai.request(app).get('/pens/999')
+      assert.equal(response.status, 404, 'Pen should not exist');
+    } catch (err) {
+      throw err;
+    }
+  })
+
+  it('Try to get a pen with an invalid pen ID, verify error code (400)', async () => {
+    try {
+      const response = await chai.request(app).get('/pens/youCallThisAnID????')
+      assert.equal(response.status, 400, 'Pen should not exist');
+    } catch (err) {
+      throw err;
+    }
+  })
+
+
 });
