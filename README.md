@@ -4,7 +4,7 @@
 ## Project Requirements:
 * PostGres (recommended: v12+)
 * Node.js (recommended: v12.14.+)
-* (Windows only) win-node-env: https://github.com/laggingreflex/win-node-env
+* (Windows only) Also do `npm i win-node-env` https://github.com/laggingreflex/win-node-env
 
 
 ## Run Development environment

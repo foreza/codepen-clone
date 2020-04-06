@@ -56,7 +56,7 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 });
 
 /* GET Pen page (for existing pen) */
-router.get('/:username/pen/:hashId', [collections.checkUserExists, collections.checkAuthState, collections.decodeToPenId, collections.checkValidityOfPenId], async (req, res, next) => {
+router.get('/:username/pen/:hashId', [collections.checkUserExists, collections.checkAuthState, collections.decodeToPenId], async (req, res, next) => {
 
   const pen = (await penUtil.getPenByPenID(req.params.penId))[0];
 

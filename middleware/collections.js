@@ -6,35 +6,24 @@ const hashids = new Hashids()
 
 
 
-// HashID Help function
-
-// middlewareCollection.util_encodeToHashId = (penID) => {
-//     const unhashedPenId = penID;
-//     const hashedPenId = hashids.encode(unhashedPenId);
-//     console.log(`[encodeToHashId] - Converted ${unhashedPenId} to ${hashedPenId} `);
-//     return hashedPenId;
-// }
+// HashID decode function
 
 middlewareCollection.decodeToPenId = async (req, res, next) => {
     const hashedPenId = req.params.hashId;        
-    const unhashedPenId = (hashids.decode(hashedPenId))[0];
-    console.log(`[decodeToPenId] - Converted ${hashedPenId} to ${unhashedPenId} `);
-    req.params.penId = unhashedPenId;
-    next();
-}
+    try {
+        unhashedPenId = (hashids.decode(hashedPenId))[0];
+        console.log(`[decodeToPenId] - Converted ${hashedPenId} to ${unhashedPenId} `);
+        req.params.penId = unhashedPenId;
+        next();
+    } catch (e) {
+        res.sendStatus(400);
+    }
 
+}
 
 
 // Authentication Middleware
 
-middlewareCollection.checkValidityOfPenId = async (req, res, next) => {
-    const eval = Number(req.params.penId);
-    if (isNaN(eval)) {
-        res.sendStatus(400);     
-    } else {
-        next();
-    }
-}
 
 middlewareCollection.checkUserExists = async (req, res, next) => {
     if (req.session && req.session.user) {
