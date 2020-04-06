@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=development npx sequelize-cli db:migrate && NODE_ENV=development node ./bin/www",
-    "test": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test mocha ./server-tests --exit && NODE_ENV=test npx sequelize-cli db:migrate:undo",
-    "fe-test": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test node ./bin/www & NODE_ENV=test testcafe chrome frontend-tests/ && NODE_ENV=test npx sequelize-cli db:migrate:undo",
+    "test": "NODE_ENV=test npx sequelize-cli db:migrate:undo:all && NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test mocha ./server-tests --exit && NODE_ENV=test npx sequelize-cli db:migrate:undo:all",
+    "fe-test": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test node ./bin/www & NODE_ENV=test testcafe chrome frontend-tests/ && NODE_ENV=test npx sequelize-cli db:migrate:undo:all",
     "debug": "NODE_ENV=test nodemon --inspect ./bin/www",
     "dev-seed-up": "NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-users.js && NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-pens.js && NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-pen-fragments.js && NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-pen-externals.js",
     "dev-seed-down": "NODE_ENV=development npx sequelize-cli db:seed:undo:all",
