@@ -21,6 +21,12 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      htmlClass: {
+        type: Sequelize.STRING
+      },
+      htmlHead: {
+        type: Sequelize.STRING
+      }, 
       numFavorites: {
         type: Sequelize.INTEGER
       },

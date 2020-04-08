@@ -13,19 +13,21 @@ const util = {};
     * numFavorites
     * numComments
     * numViews
+    * htmlClass
+    * htmlHead
 */
 
 // INSERT INTO "Pens" ( 
-//     "userId", "penName", "numFavorites",  "numComments", "numViews") 
-// VALUES (1, 'basic bob', 'A9A9A9A9', 40,  20, 999)
+//     "userId", "penName", "htmlClass", "htmlHead"  "numFavorites",  "numComments", "numViews") 
+// VALUES (1, 'basic bob', 'A9A9A9A9', "blah", "<meta>blaaah</meta>", 40,  20, 999)
 // RETURNING *;
 
 
 // TODO: Use a transaction to ensure that Pen Creation is coupled with Pen Fragment creation
 
 const addNewPenQuery = `INSERT INTO "Pens" ( 
-    "userId", "penName", "numFavorites",  "numComments", "numViews") 
-VALUES (:userId, :penName, :numFavorites,  :numComments, :numViews)
+    "userId", "penName", "htmlClass", "htmlHead", "numFavorites", "numComments", "numViews") 
+VALUES (:userId, :penName, :htmlClass, :htmlHead, :numFavorites,  :numComments, :numViews)
 RETURNING *;`
 util.addNewPen = async (pen) => {
     const ret = await db.sequelize.query(addNewPenQuery, {
@@ -49,20 +51,29 @@ util.addNewPen = async (pen) => {
     * numFavorites
     * numComments
     * numViews
+    * htmlClass
+    * htmlHead
 */
 
 // UPDATE "Pens" 
-// SET "penName"='a whole new world', "numFavorites"=50, "numComments"=10, "numViews"=568
+// SET "penName"='a whole new world', "blah", "<meta>blaaah</meta>", "numFavorites"=50, "numComments"=10, "numViews"=568
 // WHERE ("penId"=4)
 // RETURNING *;
 
-const updatePenInfoByPenIDQuery = (update) => {
-    return `UPDATE "Pens" 
-SET "penName"='${update.penName}', "numFavorites"='${update.numFavorites}', "numComments"='${update.numComments}', "numViews"='${update.numViews}'
-WHERE ("penId"=${update.penId})
-RETURNING *;` };
+const updatePenInfoByPenIDQuery = `UPDATE "Pens" 
+SET "penName"=:penName, "htmlClass"=:htmlClass, "htmlHead"=:htmlHead,  "numFavorites"=:numFavorites, "numComments"=:numComments, "numViews"=:numViews
+WHERE ("penId"=:penId)
+RETURNING *;`
+
+// const updatePenInfoByPenIDQuery = (update) => {
+//     return `UPDATE "Pens" 
+// SET "penName"='${update.penName}', "numFavorites"='${update.numFavorites}', "numComments"='${update.numComments}', "numViews"='${update.numViews}'
+// WHERE ("penId"=${update.penId})
+// RETURNING *;` };
+
 util.updatePenContentByPenID = async (update) => {
-    const ret = await db.sequelize.query(updatePenInfoByPenIDQuery(update), {
+    const ret = await db.sequelize.query(updatePenInfoByPenIDQuery, {
+        replacements: {...update},
         type: db.sequelize.QueryTypes.UPDATE
     });
 

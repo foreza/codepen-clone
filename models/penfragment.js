@@ -4,8 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     fragmentId: DataTypes.INTEGER,
     penId: DataTypes.INTEGER,
     fragmentType: DataTypes.INTEGER,
-    htmlClass: DataTypes.STRING,
-    htmlHead: DataTypes.STRING
+    body: DataTypes.STRING
   }, {});
   PenFragment.associate = function(models) {
     PenFragment.belongsTo(models.Pen);

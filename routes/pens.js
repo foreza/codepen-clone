@@ -58,8 +58,6 @@ router.put('/:penId', [], async (req, res, next) => {
       const fragmentUpdate = {
         fragmentId: fragmentUpdates[i].fragmentId,
         body: fragmentUpdates[i].body ? fragmentUpdates[i].body : null,
-        htmlClass: fragmentUpdates[i].htmlClass ? fragmentUpdates[i].htmlClass : null,
-        htmlHead: fragmentUpdates[i].htmlHead ? fragmentUpdates[i].htmlHead : null,
       }
 
       await penFragmentUtil.updatePenFragment(fragmentUpdate);
@@ -153,8 +151,6 @@ router.post('/', [], async (req, res, next) => {
         penId: newPen[0].penId,
         fragmentType: fragments[i].fragmentType,
         body: fragments[i].body ? fragments[i].body : null,
-        htmlClass: fragments[i].htmlClass ? fragments[i].htmlClass : null,
-        htmlHead: fragments[i].htmlHead ? fragments[i].htmlHead : null,
         createdAt: new Date()
       }
       await penFragmentUtil.createPenFragment(fragmentBody);

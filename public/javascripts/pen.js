@@ -123,12 +123,14 @@ $(() => {
 
     // If 'pen' was provided, set content
     if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
+
+        htmlClassValue = (penInfo.htmlClass != null) ? penInfo.htmlClass : "";
+        htmlHeadValue = (penInfo.htmlHead != null) ? penInfo.htmlHead : "";
+
         for (var i = 0; i < penFragments.length; ++i) {
             switch (penFragments[i].fragmentType) {
                 case 0:
                     htmlEditorContent = penFragments[i].body;
-                    htmlClassValue = (penFragments[i].htmlClass != null) ? penFragments[i].htmlClass : "";
-                    htmlHeadValue = (penFragments[i].htmlHead != null) ? penFragments[i].htmlHead : "";
                     break;
                 case 1:
                     cssEditorContent = penFragments[i].body;
@@ -258,14 +260,14 @@ function postNewPen(userId, penName,
             penName: penName,
             numFavorites: 0,
             numComments: 0,
-            numViews: 0
+            numViews: 0,
+            htmlClass: htmlClass,
+            htmlHead: htmlHead
         },
         penFragments: [
             {
                 fragmentType: 0,
                 body: htmlContent,
-                htmlClass: htmlClass,
-                htmlHead: htmlHead
             },
             {
                 fragmentType: 1,
@@ -296,8 +298,6 @@ function putPenUpdate(penId, penName,
         switch (penFragments[i].fragmentType) {
             case 0:
                 penFragments[i].body = htmlContent;
-                penFragments[i].htmlClass = htmlClass,
-                    penFragments[i].htmlHead = htmlHead
                 break;
             case 1:
                 penFragments[i].body = cssContent;
@@ -314,14 +314,16 @@ function putPenUpdate(penId, penName,
             penName: penName,
             numFavorites: 99,   // TODO: implement
             numComments: 99,    // TODO: implement
-            numViews: 99        // TODO: implement
+            numViews: 99,       // TODO: implement
+            htmlClass: htmlClass,
+            htmlHead: htmlHead
         },
         penFragments: penFragments,
         penExternals: externals
     }
 
 
-    console.log('updated pen:', updatedPen);
+    // console.log('updated pen:', updatedPen);
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
         console.log("Returned pen external data:", data.penExternals)
