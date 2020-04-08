@@ -114,7 +114,7 @@ $(() => {
                 htmlEditorContent, cssEditorContent, jsEditorContent,
                 penExternals, htmlClassValue, htmlHeadValue);
         } else {
-            postNewPen(userId, penNameView.val(),
+            postNewPen(userId, penNameView.text().trim(),
                 htmlEditorContent, cssEditorContent, jsEditorContent,
                 penExternals, htmlClassValue, htmlHeadValue);
         }
@@ -279,7 +279,7 @@ function postNewPen(userId, penName,
         penExternals: externals
     }
 
-    console.log('posting new pen:', newPen);
+    // console.log('posting new pen:', newPen);
 
     $.post('/pens', newPen, (data) => {
         window.location.href = `/${username}/pen/${data.hashId}`;

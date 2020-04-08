@@ -49,7 +49,7 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
   let renderParams = {
     "userId": req.session.user.id,
     "username": req.session.user.username,
-    "title": 'New Pen',
+    "title": 'Untitled Pen',
     "pen": null
   }
   res.render('pen', renderParams);
