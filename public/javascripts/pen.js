@@ -583,11 +583,15 @@ function sortLocalExternalsAndPopulate(externalsList) {
 function generateNewDisplayRow(id, content) {
 
     const tempRow = 
-    `<li id="${id}" class="collection-item">
-        <a href="#!"><i class="material-icons">menu</i></a>    
-        <input name="source-${id}" type="text" value="${content}" required="true" 
-        class="external-input validate"/>   
-        <div class="row secondary-content">
+    `<li id="${id}" class="row collection-item">
+        <div class="valign-wrapper col s1">
+            <a href="#!"><i class="material-icons">menu</i></a>
+        </div>
+        <div class="valign-wrappe col s10">    
+            <input name="source-${id}" type="text" value="${content}" required="true" 
+            class="external-input validate"/>
+        </div>
+        <div class="row secondary-content col s1">
             <div class="col s12">
                 <a class="icon-wrapper-link" target="_blank" href="${content}">
                 <i class="material-icons">send</i></a>    
