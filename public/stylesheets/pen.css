@@ -319,3 +319,7 @@ button.externals-list-add p{
 .help-container-icon a {
     color: white;
 }
+
+.input-row-error {
+    background-color: red;
+}

@@ -12,9 +12,14 @@ middlewareCollection.decodeToPenId = async (req, res, next) => {
     const hashedPenId = req.params.hashId;        
     try {
         unhashedPenId = (hashids.decode(hashedPenId))[0];
-        console.log(`[decodeToPenId] - Converted ${hashedPenId} to ${unhashedPenId} `);
-        req.params.penId = unhashedPenId;
-        next();
+        if (unhashedPenId == undefined){
+            res.sendStatus(400);
+        } else {
+            console.log(`[decodeToPenId] - Converted ${hashedPenId} to ${unhashedPenId} `);
+            req.params.penId = unhashedPenId;
+            next();
+        }
+
     } catch (e) {
         res.sendStatus(400);
     }

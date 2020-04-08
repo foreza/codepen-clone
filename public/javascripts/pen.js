@@ -92,13 +92,13 @@ $(() => {
 
             if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
                 penNameView.text(updatedPenName);
-                putPenUpdate(penInfo.penId, updatedPenName, 
-                    htmlEditorContent, cssEditorContent, jsEditorContent, 
+                putPenUpdate(penInfo.penId, updatedPenName,
+                    htmlEditorContent, cssEditorContent, jsEditorContent,
                     penExternals, htmlClassValue, htmlHeadValue);
             } else {
-                postNewPen(userId, updatedPenName, 
-                    htmlEditorContent, cssEditorContent, jsEditorContent, 
-                    penExternals, htmlClassValue , htmlHeadValue);
+                postNewPen(userId, updatedPenName,
+                    htmlEditorContent, cssEditorContent, jsEditorContent,
+                    penExternals, htmlClassValue, htmlHeadValue);
             }
             penShowContainer.show();
             penEditContainer.hide();
@@ -110,13 +110,13 @@ $(() => {
     $("#save-pen").click(() => {
 
         if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
-            putPenUpdate(penInfo.penId, penInfo.penName, 
-                htmlEditorContent, cssEditorContent, jsEditorContent, 
+            putPenUpdate(penInfo.penId, penInfo.penName,
+                htmlEditorContent, cssEditorContent, jsEditorContent,
                 penExternals, htmlClassValue, htmlHeadValue);
         } else {
-            postNewPen(userId, penNameView.val(), 
-            htmlEditorContent, cssEditorContent, jsEditorContent, 
-            penExternals, htmlClassValue, htmlHeadValue);
+            postNewPen(userId, penNameView.val(),
+                htmlEditorContent, cssEditorContent, jsEditorContent,
+                penExternals, htmlClassValue, htmlHeadValue);
         }
 
     });
@@ -127,7 +127,7 @@ $(() => {
             switch (penFragments[i].fragmentType) {
                 case 0:
                     htmlEditorContent = penFragments[i].body;
-                    htmlClassValue = (penFragments[i].htmlClass != null) ? penFragments[i].htmlClass : "" ;
+                    htmlClassValue = (penFragments[i].htmlClass != null) ? penFragments[i].htmlClass : "";
                     htmlHeadValue = (penFragments[i].htmlHead != null) ? penFragments[i].htmlHead : "";
                     break;
                 case 1:
@@ -167,12 +167,16 @@ function generateExternalsRenderString(externalsList) {
     let keys = Object.keys(externalsList);
     let externals = "";
 
-    for (var i = 0; i < keys.length; ++i){
+    for (var i = 0; i < keys.length; ++i) {
         console.log("scanning:", externalsList[keys[i]]);
-        
 
-        // Skip rendering anything marked for deletion
-        if (!externalsList[keys[i]].delete) {
+        // https://stackoverflow.com/questions/1410311/regular-expression-for-url-validation-in-javascript
+
+        const targetURL = externalsList[keys[i]].url;
+
+        // Skip rendering anything marked for deletion and that isn't a proper URL
+        if (!externalsList[keys[i]].delete && validateURL(targetURL)) {
+
             switch (externalsList[keys[i]].externalType) {
                 case 0: // css
                     externals += `<link type="text/css" rel="stylesheet" href='${externalsList[keys[i]].url}' />`
@@ -192,7 +196,7 @@ function generateExternalsRenderString(externalsList) {
 }
 
 // Function that returns content to be rendered given snippets/external sources
-function returnRenderContentForiFrame(html, css, javascript, 
+function returnRenderContentForiFrame(html, css, javascript,
     externalString, htmlClass, htmlHead) {
 
     const template = `<html class="${htmlClass}">
@@ -228,7 +232,7 @@ function refreshRenderContent() {
             externalsString,
             htmlClassValue,
             htmlHeadValue
-            )
+        )
     );
 }
 
@@ -243,10 +247,10 @@ function renderInIframe(content) {
 
 // Pen API calls
 
-function postNewPen(userId, penName, 
-    htmlContent, cssContent, jsContent, 
+function postNewPen(userId, penName,
+    htmlContent, cssContent, jsContent,
     externals, htmlClass, htmlHead) {
-        
+
 
     const newPen = {
         penInfo: {
@@ -275,7 +279,7 @@ function postNewPen(userId, penName,
         penExternals: externals
     }
 
-    console.log ('posting new pen:', newPen);
+    console.log('posting new pen:', newPen);
 
     $.post('/pens', newPen, (data) => {
         window.location.href = `/${username}/pen/${data.hashId}`;
@@ -283,9 +287,9 @@ function postNewPen(userId, penName,
 
 }
 
-function putPenUpdate(penId, penName, 
-    htmlContent, cssContent, jsContent, 
-    externals , htmlClass, htmlHead) {
+function putPenUpdate(penId, penName,
+    htmlContent, cssContent, jsContent,
+    externals, htmlClass, htmlHead) {
 
     // Update the local pen fragments object.
     for (var i = 0; i < penFragments.length; ++i) {
@@ -293,7 +297,7 @@ function putPenUpdate(penId, penName,
             case 0:
                 penFragments[i].body = htmlContent;
                 penFragments[i].htmlClass = htmlClass,
-                penFragments[i].htmlHead = htmlHead
+                    penFragments[i].htmlHead = htmlHead
                 break;
             case 1:
                 penFragments[i].body = cssContent;
@@ -325,7 +329,7 @@ function putPenUpdate(penId, penName,
         sortLocalExternalsAndPopulate(penExternals);
 
     }).catch(error => {
-        alert('something happened');
+        alert('Error updating pen');
     })
 }
 
@@ -489,17 +493,12 @@ function setupExternalModals() {
         htmlClassValue = (htmlClassInput.val() != null) ? htmlClassInput.val() : "";
         htmlHeadValue = (htmlHeadInput.val() != null) ? htmlHeadInput.val() : "";
 
-        if (cssExternalListGroup.find(".invalid").length > 0){
-            alert("Please correct all external css errors before submission")
-        } else if (jsExternalListGroup.find(".invalid").length > 0) {
-            alert("Please correct all external js errors before submission")
-        } else {
-            updateExternalsDictionaryFromList(cssExternalListGroup);
-            updateExternalsDictionaryFromList(jsExternalListGroup);
-            externalsString = generateExternalsRenderString(externalsDictionary);
-            syncExternalContentWithPenExternals();
-            refreshRenderContent();
-        }
+
+        updateExternalsDictionaryFromList(cssExternalListGroup, "CSS");
+        updateExternalsDictionaryFromList(jsExternalListGroup, "JavaScript");
+        externalsString = generateExternalsRenderString(externalsDictionary);
+        syncExternalContentWithPenExternals();
+        refreshRenderContent();
 
 
     })
@@ -510,11 +509,11 @@ function setupExternalModals() {
 
     // When a new external css/js is added, ensure we're keeping an updated ID in the local object
     $("#modal-css-externals-add").click(() => {
-        newExternalCount++; 
+        newExternalCount++;
         const id = `new-external-${newExternalCount}`;
         cssExternalListGroup.append(
-            generateNewDisplayRow(id, '*.css'));
-        
+            generateNewDisplayRow(id, ''));
+
         externalsDictionary[id] = generateExternalsObject(id, 0);
     });
 
@@ -522,8 +521,8 @@ function setupExternalModals() {
         newExternalCount++;
         const id = `new-external-${newExternalCount}`;
         jsExternalListGroup.append(
-            generateNewDisplayRow(id, "*.js"));
-        
+            generateNewDisplayRow(id, ''));
+
         externalsDictionary[id] = generateExternalsObject(id, 1);
     });
 
@@ -560,13 +559,13 @@ function sortLocalExternalsAndPopulate(externalsList) {
             case 0:
                 cssExternalListGroup.append(
                     generateNewDisplayRow(
-                        externalsList[i].externalId, 
+                        externalsList[i].externalId,
                         externalsList[i].url));
                 break;
             case 1:
                 jsExternalListGroup.append(
                     generateNewDisplayRow(
-                        externalsList[i].externalId, 
+                        externalsList[i].externalId,
                         externalsList[i].url));
                 break;
         }
@@ -582,13 +581,13 @@ function sortLocalExternalsAndPopulate(externalsList) {
 // Function to generate DOM for a new externals list display row
 function generateNewDisplayRow(id, content) {
 
-    const tempRow = 
-    `<li id="${id}" class="row collection-item">
+    const tempRow =
+        `<li id="${id}" class="row collection-item">
         <div class="valign-wrapper col s1">
             <a href="#!"><i class="material-icons">menu</i></a>
         </div>
-        <div class="valign-wrappe col s10">    
-            <input name="source-${id}" type="text" value="${content}" required="true" 
+        <div class="valign-wrapper col s10">    
+            <input name="source-${id}" type="url" value="${content}" required="true" 
             class="external-input validate"/>
         </div>
         <div class="row secondary-content col s1">
@@ -610,37 +609,53 @@ function generateNewDisplayRow(id, content) {
 // Each externals list item will be able to invoke this function
 function deleteModalCollectionRow(id) {
     $(`#${id}`).remove();                       // Remove from view
-    externalsDictionary[id].delete = true;      // Set deletion flag (server will clean up)
+    if (id.indexOf("new-external-") >= 0) {
+        delete externalsDictionary[id];         // If it's a new external, don't set deletion (just remove it)
+    } else {
+        externalsDictionary[id].delete = true;      // Set deletion flag (server will clean up)
+    }
 }
 
 // Function to sync the externalsDictionary with the content actually entered
 // TODO: A validation step should be done prior
-function updateExternalsDictionaryFromList(listGroup){
+function updateExternalsDictionaryFromList(listGroup, name) {
 
     inputRows = listGroup.children();               // Get the list of rows for the list group
+    let errState = false;
+    let errDict = [];
 
     // For each row, find the relevant entry in the dictionary and update the value (O(n))
-    for (var i = 0; i < inputRows.length; ++i ){
+    for (var i = 0; i < inputRows.length; ++i) {
         const id = inputRows[i].id;
-        const url = $(inputRows[i]).find(".external-input")[0].value;
+        const input = $(inputRows[i]).find(".external-input");
+        const url = input[0].value;
         externalsDictionary[id].url = url;
+        if (!validateURL(url)) {
+            $(input[0]).focus();
+            errState = true;
+            errDict.push(`${name} : ${url}`);
+        }
+    }
+
+    if (errState) {
+        alert(`Please correct the following ${name} errors - the following ${name} sources will be saved, but not be rendered: ` + JSON.stringify(errDict, null, 4));
     }
 
 }
 
 
-function syncExternalContentWithPenExternals(){
-    
+function syncExternalContentWithPenExternals() {
+
     // externalsDictionary => penExternals on save
     penExternals = [];          // Reset this to empty - our dictionary is source of truth
 
     let keys = Object.keys(externalsDictionary);
 
-    for (var i = 0; i < keys.length; ++i){
+    for (var i = 0; i < keys.length; ++i) {
         console.log("scanning:", externalsDictionary[keys[i]]);
 
         // If this has a penId, this indicates this was stored in the backend
-        if (externalsDictionary[keys[i]].penId){
+        if (externalsDictionary[keys[i]].penId) {
             console.log("had existed: ", externalsDictionary[keys[i]].externalId)
             penExternals.push(externalsDictionary[keys[i]]);
 
@@ -653,7 +668,7 @@ function syncExternalContentWithPenExternals(){
                 externalType: externalsDictionary[keys[i]].externalType,
                 url: externalsDictionary[keys[i]].url
             }
-            
+
             penExternals.push(insertObj);
         }
 
@@ -672,3 +687,7 @@ function generateExternalsObject(tempExtId, type) {
     return newObj;
 }
 
+function validateURL(url){
+    const validURL = /^(ftp|http|https):\/\/[^ "]+$/.test(url);
+    return validURL;
+}
