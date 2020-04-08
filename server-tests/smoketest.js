@@ -6,6 +6,8 @@ const assert = require('chai').assert;
 const app = require('../app');
 
 const testParams = require('./data/testUserSet');
+const testPenParams = require('./data/testPenSet');
+
 const testUtils = require('./testUtils');
 const dbUtils = require('../dbUtils/testUtils')
 
@@ -124,6 +126,28 @@ describe('Users', function () {
     try {
       const response = await chai.request(app).get('/pens/youCallThisAnID????')
       assert.equal(response.status, 400, 'Pen should not exist');
+    } catch (err) {
+      throw err;
+    }
+  })
+
+  let penId;      // Store the penID to be referenced 
+
+  it('Try to add a pen, verify 201 success', async () => {
+    try {
+      const response = await chai.request(app).post('/pens').send(testPenParams.smokeTestPens.test_pen_0);
+      assert.equal(response.status, 201, 'Pen should be created');
+      assert.deepEqual(testPenParams.smokeTestPens.test_pen_0_res["penInfo"], response.body, 'User should match the info provided');
+      penId = response.body.penId;
+    } catch (err) {
+      throw err;
+    }
+  })
+
+  it('Try to get a pen with the valid pen ID, verify error code (400)', async () => {
+    try {
+      const response = await chai.request(app).get(`/pens/${penId}`)
+      assert.equal(response.status, 200, 'Pen should exist');
     } catch (err) {
       throw err;
     }
