@@ -66,43 +66,47 @@ router.put('/:penId', [], async (req, res, next) => {
     // Handling external update/deletion/creation
     const externalUpdates = req.body.penExternals;
     const updatedExternals = [];
-    for (var i = 0; i < externalUpdates.length; ++i) {
 
-      console.log("processing: ", externalUpdates[i])
+    if (externalUpdates){
+      for (var i = 0; i < externalUpdates.length; ++i) {
 
-      // If the ID exists (meaning, not new)
-      if (externalUpdates[i].externalId){
-
-        // If this ID was marked for deletion
-        if (externalUpdates[i].delete) {
-          console.log("Removing external: ", externalUpdates[i].externalId)
-          await penExternalUtil.deleteExternalByExternalId(externalUpdates[i].externalId);
+        console.log("processing: ", externalUpdates[i])
+  
+        // If the ID exists (meaning, not new)
+        if (externalUpdates[i].externalId){
+  
+          // If this ID was marked for deletion (no url)
+          if (!externalUpdates[i].url) {
+            console.log("Removing external: ", externalUpdates[i].externalId)
+            await penExternalUtil.deleteExternalByExternalId(externalUpdates[i].externalId);
+          } else {
+            const externalUpdate = {
+              externalId: externalUpdates[i].externalId,
+              url: externalUpdates[i].url
+            }
+            console.log("Updating external: ", externalUpdates[i].externalId)
+            const updatedExternal = await penExternalUtil.updatePenExternal(externalUpdate);
+            updatedExternals.push(updatedExternal[0][0]);
+          }
+          
         } else {
-          const externalUpdate = {
-            externalId: externalUpdates[i].externalId,
+          // ID doesn't exist, meaning new
+          const newExternal = {
+            penId: req.params.penId,
+            externalType: externalUpdates[i].externalType,
             url: externalUpdates[i].url
           }
-          console.log("Updating external: ", externalUpdates[i].externalId)
-          const updatedExternal = await penExternalUtil.updatePenExternal(externalUpdate);
-          updatedExternals.push(updatedExternal[0][0]);
+          console.log("Creating new external: ", externalUpdates[i].url)
+  
+          const createdExternal = await (penExternalUtil.createPenExternal(newExternal))
+          console.log("pushing this: ", createdExternal[0][0]);
+          updatedExternals.push(createdExternal[0][0]);
         }
-        
-      } else {
-        // ID doesn't exist, meaning new
-        const newExternal = {
-          penId: req.params.penId,
-          externalType: externalUpdates[i].externalType,
-          url: externalUpdates[i].url
-        }
-        console.log("Creating new external: ", externalUpdates[i].url)
-
-        const createdExternal = await (penExternalUtil.createPenExternal(newExternal))
-        console.log("pushing this: ", createdExternal[0][0]);
-        updatedExternals.push(createdExternal[0][0]);
+  
+  
       }
-
-
     }
+
 
     const updatedPenPayload = {
       penInfo : updatedPen[0][0],

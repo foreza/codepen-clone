@@ -212,7 +212,7 @@ function returnRenderContentForiFrame(html, css, javascript,
     </body>
 </html>`;
 
-    console.log("generated:", template);
+    // console.log("generated:", template);
     return template;
 }
 
@@ -612,9 +612,12 @@ function generateNewDisplayRow(id, content) {
 function deleteModalCollectionRow(id) {
     $(`#${id}`).remove();                       // Remove from view
     if (id.indexOf("new-external-") >= 0) {
-        delete externalsDictionary[id];         // If it's a new external, don't set deletion (just remove it)
+        delete externalsDictionary[id];         // If it's a new external, remove it
     } else {
-        externalsDictionary[id].delete = true;      // Set deletion flag (server will clean up)
+        // Otherwise, remove everything else besides the external id
+        delete externalsDictionary[id].url;
+        delete externalsDictionary[id].penId;
+        delete externalsDictionary[id].externalType;
     }
 }
 
@@ -655,23 +658,23 @@ function syncExternalContentWithPenExternals() {
 
     for (var i = 0; i < keys.length; ++i) {
         console.log("scanning:", externalsDictionary[keys[i]]);
+        const id = externalsDictionary[keys[i]].externalId;
+        console.log(typeof id);
 
-        // If this has a penId, this indicates this was stored in the backend
-        if (externalsDictionary[keys[i]].penId) {
-            console.log("had existed: ", externalsDictionary[keys[i]].externalId)
-            penExternals.push(externalsDictionary[keys[i]]);
+        if (typeof id === 'string') {
 
+              // If this is new content (doesn't have a penId), omit the ID so we can get a proper one from the server
+              console.log("addition: ", id)
+
+              const insertObj = {
+                  externalType: externalsDictionary[keys[i]].externalType,
+                  url: externalsDictionary[keys[i]].url
+              }
+  
+              penExternals.push(insertObj);
 
         } else {
-            // If this is new content (doesn't have a penId), omit the ID so we can get a proper one from the server
-            console.log("addition: ", externalsDictionary[keys[i]].externalId)
-
-            const insertObj = {
-                externalType: externalsDictionary[keys[i]].externalType,
-                url: externalsDictionary[keys[i]].url
-            }
-
-            penExternals.push(insertObj);
+            penExternals.push(externalsDictionary[keys[i]]);
         }
 
     }
