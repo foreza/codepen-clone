@@ -1,7 +1,7 @@
 'use strict';
 
-const Hashids = require('hashids/cjs')
-const hashids = new Hashids()
+// const Hashids = require('hashids/cjs')
+// const hashids = new Hashids()
 
 
 module.exports = {
@@ -11,7 +11,6 @@ module.exports = {
         {
           penName: "Seed Pen #1",
           userId: 1,
-          hashId: hashids.encode(1),
           numFavorites: 999,
           numViews: 999,
           numComments: 999
@@ -19,7 +18,6 @@ module.exports = {
         {
           penName: "Seed Pen #2",
           userId: 1,
-          hashId: hashids.encode(2),
           numFavorites: 33,
           numViews: 44,
           numComments: 55

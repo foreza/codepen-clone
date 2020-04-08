@@ -33,6 +33,10 @@ router.get('/user/:userId', async (req, res, next) => {
   if (!penList) {
     res.sendStatus(404);
   } else {
+    for (var i = 0; i < penList.length; ++i){
+      const newhashId = hashids.encode(penList[i].penId);
+      penList[i].hashId = newhashId;
+    }
     res.json(penList);
   }
 });
@@ -134,7 +138,7 @@ router.post('/', [], async (req, res, next) => {
   const pen = req.body.penInfo;
 
    // This will be set later once we retrieve the new pen ID
-  req.body.penInfo.hashId = '000000';    
+  // req.body.penInfo.hashId = '000000';    
   let newPen = (await penUtil.addNewPen(pen))[0];
 
   console.log("Added new pen: ", newPen);
@@ -142,15 +146,6 @@ router.post('/', [], async (req, res, next) => {
   if (!newPen || newPen.length <= 0) {
     res.sendStatus(404);
   } else {
-
-    const newhashId = hashids.encode(newPen[0].penId);
-    console.log(`[encodeToHashId] - Converted ${newPen[0].penId} to ${newhashId}`);
-
-    newPen = (await penUtil.updatePenWithHashId({
-      penId: newPen[0].penId,
-      hashId: newhashId
-    }))[0];
-
     
     const fragments = req.body.penFragments;
     for (var i = 0; i < fragments.length; ++i) {
@@ -179,7 +174,10 @@ router.post('/', [], async (req, res, next) => {
   
       }
     }
-   
+
+    const newhashId = hashids.encode(newPen[0].penId);
+    console.log(`[encodeToHashId] - Converted ${newPen[0].penId} to ${newhashId}`);   
+    newPen[0].hashId = newhashId;
     res.status(201).json(newPen[0]);
   }
 

@@ -12,10 +12,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      hashId: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
       userId: {
         type: Sequelize.INTEGER,
         references: {

@@ -8,8 +8,7 @@ const util = {};
     Required Params:
     * userId (fkey)      
     * penName
-    * hashId
-
+    
     Optional Params can be null (indicating empty)
     * numFavorites
     * numComments
@@ -17,7 +16,7 @@ const util = {};
 */
 
 // INSERT INTO "Pens" ( 
-//     "userId", "penName", "hashId", "numFavorites",  "numComments", "numViews") 
+//     "userId", "penName", "numFavorites",  "numComments", "numViews") 
 // VALUES (1, 'basic bob', 'A9A9A9A9', 40,  20, 999)
 // RETURNING *;
 
@@ -25,8 +24,8 @@ const util = {};
 // TODO: Use a transaction to ensure that Pen Creation is coupled with Pen Fragment creation
 
 const addNewPenQuery = `INSERT INTO "Pens" ( 
-    "userId", "penName", "hashId", "numFavorites",  "numComments", "numViews") 
-VALUES (:userId, :penName, :hashId, :numFavorites,  :numComments, :numViews)
+    "userId", "penName", "numFavorites",  "numComments", "numViews") 
+VALUES (:userId, :penName, :numFavorites,  :numComments, :numViews)
 RETURNING *;`
 util.addNewPen = async (pen) => {
     const ret = await db.sequelize.query(addNewPenQuery, {
@@ -36,20 +35,6 @@ util.addNewPen = async (pen) => {
 
     return ret;
 }
-
-const updatePenWithHashQuery = `UPDATE "Pens" 
-    SET "hashId"=:hashId WHERE ("penId"=:penId)
-    RETURNING *;`
-
-util.updatePenWithHashId = async (update) => {
-    const ret = await db.sequelize.query(updatePenWithHashQuery, {
-        replacements: { ...update },
-        type: db.sequelize.QueryTypes.UPDATE
-    })
-
-    return ret;
-}
-
 
 
 /* 
