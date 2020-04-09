@@ -28,6 +28,7 @@ let htmlHeadValue = "";
 let externalsString = "";
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
+let currentHash;
 
 
 
@@ -109,14 +110,23 @@ $(() => {
     // Pen creation/saving logic 
     $("#save-pen").click(() => {
 
-        if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
-            putPenUpdate(penInfo.penId, penInfo.penName,
-                htmlEditorContent, cssEditorContent, jsEditorContent,
-                penExternals, htmlClassValue, htmlHeadValue);
+        if (checkHasHashChanged()){
+            updateStoredHashForEditor();
+            $("#save-pen").removeClass("save-indicator");
+
+            if (typeof penInfo !== 'undefined' && typeof penFragments !== 'undefined') {
+                putPenUpdate(penInfo.penId, penInfo.penName,
+                    htmlEditorContent, cssEditorContent, jsEditorContent,
+                    penExternals, htmlClassValue, htmlHeadValue);
+            } else {
+                postNewPen(userId, penNameView.text().trim(),
+                    htmlEditorContent, cssEditorContent, jsEditorContent,
+                    penExternals, htmlClassValue, htmlHeadValue);
+            }
+
+
         } else {
-            postNewPen(userId, penNameView.text().trim(),
-                htmlEditorContent, cssEditorContent, jsEditorContent,
-                penExternals, htmlClassValue, htmlHeadValue);
+            // No change detected
         }
 
     });
@@ -138,13 +148,16 @@ $(() => {
                 case 2:
                     jsEditorContent = penFragments[i].body;
                     break;
-            }
-        }
+            } 
+       }
+
     } else {
         alert("Let's make a new pen!");
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
         htmlHeadValue = htmlClassValue = "";
+        $("#pen-save-status-content").text("Remember to save often!");
     }
+
 
 
 
@@ -162,6 +175,9 @@ $(() => {
     // Import remote externals and make string for template:
     externalsString = generateExternalsRenderString(externalsDictionary);
 
+    // Use all the values set above to set an initial hash for our editor
+    updateStoredHashForEditor();
+
 });
 
 function generateExternalsRenderString(externalsList) {
@@ -170,8 +186,6 @@ function generateExternalsRenderString(externalsList) {
     let externals = "";
 
     for (var i = 0; i < keys.length; ++i) {
-        console.log("scanning:", externalsList[keys[i]]);
-
         // https://stackoverflow.com/questions/1410311/regular-expression-for-url-validation-in-javascript
 
         const targetURL = externalsList[keys[i]].url;
@@ -193,7 +207,6 @@ function generateExternalsRenderString(externalsList) {
 
     }
 
-    console.log("externals string: ", externals);
     return externals;
 }
 
@@ -212,7 +225,6 @@ function returnRenderContentForiFrame(html, css, javascript,
     </body>
 </html>`;
 
-    // console.log("generated:", template);
     return template;
 }
 
@@ -226,16 +238,28 @@ function handleEditorUpdate() {
 
 // Function to invoke rendering with provided content + externals in iframe
 function refreshRenderContent() {
-    renderInIframe(
-        returnRenderContentForiFrame(
-            leftEditor.getValue(),
-            centerEditor.getValue(),
-            rightEditor.getValue(),
-            externalsString,
-            htmlClassValue,
-            htmlHeadValue
-        )
-    );
+
+    if (checkHasHashChanged()) {
+        $("#pen-save-status-content").text("Remember to save!");
+        $("#save-pen").addClass("save-indicator");
+
+        renderInIframe(
+            returnRenderContentForiFrame(
+                leftEditor.getValue(),
+                centerEditor.getValue(),
+                rightEditor.getValue(),
+                externalsString,
+                htmlClassValue,
+                htmlHeadValue
+            )
+        );
+
+    } else {
+        $("#save-pen").removeClass("save-indicator");
+        $("#pen-save-status-content").text("");
+    }
+
+
 }
 
 // Function to render some specified content in iframe
@@ -281,8 +305,6 @@ function postNewPen(userId, penName,
         penExternals: externals
     }
 
-    // console.log('posting new pen:', newPen);
-
     $.post('/pens', newPen, (data) => {
         window.location.href = `/${username}/pen/${data.hashId}`;
     })
@@ -323,12 +345,13 @@ function putPenUpdate(penId, penName,
     }
 
 
-    // console.log('updated pen:', updatedPen);
+    $("#pen-save-status-content").text("Updating Pen..");
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
         console.log("Returned pen external data:", data.penExternals)
         penExternals = data.penExternals;
         sortLocalExternalsAndPopulate(penExternals);
+        $("#pen-save-status-content").text("");
 
     }).catch(error => {
         alert('Error updating pen');
@@ -482,8 +505,6 @@ function setupExternalModals() {
     cssExternalListGroup = $("#modal-css-externals");
     jsExternalListGroup = $("#modal-js-externals");
 
-    console.log("htmlClassValue set", htmlClassValue);
-
     htmlClassInput.val(htmlClassValue);
     htmlHeadInput.val(htmlHeadValue);
 
@@ -502,6 +523,10 @@ function setupExternalModals() {
         syncExternalContentWithPenExternals();
         refreshRenderContent();
 
+        if (checkHasHashChanged()) {
+            $("#pen-save-status-content").text("Remember to save!");
+            $("#save-pen").addClass("save-indicator");
+        }
 
     })
 
@@ -657,15 +682,11 @@ function syncExternalContentWithPenExternals() {
     let keys = Object.keys(externalsDictionary);
 
     for (var i = 0; i < keys.length; ++i) {
-        console.log("scanning:", externalsDictionary[keys[i]]);
         const id = externalsDictionary[keys[i]].externalId;
-        console.log(typeof id);
 
         if (typeof id === 'string') {
 
               // If this is new content (doesn't have a penId), omit the ID so we can get a proper one from the server
-              console.log("addition: ", id)
-
               const insertObj = {
                   externalType: externalsDictionary[keys[i]].externalType,
                   url: externalsDictionary[keys[i]].url
@@ -678,8 +699,6 @@ function syncExternalContentWithPenExternals() {
         }
 
     }
-
-    console.log(penExternals);
 
 }
 
@@ -695,4 +714,31 @@ function generateExternalsObject(tempExtId, type) {
 function validateURL(url){
     const validURL = /^(ftp|http|https):\/\/[^ "]+$/.test(url);
     return validURL;
+}
+
+
+function updateStoredHashForEditor() {
+    currentHash = generateDirtyHash([htmlClassValue, htmlHeadValue, htmlEditorContent, cssEditorContent, jsEditorContent, externalsString]);
+}
+
+function checkHasHashChanged() {
+    const tHash = generateDirtyHash([htmlClassValue, htmlHeadValue, htmlEditorContent, cssEditorContent, jsEditorContent, externalsString])
+    return (tHash != currentHash);
+}
+
+function generateDirtyHash(arr) {
+    var stringToHash = arr.join(",");
+    return stringToHash.hashCode();
+}
+
+// https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+String.prototype.hashCode = function(){
+	var hash = 0;
+	if (this.length == 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		char = this.charCodeAt(i);
+		hash = ((hash<<5)-hash)+char;
+		hash = hash & hash; 
+	}
+	return hash;
 }

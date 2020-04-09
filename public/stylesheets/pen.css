@@ -49,6 +49,15 @@ body {
     font-size: 14px;
 }
 
+#save-pen {
+    opacity: 50%;
+}
+
+#save-pen.save-indicator {
+    opacity: 100%;
+    border-top: 1px solid yellow;
+}
+
 .row {
     margin-bottom: 0px;
 }
@@ -322,4 +331,22 @@ button.externals-list-add p{
 
 .input-row-error {
     background-color: red;
+}
+
+
+#pen-save-status.center-float-status {
+    position: absolute;
+    left: 45%;
+    border-radius: 20px;
+    background-color: yellow;
+    min-width: 10%;
+    top: 0;
+}
+
+
+#pen-save-status.center-float-status p{
+    color: black;
+    font-size: 10px;
+    text-align: center;
+    line-height: 15px;
 }
