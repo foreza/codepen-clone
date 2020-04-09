@@ -10,19 +10,30 @@ const hashids = new Hashids()
 const penLimit = 50;
 
 // Get Pen and associated Pen fragments given pen ID
+// router.get('/:id', [collections.checkPenIDValidity], async (req, res, next) => {
+//   const pen = await penUtil.getPenByPenID(req.params.id);
+//   if (!pen || pen.length === 0) {
+//     res.sendStatus(404);
+//   } else {
+//     const penFragments = await penFragmentUtil.getFragmentsByPenId(req.params.id);
+//     const penExternals = await penExternalUtil.getExternalsByPenId(req.params.id);
+//     const responsePayload = {
+//       penInfo: pen[0],
+//       penFragments: penFragments,
+//       penExternals: penExternals
+//     };
+//     res.json(responsePayload);
+//   }
+// });
+
+
 router.get('/:id', [collections.checkPenIDValidity], async (req, res, next) => {
-  const pen = await penUtil.getPenByPenID(req.params.id);
-  if (!pen || pen.length === 0) {
+  const pen = await penUtil.getPenByPenIDTransaction(req.params.id);
+  console.log(pen);
+  if (!pen) {
     res.sendStatus(404);
   } else {
-    const penFragments = await penFragmentUtil.getFragmentsByPenId(req.params.id);
-    const penExternals = await penExternalUtil.getExternalsByPenId(req.params.id);
-    const responsePayload = {
-      penInfo: pen[0],
-      penFragments: penFragments,
-      penExternals: penExternals
-    };
-    res.json(responsePayload);
+    res.json(pen);
   }
 });
 

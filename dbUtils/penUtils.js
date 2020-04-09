@@ -1,6 +1,78 @@
 var db = require('../models/index')
 const util = {};
 
+
+// TRANSACTIONS:
+
+
+/* 
+    GET PEN: 
+    We can retrieve a pen AND it's associated info given the penid
+
+    Required Params:
+    * penId (primary key)      
+*/
+
+// SELECT * FROM "Pens" WHERE ("penId"=4);
+
+// const getPenTransactionQuery = (id) => { return `SELECT * FROM "Pens" WHERE ("penId"=${id});` };
+util.getPenByPenIDTransaction = async (id) => {
+    return db.sequelize.transaction((t) => {
+
+        let penInfo;
+        let penFragments;
+        let penExternals;
+
+        try {
+            return db.sequelize.query(getPenByPenIDQuery(id), {
+                type: db.sequelize.QueryTypes.SELECT, transaction: t
+            }).then((pen) => {
+                penInfo = pen;
+                return db.sequelize.query(`SELECT * FROM "PenFragments" WHERE ("penId"=${id}) ORDER BY "fragmentType" ASC;`, {
+                    type: db.sequelize.QueryTypes.SELECT, transaction: t
+                }).then((fragmentList) => {
+                    penFragments = fragmentList;
+                    return db.sequelize.query(`SELECT * FROM "PenExternals" WHERE ("penId"=${id}) ORDER BY "externalType" ASC;`, {
+                        type: db.sequelize.QueryTypes.SELECT, transaction: t
+                    }).then((externalsList) => {
+                        penExternals = externalsList;
+
+                        let obj = {
+                            "penInfo": pen[0],
+                            "penFragments": penFragments,
+                            "penExternals": penExternals
+                        }
+
+                        console.log(obj)
+
+                        return obj;
+
+                    })
+                })
+            });
+
+
+
+        } catch (e) {
+
+            console.log("rolling back!")
+            t.rollback();
+            // do some error handling here
+        }
+
+    });
+
+
+};
+
+
+
+
+
+
+
+
+
 /* 
     CREATE PEN: 
     Pens belong to a User, and are associated based off of userId.
@@ -73,7 +145,7 @@ RETURNING *;`
 
 util.updatePenContentByPenID = async (update) => {
     const ret = await db.sequelize.query(updatePenInfoByPenIDQuery, {
-        replacements: {...update},
+        replacements: { ...update },
         type: db.sequelize.QueryTypes.UPDATE
     });
 
@@ -112,6 +184,10 @@ const getXPensByUserIDQuery = (userId, count) => { return `SELECT * FROM "Pens" 
 util.getPenByUserID = (userId, count) => db.sequelize.query(getXPensByUserIDQuery(userId, count), {
     type: db.sequelize.QueryTypes.SELECT
 });
+
+
+
+
 
 
 module.exports = util;
