@@ -119,7 +119,7 @@ $(() => {
                     htmlEditorContent, cssEditorContent, jsEditorContent,
                     penExternals, htmlClassValue, htmlHeadValue);
             } else {
-                postNewPen(userId, penNameView.text().trim(),
+                postNewPen(userId, penNameView.text(),
                     htmlEditorContent, cssEditorContent, jsEditorContent,
                     penExternals, htmlClassValue, htmlHeadValue);
             }

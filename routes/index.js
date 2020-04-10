@@ -2,11 +2,6 @@ var express = require('express');
 var router = express.Router();
 var collections = require('../middleware/collections')
 var penUtil = require('../dbUtils/penUtils')
-var penFragmentUtil = require('../dbUtils/penFragmentUtils')
-var penExternalUtil = require('../dbUtils/penExternalUtils')
-
-
-
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -59,7 +54,6 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 router.get('/:username/pen/:hashId', [collections.checkUserExists, collections.checkAuthState, collections.decodeToPenId], async (req, res, next) => {
 
   const pen = await penUtil.getPenByPenIDTransaction(req.params.penId);
-
 
   if (!pen) {
     res.sendStatus(404);

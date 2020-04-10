@@ -56,79 +56,12 @@ router.get('/user/:userId', async (req, res, next) => {
 // Update everything about a pen given a pen ID
 router.put('/:penId', [], async (req, res, next) => {
 
-  const updatedPen = await penUtil.updatePenContentByPenID(req.body.penInfo);
+  const updatedPen = await penUtil.updatePenContentByTransaction(req.body);
+  
   if (!updatedPen || updatedPen.length <= 0) {
     res.sendStatus(404);
   } else {
-
-    // TODO: These should be ideally all 1 DB transaction. We'll let server do heavy lifting for now, fix this later
-
-    // HANDLE fragment updates
-    const fragmentUpdates = req.body.penFragments;
-    for (var i = 0; i < fragmentUpdates.length; ++i) {
-      const fragmentUpdate = {
-        fragmentId: fragmentUpdates[i].fragmentId,
-        body: fragmentUpdates[i].body ? fragmentUpdates[i].body : null,
-      }
-
-      await penFragmentUtil.updatePenFragment(fragmentUpdate);
-    }
-
-    // Handling external update/deletion/creation
-    const externalUpdates = req.body.penExternals;
-    const updatedExternals = [];
-
-    if (externalUpdates){
-      for (var i = 0; i < externalUpdates.length; ++i) {
-
-        console.log("processing: ", externalUpdates[i])
-  
-        // If the ID exists (meaning, not new)
-        if (externalUpdates[i].externalId){
-  
-          // If this ID was marked for deletion (no url)
-          if (!externalUpdates[i].url) {
-            console.log("Removing external: ", externalUpdates[i].externalId)
-            await penExternalUtil.deleteExternalByExternalId(externalUpdates[i].externalId);
-          } else {
-            const externalUpdate = {
-              externalId: externalUpdates[i].externalId,
-              url: externalUpdates[i].url
-            }
-            console.log("Updating external: ", externalUpdates[i].externalId)
-            const updatedExternal = await penExternalUtil.updatePenExternal(externalUpdate);
-            updatedExternals.push(updatedExternal[0][0]);
-          }
-          
-        } else {
-          // ID doesn't exist, meaning new
-          const newExternal = {
-            penId: req.params.penId,
-            externalType: externalUpdates[i].externalType,
-            url: externalUpdates[i].url
-          }
-          console.log("Creating new external: ", externalUpdates[i].url)
-  
-          const createdExternal = await (penExternalUtil.createPenExternal(newExternal))
-          console.log("pushing this: ", createdExternal[0][0]);
-          updatedExternals.push(createdExternal[0][0]);
-        }
-  
-  
-      }
-    }
-
-
-    const updatedPenPayload = {
-      penInfo : updatedPen[0][0],
-      penExternals : updatedExternals
-    }
-
-    // res.json(updatedPen[0][0]);
-
-    console.log("updatedPenPayload: ", updatedPenPayload)
-    res.json(updatedPenPayload);
-
+    res.json(updatedPen);
   }
 
 });
