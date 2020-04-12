@@ -12,11 +12,18 @@ const util = {};
     * penId (primary key)      
 */
 
+const getPenByPenIDQuery = 
+`SELECT * 
+FROM "Pens" 
+WHERE ("penId"=:penId);`;
+
 util.getPenByPenIDTransaction = (id) => {
     return db.sequelize.transaction((t) => {
         try {
-            return db.sequelize.query(getPenByPenIDQuery(id), {
-                type: db.sequelize.QueryTypes.SELECT, transaction: t
+            return db.sequelize.query(getPenByPenIDQuery, {
+                type: db.sequelize.QueryTypes.SELECT, 
+                transaction: t,
+                replacements: {penId: id}
             }).then((pen) => {
                 if (pen.length <= 0) {
                     throw Error("No pens found");
@@ -57,12 +64,38 @@ util.getPenByPenIDTransaction = (id) => {
 
 
 
+
+/* 
+    UPDATE PEN: 
+    We can update the name of the pen, as well as any of the optional params.
+
+    Required Params:
+    * penId (primary key)      
+    * penName
+
+    Optional Params can be null (indicating empty)
+    * numFavorites
+    * numComments
+    * numViews
+    * htmlClass
+    * htmlHead
+*/
+
+// UPDATE "Pens" 
+// SET "penName"='a whole new world', "blah", "<meta>blaaah</meta>", "numFavorites"=50, "numComments"=10, "numViews"=568
+// WHERE ("penId"=4)
+// RETURNING *;
+
+const updatePenInfoByPenIDQuery = 
+`UPDATE "Pens" 
+SET "penName"=:penName, "htmlClass"=:htmlClass, "htmlHead"=:htmlHead,  
+"numFavorites"=:numFavorites, "numComments"=:numComments, "numViews"=:numViews
+WHERE ("penId"=:penId) 
+RETURNING *;`
+
 util.updatePenContentByTransaction = (update) => {
     return db.sequelize.transaction(async (t) => {
-
         const penId = update.penInfo.penId;
-        console.log(`penId is ${penId}`);
-
         let penInfo;
         let penFragments = [];
         let penExternals = [];
@@ -74,7 +107,7 @@ util.updatePenContentByTransaction = (update) => {
                 replacements: { ...update.penInfo }
             });
         } catch (err) {
-            console.log("Error with Pen Info Update: ", err)
+            console.error("Error with Pen Info Update: ", err)
             t.rollback();
             throw Error(err);
         }
@@ -94,7 +127,7 @@ util.updatePenContentByTransaction = (update) => {
                         RETURNING *;`, {
                     type: db.sequelize.QueryTypes.UPDATE,
                     transaction: t,
-                    replacements: { ...fragmentUpdate }
+                    replacements: { ...fragmentUpdate.body }
                 })
 
                 penFragments.push(frag[0][0]);
@@ -187,8 +220,40 @@ util.updatePenContentByTransaction = (update) => {
         return obj;
 
 
+    }).catch(err => {
+        console.error(`Update Pen has an err: ${err}`)
+        // t.rollback();
     });
 }
+
+
+/* 
+    CREATE PEN: 
+    Pens belong to a User, and are associated based off of userId.
+
+    Required Params:
+    * userId (fkey)      
+    * penName
+    
+    Optional Params can be null (indicating empty)
+    * numFavorites
+    * numComments
+    * numViews
+    * htmlClass
+    * htmlHead
+    * etc..
+*/
+
+// INSERT INTO "Pens" ( 
+//     "userId", "penName", "htmlClass", "htmlHead"  "numFavorites",  "numComments", "numViews") 
+// VALUES (1, 'basic bob', 'A9A9A9A9', "blah", "<meta>blaaah</meta>", 40,  20, 999)
+// RETURNING *;
+
+
+const addNewPenQuery = `INSERT INTO "Pens" ( 
+    "userId", "penName", "htmlClass", "htmlHead", "numFavorites", "numComments", "numViews") 
+VALUES (:userId, :penName, :htmlClass, :htmlHead, :numFavorites,  :numComments, :numViews)
+RETURNING *;`
 
 util.addNewPenByTransaction = (pen) => {
     return db.sequelize.transaction(async (t) => {
@@ -201,20 +266,16 @@ util.addNewPenByTransaction = (pen) => {
                 replacements: { ...pen.penInfo }
             })
         } catch (err) {
-            console.log("Error with Pen creation: ", err)
             t.rollback();
-            throw Error(err);
+            throw Error(`${err} at PenInfo`);
         }
-
-        console.log(penInfo[0][0]);
         const newPenId = penInfo[0][0].penId;
-
         for (var i = 0; i < pen.penFragments.length; ++i) {
 
             const fragmentBody = {
                 penId: newPenId,
                 fragmentType: pen.penFragments[i].fragmentType,
-                body: pen.penFragments[i].body ? pen.penFragments[i].body : null,
+                body: pen.penFragments[i].body ? pen.penFragments[i] : null,
                 createdAt: new Date()
             }
             try {
@@ -225,9 +286,8 @@ util.addNewPenByTransaction = (pen) => {
                     replacements: { ...fragmentBody }
                 })
             } catch (err) {
-                console.log("Error with Fragment creation: ", err)
                 t.rollback();
-                throw Error(err);
+                throw Error(`${err} at penFragments: ${pen.penFragments[i]}`);
             }
 
 
@@ -250,9 +310,8 @@ util.addNewPenByTransaction = (pen) => {
                         replacements: { ...newExternal }
                     })
                 } catch (err) {
-                    console.log("Error with external creation: ", err)
                     t.rollback();
-                    throw Error(err);
+                    throw Error(`${err} at penExternals: ${pen.penExternals[i]}`);
 
                 }
             }
@@ -260,48 +319,20 @@ util.addNewPenByTransaction = (pen) => {
 
         return penInfo;
 
-
     })
 }
 
 
 
-/* 
-    CREATE PEN: 
-    Pens belong to a User, and are associated based off of userId.
 
-    Required Params:
-    * userId (fkey)      
-    * penName
-    
-    Optional Params can be null (indicating empty)
-    * numFavorites
-    * numComments
-    * numViews
-    * htmlClass
-    * htmlHead
-*/
+// util.addNewPen = async (pen) => {
+//     const ret = await db.sequelize.query(addNewPenQuery, {
+//         replacements: { ...pen },
+//         type: db.sequelize.QueryTypes.INSERT
+//     });
 
-// INSERT INTO "Pens" ( 
-//     "userId", "penName", "htmlClass", "htmlHead"  "numFavorites",  "numComments", "numViews") 
-// VALUES (1, 'basic bob', 'A9A9A9A9', "blah", "<meta>blaaah</meta>", 40,  20, 999)
-// RETURNING *;
-
-
-// TODO: Use a transaction to ensure that Pen Creation is coupled with Pen Fragment creation
-
-const addNewPenQuery = `INSERT INTO "Pens" ( 
-    "userId", "penName", "htmlClass", "htmlHead", "numFavorites", "numComments", "numViews") 
-VALUES (:userId, :penName, :htmlClass, :htmlHead, :numFavorites,  :numComments, :numViews)
-RETURNING *;`
-util.addNewPen = async (pen) => {
-    const ret = await db.sequelize.query(addNewPenQuery, {
-        replacements: { ...pen },
-        type: db.sequelize.QueryTypes.INSERT
-    });
-
-    return ret;
-}
+//     return ret;
+// }
 
 
 /* 
@@ -325,10 +356,7 @@ util.addNewPen = async (pen) => {
 // WHERE ("penId"=4)
 // RETURNING *;
 
-const updatePenInfoByPenIDQuery = `UPDATE "Pens" 
-SET "penName"=:penName, "htmlClass"=:htmlClass, "htmlHead"=:htmlHead,  "numFavorites"=:numFavorites, "numComments"=:numComments, "numViews"=:numViews
-WHERE ("penId"=:penId)
-RETURNING *;`
+
 
 // const updatePenInfoByPenIDQuery = (update) => {
 //     return `UPDATE "Pens" 
@@ -336,14 +364,14 @@ RETURNING *;`
 // WHERE ("penId"=${update.penId})
 // RETURNING *;` };
 
-util.updatePenContentByPenID = async (update) => {
-    const ret = await db.sequelize.query(updatePenInfoByPenIDQuery, {
-        replacements: { ...update },
-        type: db.sequelize.QueryTypes.UPDATE
-    });
+// util.updatePenContentByPenID = async (update) => {
+//     const ret = await db.sequelize.query(updatePenInfoByPenIDQuery, {
+//         replacements: { ...update },
+//         type: db.sequelize.QueryTypes.UPDATE
+//     });
 
-    return ret;
-}
+//     return ret;
+// }
 
 
 /* 
@@ -356,10 +384,10 @@ util.updatePenContentByPenID = async (update) => {
 
 // SELECT * FROM "Pens" WHERE ("penId"=4);
 
-const getPenByPenIDQuery = (id) => { return `SELECT * FROM "Pens" WHERE ("penId"=${id});` };
-util.getPenByPenID = (id) => db.sequelize.query(getPenByPenIDQuery(id), {
-    type: db.sequelize.QueryTypes.SELECT,
-});
+// const getPenByPenIDQuery = (id) => { return `SELECT * FROM "Pens" WHERE ("penId"=${id});` };
+// util.getPenByPenID = (id) => db.sequelize.query(getPenByPenIDQuery(id), {
+//     type: db.sequelize.QueryTypes.SELECT,
+// });
 
 
 /* 

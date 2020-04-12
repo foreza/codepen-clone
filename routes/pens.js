@@ -7,15 +7,29 @@ const hashids = new Hashids()
 const penLimit = 50;
 
 
-router.get('/:id', collections.checkPenIDValidity, (req, res, next) => {
-  penUtil.getPenByPenIDTransaction(req.params.id)
-  .then(pen => { 
-    res.json(pen); 
-  }).catch(err => {
+// Both work! TODO: Which one is "better"?
+
+// router.get('/:id', collections.checkPenIDValidity, (req, res, next) => {
+//   penUtil.getPenByPenIDTransaction(req.params.id)
+//     .then(pen => {
+//       res.json(pen);
+//     }).catch(err => {
+//       console.error(`GET Pen Error: ${err}`);
+//       res.sendStatus(404);
+//     });
+// });
+
+
+router.get('/:id', collections.checkPenIDValidity, async (req, res, next) => {
+  try {
+    const pen = await penUtil.getPenByPenIDTransaction(req.params.id);
+    res.json(pen);
+  } catch (err) {
     console.error(`GET Pen Error: ${err}`);
     res.sendStatus(404);
-  });
+  }
 });
+
 
 
 // Get a collection of pens given a user ID
@@ -35,9 +49,11 @@ router.get('/user/:userId', async (req, res, next) => {
 
 // Update everything about a pen given a pen ID
 router.put('/:penId', [], async (req, res, next) => {
-
-  const updatedPen = await penUtil.updatePenContentByTransaction(req.body);
-
+  const updatedPen = await penUtil.updatePenContentByTransaction(req.body).catch(
+    err => {
+      console.error(`Pen Update Error: ${err}`);
+      res.sendStatus(400);
+    });
   if (!updatedPen || updatedPen.length <= 0) {
     res.sendStatus(404);
   } else {
@@ -48,28 +64,20 @@ router.put('/:penId', [], async (req, res, next) => {
 
 
 // Create a new pen
-router.post('/', [], async (req, res, next) => {
-  const pen = req.body;
-  let ret = await penUtil.addNewPenByTransaction(pen).catch(err => {
-    console.log("err:", err);
-    res.sendStatus(500);  // 
-  });
-
-  if (ret) {
-    newPen = ret[0];
-    console.log("Added new pen: ", newPen);
-
-    if (!newPen || newPen.length <= 0) {
-      res.sendStatus(404);
-    } else {
+router.post('/', (req, res, next) => {
+  penUtil.addNewPenByTransaction(req.body).then(pen => {
+    if (pen) {
+      newPen = pen[0];
+      console.log("Added new pen: ", newPen);
       const newhashId = hashids.encode(newPen[0].penId);
       console.log(`[encodeToHashId] - Converted ${newPen[0].penId} to ${newhashId}`);
       newPen[0].hashId = newhashId;
       res.status(201).json(newPen[0]);
     }
-  }
-
-
+  }).catch(err => {
+    console.error(`Pen Creation Error:", ${err}`);
+    res.sendStatus(400);  // 
+  });
 });
 
 
