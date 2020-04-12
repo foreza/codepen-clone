@@ -12,10 +12,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      hashId: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
       userId: {
         type: Sequelize.INTEGER,
         references: {
@@ -25,6 +21,12 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      htmlClass: {
+        type: Sequelize.STRING
+      },
+      htmlHead: {
+        type: Sequelize.STRING
+      }, 
       numFavorites: {
         type: Sequelize.INTEGER
       },

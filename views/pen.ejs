@@ -13,11 +13,14 @@
     <header>
 
         <div id="pen-view-header" class="valign-wrapper">
+            <div id="pen-save-status" class="center-float-status">
+                <p id="pen-save-status-content"></p>
+            </div>
             <img id="pen-logo" src="/images/codepen-logo.svg" />
             <div id="pen-info">
                 <div id="pen-name-editable" class="valign-wrapper">
                     <div id="pen-name-show-container">
-                        <span id="pen-name-value"><%= title %>
+                        <span value="<%= title %>" id="pen-name-value"><%= title %>
                         </span>
                         <a id="edit-pen-name" href="#"><i class="material-icons">edit</i></a>
                     </div>

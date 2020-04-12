@@ -2,11 +2,6 @@ var express = require('express');
 var router = express.Router();
 var collections = require('../middleware/collections')
 var penUtil = require('../dbUtils/penUtils')
-var penFragmentUtil = require('../dbUtils/penFragmentUtils')
-var penExternalUtil = require('../dbUtils/penExternalUtils')
-
-
-
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -49,7 +44,7 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
   let renderParams = {
     "userId": req.session.user.id,
     "username": req.session.user.username,
-    "title": 'New Pen',
+    "title": 'Untitled Pen',
     "pen": null
   }
   res.render('pen', renderParams);
@@ -58,22 +53,20 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 /* GET Pen page (for existing pen) */
 router.get('/:username/pen/:hashId', [collections.checkUserExists, collections.checkAuthState, collections.decodeToPenId], async (req, res, next) => {
 
-  const pen = (await penUtil.getPenByPenID(req.params.penId))[0];
+  const pen = await penUtil.getPenByPenIDTransaction(req.params.penId);
 
   if (!pen) {
     res.sendStatus(404);
   } else {
-    const penFragments = await penFragmentUtil.getFragmentsByPenId(req.params.penId);
-    const penExternals = await penExternalUtil.getExternalsByPenId(req.params.penId);
 
     let renderParams = {
       "userId": req.session.user.id,
       "username": req.session.user.username,
-      "title": pen.penName,
+      "title": pen.penInfo.penName,
       "pen": {
-        "penInfo": JSON.stringify(pen),
-        "penFragments": JSON.stringify(penFragments),
-        "penExternals": JSON.stringify(penExternals)
+        "penInfo": JSON.stringify(pen.penInfo),
+        "penFragments": JSON.stringify(pen.penFragments),
+        "penExternals": JSON.stringify(pen.penExternals)
       }
     }
 

@@ -18,8 +18,6 @@ const util = {};
 
     Optional Params can be null (indicating empty)
     * body
-    * htmlClass
-    * htmlHead
 */
 
 // INSERT INTO "PenFragments" ( 
@@ -28,8 +26,8 @@ const util = {};
 // RETURNING *;
 
 const createPenFragmentQuery = `INSERT INTO "PenFragments" ( 
-    "penId", "fragmentType", "body", "htmlClass", "htmlHead", "createdAt") 
-VALUES (:penId, :fragmentType,  :body, :htmlClass, :htmlHead, :createdAt)
+    "penId", "fragmentType", "body", "createdAt") 
+VALUES (:penId, :fragmentType,  :body,  :createdAt)
 RETURNING *;`
 util.createPenFragment = async (fragment) => {
     const ret = await db.sequelize.query(createPenFragmentQuery, {
@@ -52,20 +50,16 @@ util.createPenFragment = async (fragment) => {
     
     Remaining params can be null (indicating empty)
     * body
-    * htmlClass
-    * htmlHead
 */
 
 // UPDATE "PenFragments" 
-// SET "body"='<h2>meeeeenaaa</h2>', 
-// "htmlClass"='getDunkedOn', 
-// "htmlHead"='metaIsMeta' 
+// SET "body"='<h2>meeeeenaaa</h2>'
 // WHERE ("fragmentId"=1)
 // RETURNING *;
 
 
 const updatePenFragmentQuery = `UPDATE "PenFragments" 
-SET "body"=:body, "htmlClass"=:htmlClass, "htmlHead"=:htmlHead
+SET "body"=:body
 WHERE ("fragmentId"=:fragmentId)
 RETURNING *;`
 util.updatePenFragment = async (update) => {

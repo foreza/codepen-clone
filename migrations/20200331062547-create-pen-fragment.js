@@ -24,12 +24,6 @@ module.exports = {
       body: {
         type: Sequelize.STRING
       },
-      htmlClass: {
-        type: Sequelize.STRING
-      },
-      htmlHead: {
-        type: Sequelize.STRING
-      }, 
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
