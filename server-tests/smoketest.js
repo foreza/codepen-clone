@@ -137,7 +137,7 @@ describe('Users', function () {
     try {
       const response = await chai.request(app).post('/pens').send(testPenParams.smokeTestPens.test_pen_0);
       assert.equal(response.status, 201, 'Pen should be created');
-      assert.deepEqual(testPenParams.smokeTestPens.test_pen_0_res["penInfo"], response.body, 'User should match the info provided');
+      assert.deepEqual(testPenParams.smokeTestPens.test_pen_0_res["penInfo"], response.body, 'Pen should match the info provided');
       penId = response.body.penId;
     } catch (err) {
       throw err;
@@ -148,6 +148,24 @@ describe('Users', function () {
     try {
       const response = await chai.request(app).get(`/pens/${penId}`)
       assert.equal(response.status, 200, 'Pen should exist');
+    } catch (err) {
+      throw err;
+    }
+  })
+
+
+  it('Try to modify a pen, verify 200 success', async () => {
+    try {
+      const response = await chai.request(app).put(`/pens/${penId}`).send(testPenParams.smokeTestPens.test_pen_0_updated_1);
+      assert.equal(response.status, 200, 'Pen should be updated');
+      assert.deepEqual(testPenParams.smokeTestPens.test_pen_0_updated_1_res["penInfo"], response.body.penInfo, 'Updated Pen should match the info provided');
+
+      let fragments = testPenParams.smokeTestPens.test_pen_0_updated_1_res["penFragments"];
+
+      for (var i = 0; i < fragments.length; ++i ) {
+        assert.equal(fragments[i].body, response.body.penFragments[i].body, 'Updated Pen Fragments should match the info provided');
+      }
+
     } catch (err) {
       throw err;
     }

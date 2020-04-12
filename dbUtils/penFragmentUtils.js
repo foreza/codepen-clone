@@ -30,7 +30,7 @@ const createPenFragmentQuery = `INSERT INTO "PenFragments" (
 VALUES (:penId, :fragmentType,  :body,  :createdAt)
 RETURNING *;`
 
-util.returnPenFragmentQuery = () => {
+util.createPenFragmentQuery = () => {
     return createPenFragmentQuery;
 } 
 

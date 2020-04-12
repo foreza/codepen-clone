@@ -120,6 +120,9 @@ util.updatePenContentByTransaction = (update) => {
                 body: update.penFragments[i].body ? update.penFragments[i].body : null
             }
             try {
+
+                console.log("~~~~~~~~~~~~~processing: ", fragmentUpdate);
+
                 const frag = await db.sequelize.query(
                     `UPDATE "PenFragments" 
                         SET "body"=:body 
@@ -127,8 +130,10 @@ util.updatePenContentByTransaction = (update) => {
                         RETURNING *;`, {
                     type: db.sequelize.QueryTypes.UPDATE,
                     transaction: t,
-                    replacements: { ...fragmentUpdate.body }
+                    replacements: { ...fragmentUpdate }
                 })
+
+                console.log("~~~ LOOOOOK", frag)
 
                 penFragments.push(frag[0][0]);
 
@@ -199,7 +204,7 @@ util.updatePenContentByTransaction = (update) => {
                             replacements: { ...newExternal }
                         })
                         console.log("pushing this: ", createdExternal[0][0]);
-                        updatedExternals.push(createdExternal[0][0]);
+                        penExternals.push(createdExternal[0][0]);
                     } catch (err) {
                         console.log("Error with Pen External Update - make new: ", err)
                         t.rollback();
@@ -270,17 +275,21 @@ util.addNewPenByTransaction = (pen) => {
             throw Error(`${err} at PenInfo`);
         }
         const newPenId = penInfo[0][0].penId;
+
         for (var i = 0; i < pen.penFragments.length; ++i) {
 
             const fragmentBody = {
                 penId: newPenId,
                 fragmentType: pen.penFragments[i].fragmentType,
-                body: pen.penFragments[i].body ? pen.penFragments[i] : null,
+                body: pen.penFragments[i].body ? pen.penFragments[i].body : null,
                 createdAt: new Date()
             }
+
+            console.log("frag body",  fragmentBody)
+
             try {
                 await db.sequelize.query(
-                    fragmentUtil.getFragmentsByPenIdQuery(), {
+                    fragmentUtil.createPenFragmentQuery(), {
                     type: db.sequelize.QueryTypes.INSERT,
                     transaction: t,
                     replacements: { ...fragmentBody }
