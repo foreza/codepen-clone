@@ -1,6 +1,6 @@
 var db = require('../models/index')
-var fragmentUtil = require('./penFragmentUtils')
-var externalUtil = require('./penExternalUtils')
+var fragmentUtil = require('../dbUtils/penFragmentUtils')
+var externalUtil = require('../dbUtils/penExternalUtils')
 const util = {};
 
 
@@ -42,21 +42,21 @@ util.getPenByPenIDTransaction = async (id) => {
                             type: db.sequelize.QueryTypes.SELECT, transaction: t
                         }).then((externalsList) => {
                             penExternals = externalsList;
-    
+
                             let obj = {
                                 "penInfo": pen[0],
                                 "penFragments": penFragments,
                                 "penExternals": penExternals
                             }
-    
+
                             console.log(obj)
-    
+
                             return obj;
-    
+
                         })
                     })
                 }
-                
+
             })
 
 
@@ -115,61 +115,63 @@ util.updatePenContentByTransaction = (update) => {
 
             // length check
 
-            for (var i = 0; i < update.penExternals.length; ++i) {
+            if (update.penExternals) {
+                for (var i = 0; i < update.penExternals.length; ++i) {
 
-                // If the ID exists (meaning, not new)
-                if (update.penExternals[i].externalId) {
+                    // If the ID exists (meaning, not new)
+                    if (update.penExternals[i].externalId) {
 
-                    console.log("processing: ", update.penExternals[i]);
+                        console.log("processing: ", update.penExternals[i]);
 
-                    // If this ID was marked for deletion (no url)
-                    if (!update.penExternals[i].url) {
+                        // If this ID was marked for deletion (no url)
+                        if (!update.penExternals[i].url) {
 
-                        await db.sequelize.query(
-                            `DELETE FROM "PenExternals" WHERE ("externalId"=${update.penExternals[i].externalId});`, {
-                            type: db.sequelize.QueryTypes.DELETE,
-                            transaction: t
-                        })
+                            await db.sequelize.query(
+                                `DELETE FROM "PenExternals" WHERE ("externalId"=${update.penExternals[i].externalId});`, {
+                                type: db.sequelize.QueryTypes.DELETE,
+                                transaction: t
+                            })
 
-                    } else {
-                        const externalUpdate = {
-                            externalId: update.penExternals[i].externalId,
-                            url: update.penExternals[i].url
+                        } else {
+                            const externalUpdate = {
+                                externalId: update.penExternals[i].externalId,
+                                url: update.penExternals[i].url
+                            }
+
+                            const updatedExternal = await db.sequelize.query(
+                                `UPDATE "PenExternals" SET "url"=:url WHERE ("externalId"=:externalId) RETURNING *;`, {
+                                type: db.sequelize.QueryTypes.UPDATE,
+                                transaction: t,
+                                replacements: { ...externalUpdate }
+                            })
+
+                            penExternals.push(updatedExternal[0][0]);
                         }
 
-                        const updatedExternal = await db.sequelize.query(
-                            `UPDATE "PenExternals" SET "url"=:url WHERE ("externalId"=:externalId) RETURNING *;`, {
-                            type: db.sequelize.QueryTypes.UPDATE,
-                            transaction: t,
-                            replacements: { ...externalUpdate }
-                        })
+                    } else {
+                        // ID doesn't exist, meaning new
+                        const newExternal = {
+                            penId: penId,
+                            externalType: update.penExternals[i].externalType,
+                            url: update.penExternals[i].url
+                        }
+                        console.log("Creating new external: ", update.penExternals[i].url)
 
-                        penExternals.push(updatedExternal[0][0]);
-                    }
-
-                } else {
-                    // ID doesn't exist, meaning new
-                    const newExternal = {
-                        penId: penId,
-                        externalType: update.penExternals[i].externalType,
-                        url: update.penExternals[i].url
-                    }
-                    console.log("Creating new external: ", update.penExternals[i].url)
-
-                    const createdExternal = await db.sequelize.query(
-                        `INSERT INTO "PenExternals" ( 
+                        const createdExternal = await db.sequelize.query(
+                            `INSERT INTO "PenExternals" ( 
                             "penId", "externalType", "url") 
                         VALUES (:penId, :externalType,  :url)
                         RETURNING *;`, {
-                        type: db.sequelize.QueryTypes.INSERT,
-                        transaction: t,
-                        replacements: { ...newExternal }
+                            type: db.sequelize.QueryTypes.INSERT,
+                            transaction: t,
+                            replacements: { ...newExternal }
+                        }
+                        )
+                        console.log("pushing this: ", createdExternal[0][0]);
+                        updatedExternals.push(createdExternal[0][0]);
                     }
-                    )
-                    console.log("pushing this: ", createdExternal[0][0]);
-                    updatedExternals.push(createdExternal[0][0]);
-                }
 
+                }
             }
 
             let obj = {
@@ -192,8 +194,86 @@ util.updatePenContentByTransaction = (update) => {
     })
 }
 
+util.addNewPenByTransaction = (pen) => {
+    return db.sequelize.transaction(async (t) => {
+
+        console.log("adding pen: ", pen);
+
+        let penInfo;
+
+        try {
+            penInfo = await db.sequelize.query(addNewPenQuery, {
+                type: db.sequelize.QueryTypes.INSERT,
+                transaction: t,
+                replacements: { ...pen.penInfo }
+            })
+        } catch (err) {
+            console.log("Error with Pen creation: ", err)
+            t.rollback();
+            throw Error(err);
+        }
 
 
+        // should have pen info at this point
+        console.log(penInfo[0][0]);
+        const newPenId = penInfo[0][0].penId;
+
+        for (var i = 0; i < pen.penFragments.length; ++i) {
+
+            console.log("fragment ", pen.penFragments[i]);
+            const fragmentBody = {
+                penId: newPenId,
+                fragmentType: pen.penFragments[i].fragmentType,
+                body: pen.penFragments[i].body ? pen.penFragments[i].body : null,
+                createdAt: new Date()
+            }
+            try {
+                await db.sequelize.query(
+                    fragmentUtil.getFragmentsByPenIdQuery(), {
+                    type: db.sequelize.QueryTypes.INSERT,
+                    transaction: t,
+                    replacements: { ...fragmentBody }
+                })
+            } catch (err) {
+                console.log("Error with Fragment creation: ", err)
+                t.rollback();
+                throw Error(err);
+            }
+
+
+        }
+
+
+        if (pen.penExternals) {
+            for (var i = 0; i < pen.penExternals.length; ++i) {
+                console.log("external ", pen.penExternals[i]);
+                const newExternal = {
+                    penId: newPenId,
+                    externalType: pen.penExternals[i].externalType,
+                    url: pen.penExternals[i].url
+                }
+
+                try {
+                    await db.sequelize.query(
+                        externalUtil.createPenExternalQuery(), {
+                        type: db.sequelize.QueryTypes.INSERT,
+                        transaction: t,
+                        replacements: { ...newExternal }
+                    })
+                } catch (err) {
+                    console.log("Error with external creation: ", err)
+                    t.rollback();
+                    throw Error(err);
+
+                }
+            }
+        }
+
+        return penInfo;
+
+
+    })
+}
 
 
 

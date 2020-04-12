@@ -29,6 +29,11 @@ const createPenFragmentQuery = `INSERT INTO "PenFragments" (
     "penId", "fragmentType", "body", "createdAt") 
 VALUES (:penId, :fragmentType,  :body,  :createdAt)
 RETURNING *;`
+
+util.returnPenFragmentQuery = () => {
+    return createPenFragmentQuery;
+} 
+
 util.createPenFragment = async (fragment) => {
     const ret = await db.sequelize.query(createPenFragmentQuery, {
         replacements: { ...fragment},
@@ -62,6 +67,11 @@ const updatePenFragmentQuery = `UPDATE "PenFragments"
 SET "body"=:body
 WHERE ("fragmentId"=:fragmentId)
 RETURNING *;`
+
+util.updatePenFragmentQuery = () => {
+    return updatePenFragmentQuery;
+} 
+
 util.updatePenFragment = async (update) => {
     const ret = await db.sequelize.query(updatePenFragmentQuery, {
         replacements: { ...update},
@@ -83,8 +93,17 @@ util.updatePenFragment = async (update) => {
 
 // SELECT * FROM "PenFragments" WHERE ("penId"=2);
 
-const getFragmentsByPenIdQuery = (penId) => { return `SELECT * FROM "PenFragments" WHERE ("penId"=${penId}) ORDER BY "fragmentType" ASC;` };
-util.getFragmentsByPenId = (penId) => db.sequelize.query(getFragmentsByPenIdQuery(penId), {
+// const getFragmentsByPenIdQuery = (penId) => { return `SELECT * FROM "PenFragments" WHERE ("penId"=${penId}) ORDER BY "fragmentType" ASC;` };
+
+const getFragmentsByPenIdQuery = `SELECT * FROM "PenFragments" 
+WHERE ("penId"=:penId) ORDER BY "fragmentType" ASC;`;
+
+util.getFragmentsByPenIdQuery = () => {
+    return getFragmentsByPenIdQuery;
+} 
+
+util.getFragmentsByPenId = (penId) => db.sequelize.query(getFragmentsByPenIdQuery, {
+    replacements: { penId: penId},
     type: db.sequelize.QueryTypes.SELECT,
 });
 
@@ -99,8 +118,16 @@ util.getFragmentsByPenId = (penId) => db.sequelize.query(getFragmentsByPenIdQuer
 
 // SELECT * FROM "PenFragments" WHERE ("fragmentId"=2);
 
-const getFragmentsByFragmentIdQuery = (penId) => { return `SELECT * FROM "PenFragments" WHERE ("penId"=${penId});` };
-util.getFragmentById = (penId) => db.sequelize.query(getFragmentsByFragmentIdQuery(penId), {
+// const getFragmentsByFragmentIdQuery = (penId) => { return `SELECT * FROM "PenFragments" WHERE ("penId"=${penId});` };
+
+const getFragmentsByFragmentIdQuery = `SELECT * FROM "PenFragments" WHERE ("penId"=:penId);`;
+
+util.getFragmentsByFragmentIdQuery = () => {
+    return getFragmentsByFragmentIdQuery;
+}
+
+util.getFragmentById = (penId) => db.sequelize.query(getFragmentsByFragmentIdQuery, {
+    replacements: { penId: penId},
     type: db.sequelize.QueryTypes.SELECT,
 });
 

@@ -6,25 +6,7 @@ var penFragmentUtil = require('../dbUtils/penFragmentUtils')
 var penExternalUtil = require('../dbUtils/penExternalUtils')
 const Hashids = require('hashids/cjs')
 const hashids = new Hashids()
-
 const penLimit = 50;
-
-// Get Pen and associated Pen fragments given pen ID
-// router.get('/:id', [collections.checkPenIDValidity], async (req, res, next) => {
-//   const pen = await penUtil.getPenByPenID(req.params.id);
-//   if (!pen || pen.length === 0) {
-//     res.sendStatus(404);
-//   } else {
-//     const penFragments = await penFragmentUtil.getFragmentsByPenId(req.params.id);
-//     const penExternals = await penExternalUtil.getExternalsByPenId(req.params.id);
-//     const responsePayload = {
-//       penInfo: pen[0],
-//       penFragments: penFragments,
-//       penExternals: penExternals
-//     };
-//     res.json(responsePayload);
-//   }
-// });
 
 
 router.get('/:id', [collections.checkPenIDValidity], async (req, res, next) => {
@@ -81,49 +63,27 @@ router.delete('/:penId/external/:externalId', async (req, res, next) => {
 // Create a new pen
 router.post('/', [], async (req, res, next) => {
 
-  const pen = req.body.penInfo;
 
-   // This will be set later once we retrieve the new pen ID
-  // req.body.penInfo.hashId = '000000';    
-  let newPen = (await penUtil.addNewPen(pen))[0];
+  const pen = req.body;
+  let ret = await penUtil.addNewPenByTransaction(pen).catch(err => {
+    console.log("err:", err);
+    res.sendStatus(500);  // 
+  });
 
-  console.log("Added new pen: ", newPen);
-
-  if (!newPen || newPen.length <= 0) {
-    res.sendStatus(404);
-  } else {
-    
-    const fragments = req.body.penFragments;
-    for (var i = 0; i < fragments.length; ++i) {
-      const fragmentBody = {
-        penId: newPen[0].penId,
-        fragmentType: fragments[i].fragmentType,
-        body: fragments[i].body ? fragments[i].body : null,
-        createdAt: new Date()
-      }
-      await penFragmentUtil.createPenFragment(fragmentBody);
-    }
-
-    const externals = req.body.penExternals;
-    if (externals) {
-      for (var i = 0; i < externals.length; ++i) {
-
-        const newExternal = {
-          penId: newPen[0].penId,
-          externalType: externals[i].externalType,
-          url: externals[i].url
-        }
-        
-        await penExternalUtil.createPenExternal(newExternal);
+  if (ret){
+    newPen = ret[0];
+    console.log("Added new pen: ", newPen);
   
-      }
+    if (!newPen || newPen.length <= 0) {
+      res.sendStatus(404);
+    } else {
+      const newhashId = hashids.encode(newPen[0].penId);
+      console.log(`[encodeToHashId] - Converted ${newPen[0].penId} to ${newhashId}`);   
+      newPen[0].hashId = newhashId;
+      res.status(201).json(newPen[0]);
     }
-
-    const newhashId = hashids.encode(newPen[0].penId);
-    console.log(`[encodeToHashId] - Converted ${newPen[0].penId} to ${newhashId}`);   
-    newPen[0].hashId = newhashId;
-    res.status(201).json(newPen[0]);
   }
+
 
 });
 

@@ -25,6 +25,11 @@ const createPenExternalQuery = `INSERT INTO "PenExternals" (
     "penId", "externalType", "url") 
 VALUES (:penId, :externalType,  :url)
 RETURNING *;`
+
+util.createPenExternalQuery = () => {
+    return createPenExternalQuery;
+}
+
 util.createPenExternal = async (external) => {
     const ret = await db.sequelize.query(createPenExternalQuery, {
         replacements: { ...external },
@@ -55,6 +60,11 @@ const updatePenExternalQuery = `UPDATE "PenExternals"
 SET "url"=:url
 WHERE ("externalId"=:externalId)
 RETURNING *;`
+
+util.updatePenExternalQuery = () => {
+    return updatePenExternalQuery;
+}
+
 util.updatePenExternal = async (update) => {
     const ret = await db.sequelize.query(updatePenExternalQuery, {
         replacements: { ...update },
@@ -76,12 +86,22 @@ util.updatePenExternal = async (update) => {
 
 // SELECT * FROM "PenExternals" WHERE ("penId"=2);
 
-const getExternalsByPenIdQuery = (penId) => {
-    return `SELECT * FROM "PenExternals" 
-    WHERE ("penId"=${penId}) 
+// const getExternalsByPenIdQuery = (penId) => {
+//     return `SELECT * FROM "PenExternals" 
+//     WHERE ("penId"=${penId}) 
+//     ORDER BY "externalType" ASC;`
+// };
+
+const getExternalsByPenIdQuery = `SELECT * FROM "PenExternals" 
+    WHERE ("penId"=:penId) 
     ORDER BY "externalType" ASC;`
-};
-util.getExternalsByPenId = (penId) => db.sequelize.query(getExternalsByPenIdQuery(penId), {
+
+util.getExternalsByPenIdQuery = () => {
+    return getExternalsByPenIdQuery;
+}
+
+util.getExternalsByPenId = (penId) => db.sequelize.query(getExternalsByPenIdQuery, {
+    replacements: { penId: penId },
     type: db.sequelize.QueryTypes.SELECT,
 });
 
@@ -96,11 +116,20 @@ util.getExternalsByPenId = (penId) => db.sequelize.query(getExternalsByPenIdQuer
 
 // SELECT * FROM "PenExternals" WHERE ("externalId"=2);
 
-const getExternalsByExternalIdQuery = (externalId) => {
-    return `SELECT * FROM "PenExternals" 
-    WHERE ("externalId"=${externalId});`
+// const getExternalsByExternalIdQuery = (externalId) => {
+//     return `SELECT * FROM "PenExternals" 
+//     WHERE ("externalId"=${externalId});`
+// };
+
+const getExternalsByExternalIdQuery = `SELECT * FROM "PenExternals" 
+    WHERE ("externalId"=:externalId);`;
+
+util.getExternalsByExternalIdQuery = () => {
+    return getExternalsByExternalIdQuery;
 };
-util.getExternalByExternalId = (externalId) => db.sequelize.query(getExternalsByExternalIdQuery(externalId), {
+
+util.getExternalByExternalId = (externalId) => db.sequelize.query(getExternalsByExternalIdQuery, {
+    replacements: { externalId: externalId },
     type: db.sequelize.QueryTypes.SELECT,
 });
 
@@ -115,11 +144,20 @@ util.getExternalByExternalId = (externalId) => db.sequelize.query(getExternalsBy
 // DELETE FROM "PenExternals" WHERE ("externalId"=3);
 
 
-const deleteExternalByExternalIdQuery = (externalId) => {
-    return `DELETE FROM "PenExternals" 
-    WHERE ("externalId"=${externalId});`
-};
-util.deleteExternalByExternalId = (externalId) => db.sequelize.query(deleteExternalByExternalIdQuery(externalId), {
+// const deleteExternalByExternalIdQuery = (externalId) => {
+//     return `DELETE FROM "PenExternals" 
+//     WHERE ("externalId"=${externalId});`
+// };
+
+const deleteExternalByExternalIdQuery = `DELETE FROM "PenExternals" 
+    WHERE ("externalId"=:externalId);`
+
+util.deleteExternalByExternalIdQuery = () => {
+    return deleteExternalByExternalIdQuery;
+}
+
+util.deleteExternalByExternalId = (externalId) => db.sequelize.query(deleteExternalByExternalIdQuery, {
+    replacements: { externalId: externalId },
     type: db.sequelize.QueryTypes.DELETE,
 });
 

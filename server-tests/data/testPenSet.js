@@ -17,7 +17,6 @@ smokeTestPens.test_pen_0_res = {
 smokeTestPens.test_pen_0 = {
     "penInfo":{
        "penName":"Nook's Cranny",
-       "hashId":"jR", // TODO: shouldn't hardcode this.
        "userId":1,
        "htmlClass":'testClass',
        "htmlHead":'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
