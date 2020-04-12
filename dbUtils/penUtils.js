@@ -4,58 +4,38 @@ var externalUtil = require('../dbUtils/penExternalUtils')
 const util = {};
 
 
-// TRANSACTIONS:
-
-
 /* 
     GET PEN: 
-    We can retrieve a pen AND it's associated info given the penid
+    We can retrieve a pen AND associated info given the penid
 
     Required Params:
     * penId (primary key)      
 */
 
-// SELECT * FROM "Pens" WHERE ("penId"=4);
-
-// const getPenTransactionQuery = (id) => { return `SELECT * FROM "Pens" WHERE ("penId"=${id});` };
-util.getPenByPenIDTransaction = async (id) => {
+util.getPenByPenIDTransaction = (id) => {
     return db.sequelize.transaction((t) => {
-
-        let penInfo;
-        let penFragments;
-        let penExternals;
-        let penId;
-
         try {
             return db.sequelize.query(getPenByPenIDQuery(id), {
                 type: db.sequelize.QueryTypes.SELECT, transaction: t
             }).then((pen) => {
                 if (pen.length <= 0) {
-                    return null;
+                    throw Error("No pens found");
                 } else {
-                    console.log("pen:", pen)
-                    penInfo = pen;
-                    penId = pen[0].penId;
                     return db.sequelize.query(fragmentUtil.getFragmentsByPenIdQuery(), {
                         type: db.sequelize.QueryTypes.SELECT,
                         transaction: t,
-                        replacements: { penId: penId }
+                        replacements: { penId: pen[0].penId }
                     }).then((fragmentList) => {
-                        penFragments = fragmentList;
                         return db.sequelize.query(externalUtil.getExternalsByPenIdQuery(), {
                             type: db.sequelize.QueryTypes.SELECT,
                             transaction: t,
-                            replacements: { penId: penId }
+                            replacements: { penId: pen[0].penId  }
                         }).then((externalsList) => {
-                            penExternals = externalsList;
-
                             let obj = {
                                 "penInfo": pen[0],
-                                "penFragments": penFragments,
-                                "penExternals": penExternals
+                                "penFragments": fragmentList,
+                                "penExternals": externalsList
                             }
-
-                            console.log(obj)
 
                             return obj;
 
@@ -64,12 +44,10 @@ util.getPenByPenIDTransaction = async (id) => {
                 }
 
             })
-
-
-
         } catch (e) {
-            console.log("Rolling back transaction")
+            console.error("Rolling back transaction")
             t.rollback();
+            throw Error(err);
         }
 
     });
