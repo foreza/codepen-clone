@@ -29,35 +29,41 @@ util.getPenByPenIDTransaction = async (id) => {
             return db.sequelize.query(getPenByPenIDQuery(id), {
                 type: db.sequelize.QueryTypes.SELECT, transaction: t
             }).then((pen) => {
-                penInfo = pen;
-                return db.sequelize.query(`SELECT * FROM "PenFragments" WHERE ("penId"=${id}) ORDER BY "fragmentType" ASC;`, {
-                    type: db.sequelize.QueryTypes.SELECT, transaction: t
-                }).then((fragmentList) => {
-                    penFragments = fragmentList;
-                    return db.sequelize.query(`SELECT * FROM "PenExternals" WHERE ("penId"=${id}) ORDER BY "externalType" ASC;`, {
+                if (pen.length <= 0) {
+                    return null;
+                } else {
+                    console.log("pen:", pen)
+                    penInfo = pen;
+                    return db.sequelize.query(`SELECT * FROM "PenFragments" WHERE ("penId"=${id}) ORDER BY "fragmentType" ASC;`, {
                         type: db.sequelize.QueryTypes.SELECT, transaction: t
-                    }).then((externalsList) => {
-                        penExternals = externalsList;
-
-                        let obj = {
-                            "penInfo": pen[0],
-                            "penFragments": penFragments,
-                            "penExternals": penExternals
-                        }
-
-                        console.log(obj)
-
-                        return obj;
-
+                    }).then((fragmentList) => {
+                        penFragments = fragmentList;
+                        return db.sequelize.query(`SELECT * FROM "PenExternals" WHERE ("penId"=${id}) ORDER BY "externalType" ASC;`, {
+                            type: db.sequelize.QueryTypes.SELECT, transaction: t
+                        }).then((externalsList) => {
+                            penExternals = externalsList;
+    
+                            let obj = {
+                                "penInfo": pen[0],
+                                "penFragments": penFragments,
+                                "penExternals": penExternals
+                            }
+    
+                            console.log(obj)
+    
+                            return obj;
+    
+                        })
                     })
-                })
-            });
+                }
+                
+            })
 
 
 
         } catch (e) {
+            console.log("Rolling back transaction")
             t.rollback();
-            // handle error
         }
 
     });

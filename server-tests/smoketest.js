@@ -144,7 +144,7 @@ describe('Users', function () {
     }
   })
 
-  it('Try to get a pen with the valid pen ID, verify error code (400)', async () => {
+  it('Try to get a pen with the valid pen ID, verify error code (200)', async () => {
     try {
       const response = await chai.request(app).get(`/pens/${penId}`)
       assert.equal(response.status, 200, 'Pen should exist');

@@ -6,6 +6,8 @@ smokeTestPens.test_pen_0_res = {
       "penName":"Nook's Cranny",
       "hashId":"jR", // TODO: shouldn't hardcode this.
       "userId":1,
+      "htmlClass":'testClass',
+      "htmlHead":'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
       "numFavorites":1,
       "numComments":2,
       "numViews":3
@@ -17,6 +19,8 @@ smokeTestPens.test_pen_0 = {
        "penName":"Nook's Cranny",
        "hashId":"jR", // TODO: shouldn't hardcode this.
        "userId":1,
+       "htmlClass":'testClass',
+       "htmlHead":'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
        "numFavorites":1,
        "numComments":2,
        "numViews":3
@@ -25,20 +29,14 @@ smokeTestPens.test_pen_0 = {
        {
           "fragmentType":0,
           "body":"<h2>tom nook's workbench</h2>",
-          "htmlClass":'testClass',
-          "htmlHead":'<meta name="viewport" content="width=device-width, initial-scale=1.0">'
        },
        {
           "fragmentType":1,
-          "body":"h1 { color: brown }",
-          "htmlClass":null,
-          "htmlHead":null     
+          "body":"h1 { color: brown }"    
        },
        {
           "fragmentType":2,
-          "body":"console.log(\"Take your time on your loan!\")",
-          "htmlClass":null,
-          "htmlHead":null
+          "body":"console.log(\"Take your time on your loan!\")"
        },
     ],
     "penExternals":[

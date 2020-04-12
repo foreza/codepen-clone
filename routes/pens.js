@@ -29,7 +29,7 @@ const penLimit = 50;
 
 router.get('/:id', [collections.checkPenIDValidity], async (req, res, next) => {
   const pen = await penUtil.getPenByPenIDTransaction(req.params.id);
-  console.log(pen);
+  console.log("received pen:", pen)
   if (!pen) {
     res.sendStatus(404);
   } else {
