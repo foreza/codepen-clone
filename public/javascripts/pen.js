@@ -152,7 +152,6 @@ $(() => {
        }
 
     } else {
-        alert("Let's make a new pen!");
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
         htmlHeadValue = htmlClassValue = "";
         $("#pen-save-status-content").text("Remember to save often!");

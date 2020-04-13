@@ -14,7 +14,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-
+  
+</body>
 <header>
 
 
@@ -34,7 +35,7 @@
       <li><a href="#!">Dashboard</a></li>
       <li><a href="#!">Profile</a></li>
       <li class="divider" tabindex="-1"></li>
-      <li><a href="/pen">New Pen</a></li>
+      <li id="create-new-pen"><a href="/pen">New Pen</a></li>
       <li class="divider" tabindex="-1"></li>
       <li><a href="#!"><i class="material-icons">view_module</i>Settings</a></li>
       <li><a href="/logout"><i class="material-icons">cloud</i>Log out</a></li>
@@ -81,7 +82,7 @@
 
 <main>
 
-  <body class="dashboard">
+  <body id="logged-in-dashboard" class="dashboard">
 
     <!-- Navigation tab -->
     <ul id="tab-button-group" class="tabs">
