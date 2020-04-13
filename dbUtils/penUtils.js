@@ -158,7 +158,7 @@ util.updatePenContentByTransaction = (update) => {
                                 externalUtil.deleteExternalByExternalIdQuery(), {
                                 type: db.sequelize.QueryTypes.DELETE,
                                 transaction: t,
-                                replacements: { externalId: externalId}
+                                replacements: { externalId: update.penExternals[i].externalId}
                             })
                         } catch (err) {
                             console.log("Error with Pen External Update - deletion: ", err)
