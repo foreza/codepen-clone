@@ -53,12 +53,8 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
 /* GET Pen page (for existing pen) */
 router.get('/:username/pen/:hashId', [collections.checkUserExists, collections.checkAuthState, collections.decodeToPenId], async (req, res, next) => {
 
-  const pen = await penUtil.getPenByPenIDTransaction(req.params.penId);
-
-  if (!pen) {
-    res.sendStatus(404);
-  } else {
-
+  try {
+    const pen = await penUtil.getPenByPenIDTransaction(req.params.penId);
     let renderParams = {
       "userId": req.session.user.id,
       "username": req.session.user.username,
@@ -71,10 +67,12 @@ router.get('/:username/pen/:hashId', [collections.checkUserExists, collections.c
     }
 
     console.log(renderParams);
-
     res.render('pen', renderParams);
+  } catch (err) {
+    console.log("Error with retrieving pen: ", err);
+    res.sendStatus(404);
   }
-
+  
 });
 
 
