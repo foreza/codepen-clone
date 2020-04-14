@@ -404,8 +404,17 @@ function monaco_initializeEditors() {
             handleEditorUpdate();
         })
 
-
-        refreshRenderContent();     // do an initial render
+        // Perform an initial render
+        renderInIframe(
+            returnRenderContentForiFrame(
+                leftEditor.getValue(),
+                centerEditor.getValue(),
+                rightEditor.getValue(),
+                externalsString,
+                htmlClassValue,
+                htmlHeadValue
+            )
+        );
 
     });
 
