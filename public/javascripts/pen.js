@@ -516,7 +516,9 @@ function setupExternalModals() {
     htmlClassInput.val(htmlClassValue);
     htmlHeadInput.val(htmlHeadValue);
 
-    sortLocalExternalsAndPopulate(penExternals);
+    if (penExternals){
+        sortLocalExternalsAndPopulate(penExternals);
+    }
 
     // When the "save" button is clicked, sync the updates with the updated / changed list
     $("#modal-stage-update").click(() => {
