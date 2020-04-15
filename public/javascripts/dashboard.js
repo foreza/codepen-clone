@@ -8,7 +8,12 @@ $(document).ready(function () {
     $('.collapsible').collapsible();
 
     // User ID is provided in EJS template
-    getPensForUser(userId);
+    if (typeof userId !== 'undefined'){
+        getPensForUser(userId);
+    } else {
+        // Error handling here. We should always have the user ID.
+        alert("Missing userID. Something went wrong!")
+    }
 
 });
 
@@ -20,7 +25,12 @@ function getPensForUser(userId) {
     $.get(`/pens/user/${userId}`).then((data) => {
         console.log(data);
         pens = data;
-        renderPensForUser(pens);
+        if (typeof username !== 'undefined'){
+            renderPensForUser(pens, username);
+        } else {
+            alert("Missing username. Something went wrong!")
+            throw Error("Username not found")
+        }
     }).catch(error => {
         alert(`${error.responseText} `);
     })
@@ -28,18 +38,18 @@ function getPensForUser(userId) {
 
 
 
-function renderPensForUser(pens) {
+function renderPensForUser(pens, username) {
 
     for (var i = 0; i < pens.length; ++i){
         console.log("creating pen: ", pens[i].penName);
-        $("#pen-card-view").append(generatePenCardDom(pens[i]));
+        $("#pen-card-view").append(generatePenCardDom(pens[i], username));
     }
 
 }
 
 
 
-function generatePenCardDom(pen){
+function generatePenCardDom(pen, username){
 
     return `<div class="col s12 m6 l4">
                 <div class="card">

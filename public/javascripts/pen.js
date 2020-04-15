@@ -404,8 +404,17 @@ function monaco_initializeEditors() {
             handleEditorUpdate();
         })
 
-
-        refreshRenderContent();     // do an initial render
+        // Perform an initial render
+        renderInIframe(
+            returnRenderContentForiFrame(
+                leftEditor.getValue(),
+                centerEditor.getValue(),
+                rightEditor.getValue(),
+                externalsString,
+                htmlClassValue,
+                htmlHeadValue
+            )
+        );
 
     });
 
@@ -507,7 +516,9 @@ function setupExternalModals() {
     htmlClassInput.val(htmlClassValue);
     htmlHeadInput.val(htmlHeadValue);
 
-    sortLocalExternalsAndPopulate(penExternals);
+    if (penExternals){
+        sortLocalExternalsAndPopulate(penExternals);
+    }
 
     // When the "save" button is clicked, sync the updates with the updated / changed list
     $("#modal-stage-update").click(() => {
