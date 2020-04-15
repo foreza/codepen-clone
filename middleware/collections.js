@@ -3,8 +3,38 @@ const yup = require('yup');
 var userUtil = require('../dbUtils/userUtils')
 const Hashids = require('hashids/cjs')
 const hashids = new Hashids()
+const puppeteer = require('puppeteer');
 
 
+
+
+// Puppet function 
+
+middlewareCollection.generatePreview = async (req, penId ) => {
+
+    try {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.setViewport({
+          width: 640,
+          height: 480,
+          deviceScaleFactor: 1,
+        });
+        const link = `http://${req.get('Host')}/pens/${penId}/preview`;
+        console.log(link)
+    
+        await page.goto(link);
+        await page.screenshot({path: `./public/previews/${penId}.png`});
+        await browser.close();
+        return true;
+      
+      } catch (e) {
+        console.log("Error with puppet")
+        return false;
+      }
+
+
+}
 
 // HashID decode function
 

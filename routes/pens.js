@@ -54,8 +54,6 @@ router.get('/:id/preview', collections.checkPenIDValidity, async (req, res, next
     let htmlFragment, cssFragment, jsFragment = "";
     let externalsArr = [];
 
-    console.log("retrieved pen:", pen.penFragments);
-
     for (var i = 0; i < pen.penFragments.length; ++i) {
       switch (pen.penFragments[i].fragmentType) {
           case 0:
@@ -126,35 +124,63 @@ router.get('/user/:userId', async (req, res, next) => {
 
 // Update everything about a pen given a pen ID
 router.put('/:penId', [], async (req, res, next) => {
-  const updatedPen = await penUtil.updatePenContentByTransaction(req.body).catch(
+
+  try {
+    const updatedPen = await penUtil.updatePenContentByTransaction(req.body);
+
+    if (!updatedPen || updatedPen.length <= 0) {
+      res.sendStatus(404);
+    } else {
+        try {
+          await collections.generatePreview(req, req.params.penId);
+          res.json(updatedPen);
+        } catch (e) {
+          console.log("Error with preview.")
+          res.sendStatus(500);
+        }
+    }
+
+  } catch (err) {
     err => {
       console.error(`Pen Update Error: ${err}`);
       res.sendStatus(400);
-    });
-  if (!updatedPen || updatedPen.length <= 0) {
-    res.sendStatus(404);
-  } else {
-    res.json(updatedPen);
+    };
   }
+
 
 });
 
 
 // Create a new pen
-router.post('/', (req, res, next) => {
-  penUtil.addNewPenByTransaction(req.body).then(pen => {
+router.post('/', async (req, res, next) => {
+
+  try {
+    let pen = await penUtil.addNewPenByTransaction(req.body)
+
     if (pen) {
       newPen = pen[0];
       console.log("Added new pen: ", newPen);
       const newhashId = hashids.encode(newPen[0].penId);
       console.log(`[encodeToHashId] - Converted ${newPen[0].penId} to ${newhashId}`);
       newPen[0].hashId = newhashId;
-      res.status(201).json(newPen[0]);
+
+      try {
+        await collections.generatePreview(req, newPen[0].penId);
+        res.status(201).json(newPen[0]);
+      } catch (e) {
+        console.log("Error with preview.")
+        res.sendStatus(500);
+      }
+
+    } else {
+      throw Error("Pen was null")
     }
-  }).catch(err => {
+
+  } catch (err) {
     console.error(`Pen Creation Error:", ${err}`);
-    res.sendStatus(400);  // 
-  });
+    res.sendStatus(400);   
+  };
+
 });
 
 
