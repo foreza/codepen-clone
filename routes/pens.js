@@ -6,6 +6,7 @@ const Hashids = require('hashids/cjs')
 const hashids = new Hashids()
 const penLimit = 50;
 
+const puppeteer = require('puppeteer');
 
 router.get('/:id', collections.checkPenIDValidity, async (req, res, next) => {
   try {
@@ -16,6 +17,34 @@ router.get('/:id', collections.checkPenIDValidity, async (req, res, next) => {
     res.sendStatus(404);
   }
 });
+
+
+
+// Test route for puppet
+router.get('/:id/puppet', async (req, res, next) => {
+
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setViewport({
+      width: 640,
+      height: 480,
+      deviceScaleFactor: 1,
+    });
+    const link = `http://${req.get('Host')}/pens/${req.params.id}/preview`;
+    console.log(link)
+
+    await page.goto(link);
+    await page.screenshot({path: `./public/previews/${req.params.id}.png`});
+    await browser.close();
+    res.sendStatus(200);
+  
+  } catch (e) {
+    console.log("Error with puppet")
+    res.sendStatus(500);
+  }
+
+})
 
 
 router.get('/:id/preview', collections.checkPenIDValidity, async (req, res, next) => {

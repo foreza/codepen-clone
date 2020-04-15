@@ -1,5 +1,6 @@
 # Ignore Sequelize config
 config/config.json 
+previews/
 
 # MacOS
 *.DS_Store
