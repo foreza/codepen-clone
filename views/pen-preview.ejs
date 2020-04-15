@@ -1,0 +1,30 @@
+<html class="<%= htmlClass %>">
+<% { %>
+
+<head>
+    <%- htmlHead %>
+    <% } %>
+
+    <% for (var i = 0; i < penExternals.length; ++i) { %>
+    <%- penExternals[i]  %>
+    <% } %>
+
+
+    <% { %>
+    <style>
+        <%=cssFragment %>
+    </style>
+    <% } %>
+</head>
+
+
+<% { %>
+
+<body><%- htmlFragment %>
+    <script>
+    <% - jsFragment %>
+    </script>
+</body>
+<% } %>
+
+</html>
