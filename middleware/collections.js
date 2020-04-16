@@ -1,6 +1,8 @@
 const middlewareCollection = {};
 const yup = require('yup');
 var userUtil = require('../dbUtils/userUtils')
+var previewUtil = require('../dbUtils/penPreviewUtils')
+
 const Hashids = require('hashids/cjs')
 const hashids = new Hashids()
 const puppeteer = require('puppeteer');
@@ -22,14 +24,22 @@ middlewareCollection.generatePreview = async (req, penId ) => {
         });
         const link = `http://${req.get('Host')}/pens/${penId}/preview`;
         console.log(link)
-    
+        const creationDate = new Date();
+
+        const newPath = `./public/previews/${penId}-${+creationDate}.png`;
         await page.goto(link);
-        await page.screenshot({path: `./public/previews/${penId}.png`});
+        await page.screenshot({path: newPath});
         await browser.close();
-        return true;
+
+        try {
+            await previewUtil.createPenPreview({penId: penId, uri: newPath, createdAt: creationDate });
+            return true;
+        } catch (e) {
+            throw Error("Failed to create pen preview")
+        }
       
       } catch (e) {
-        console.log("Error with puppet")
+        console.log(`Error with puppet or with query: ${e}`)
         return false;
       }
 

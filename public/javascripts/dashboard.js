@@ -51,11 +51,14 @@ function renderPensForUser(pens, username) {
 
 function generatePenCardDom(pen, username){
 
+    var truncatedUri = (pen.uri).substring(8);      // Temp fix - let's talk about this?
+
     return `<div class="col s12 m6 l4">
                 <div class="card">
                     <div class="card-image">
                         <a class="pen-title-link" href="/${username}/pen/${pen.hashId}">
                             <div class="placeholder">
+                                <img src="${truncatedUri}"/>
                             </div>
                         </a>   
                     </div>

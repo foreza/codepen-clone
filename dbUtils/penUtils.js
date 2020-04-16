@@ -4,6 +4,7 @@ var externalUtil = require('../dbUtils/penExternalUtils')
 const util = {};
 
 
+
 /* 
     GET PEN: 
     We can retrieve a pen AND associated info given the penid
@@ -333,56 +334,6 @@ util.addNewPenByTransaction = (pen) => {
 
 
 
-
-// util.addNewPen = async (pen) => {
-//     const ret = await db.sequelize.query(addNewPenQuery, {
-//         replacements: { ...pen },
-//         type: db.sequelize.QueryTypes.INSERT
-//     });
-
-//     return ret;
-// }
-
-
-/* 
-    UPDATE PEN: 
-    We can update the name of the pen, as well as any of the optional params.
-
-    Required Params:
-    * penId (primary key)      
-    * penName
-
-    Optional Params can be null (indicating empty)
-    * numFavorites
-    * numComments
-    * numViews
-    * htmlClass
-    * htmlHead
-*/
-
-// UPDATE "Pens" 
-// SET "penName"='a whole new world', "blah", "<meta>blaaah</meta>", "numFavorites"=50, "numComments"=10, "numViews"=568
-// WHERE ("penId"=4)
-// RETURNING *;
-
-
-
-// const updatePenInfoByPenIDQuery = (update) => {
-//     return `UPDATE "Pens" 
-// SET "penName"='${update.penName}', "numFavorites"='${update.numFavorites}', "numComments"='${update.numComments}', "numViews"='${update.numViews}'
-// WHERE ("penId"=${update.penId})
-// RETURNING *;` };
-
-// util.updatePenContentByPenID = async (update) => {
-//     const ret = await db.sequelize.query(updatePenInfoByPenIDQuery, {
-//         replacements: { ...update },
-//         type: db.sequelize.QueryTypes.UPDATE
-//     });
-
-//     return ret;
-// }
-
-
 /* 
     GET PEN: 
     We can retrieve a pen given the id
@@ -410,9 +361,23 @@ util.addNewPenByTransaction = (pen) => {
 
 // SELECT * FROM "Pens" WHERE ("userId"=1) LIMIT 10;
 
-const getXPensByUserIDQuery = (userId, count) => { return `SELECT * FROM "Pens" WHERE ("userId"=${userId}) LIMIT ${count};` };
-util.getPenByUserID = (userId, count) => db.sequelize.query(getXPensByUserIDQuery(userId, count), {
-    type: db.sequelize.QueryTypes.SELECT
+// const getXPensByUserIDQuery = (userId, count) => { return `SELECT * FROM "Pens" WHERE ("userId"=${userId}) LIMIT ${count};` };
+
+const getXPensByUserIDWithPreviewQuery = `SELECT * FROM "Pens" INNER JOIN (
+	SELECT * FROM (
+		SELECT DENSE_RANK () OVER (
+			PARTITION BY "PenPreviews"."penId" 
+			order by "PenPreviews"."createdAt" desc) image_rank, 
+		"PenPreviews"."penId", "PenPreviews"."uri"
+		FROM "PenPreviews") as ranked
+	WHERE ranked.image_rank = 1) as ranked_previews ON ranked_previews."penId" = "Pens"."penId"
+    WHERE "Pens"."userId" = :userId
+    LIMIT :count;`
+
+util.getPenByUserID = (userId, count) => db.sequelize.query(getXPensByUserIDWithPreviewQuery, {
+    type: db.sequelize.QueryTypes.SELECT,
+    replacements: { "userId": userId, "count": count}
+
 });
 
 
