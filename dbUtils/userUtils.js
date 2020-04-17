@@ -7,13 +7,11 @@ const addUserQuery =
 VALUES (:fullName, :username, :email, :password, :createdAt)
 RETURNING *;`
 
-util.addUser = async (user) => {
-    const ret = await db.sequelize.query(addUserQuery, {
+util.addUser = (user) => {
+    return db.sequelize.query(addUserQuery, {
         replacements: { ...user, createdAt: new Date() },
         type: db.sequelize.QueryTypes.INSERT
     });
-
-    return ret;
 }
 
 const checkValidUserQuery = 
