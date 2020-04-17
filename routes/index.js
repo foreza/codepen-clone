@@ -4,27 +4,27 @@ var collections = require('../middleware/collections')
 var penUtil = require('../dbUtils/penUtils')
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
   res.redirect('/dashboard');
 });
 
-router.get('/logout', function (req, res, next) {
+router.get('/logout', (req, res, next) => {
   req.session.reset();
   res.redirect('/login');
 });
 
 /* GET signup page. */
-router.get('/signup', function (req, res, next) {
+router.get('/signup', (req, res, next) => {
   res.render('signup', { title: 'Signup' });
 });
 
 /* GET Login page. */
-router.get('/login', function (req, res, next) {
+router.get('/login', (req, res, next) => {
   res.render('login', { title: 'Login' });
 });
 
 /* GET Dashboard page. */
-router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState], function (req, res, next) {
+router.get('/dashboard', [collections.checkUserExists, collections.checkAuthState],  (req, res, next) => {
 
   let renderParams = {
     "userId": req.session.user.id,
@@ -33,9 +33,8 @@ router.get('/dashboard', [collections.checkUserExists, collections.checkAuthStat
     "pen": null
   }
 
-  console.log(renderParams);
-
   res.render('dashboard', renderParams);
+
 });
 
 /* GET Pen page (for new pens) */
@@ -47,7 +46,9 @@ router.get('/pen', [collections.checkUserExists, collections.checkAuthState], (r
     "title": 'Untitled Pen',
     "pen": null
   }
+
   res.render('pen', renderParams);
+
 });
 
 /* GET Pen page (for existing pen) */
@@ -66,18 +67,16 @@ router.get('/:username/pen/:hashId', [collections.checkUserExists, collections.c
       }
     }
 
-    console.log(renderParams);
     res.render('pen', renderParams);
   } catch (err) {
-    console.log("Error with retrieving pen: ", err);
+    console.error(`Error with retrieving pen: ${err}`);
     res.sendStatus(404);
   }
   
 });
 
-
 // TODO: 
-router.get('/:userId', [collections.checkUserExists, collections.checkAuthState], async (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
   res.redirect('/dashboard');
 });
 
