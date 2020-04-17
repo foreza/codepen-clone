@@ -1,6 +1,8 @@
 var pens = [];
 
 $(document).ready(function () {
+
+    // Initialize Materialize components
     $('.tabs').tabs();
     $('select').formSelect();
     $('.dropdown-trigger').dropdown();
@@ -17,18 +19,13 @@ $(document).ready(function () {
 
 });
 
-
-// API route
-
+// GET: Fetch all pens for user (userId provided by EJS template )
 function getPensForUser(userId) {
-    // TODO: implement
     $.get(`/pens/user/${userId}`).then((data) => {
-        console.log(data);
         pens = data;
         if (typeof username !== 'undefined'){
             renderPensForUser(pens, username);
         } else {
-            alert("Missing username. Something went wrong!")
             throw Error("Username not found")
         }
     }).catch(error => {
@@ -36,20 +33,15 @@ function getPensForUser(userId) {
     })
 }
 
-
-
+// 
 function renderPensForUser(pens, username) {
-
     for (var i = 0; i < pens.length; ++i){
-        console.log("creating pen: ", pens[i].penName);
-        $("#pen-card-view").append(generatePenCardDom(pens[i], username));
+        $("#pen-card-view").append(util_generatePenCardDom(pens[i], username));
     }
-
 }
 
 
-
-function generatePenCardDom(pen, username){
+function util_generatePenCardDom(pen, username){
 
     var truncatedUri = (pen.uri).substring(8);      // Temp fix - let's talk about this?
 

@@ -9,14 +9,14 @@ var resizeLeft = false;                         // Track whether currently resiz
 var resizeRight = false;                        // Track whether currently resizing with rightAnchor
 var resizeBottom = false;                       // Track whether currently resizing with bottomAnchor
 var tWidth;                                     // Global store temporary width for left/right anchor operations
-var tHeight;
+var tHeight;                                    // Global store temporary width for top/down anchor operations
 var leftEditor;                                 // Reference to left monaco editor
 var centerEditor;                               // Reference to center monaco editor
 var rightEditor;                                // Reference to right monaco editor
 var htmlEditorContent;                          // Content for left monaco editor
 var cssEditorContent;                           // Content for center monaco editor
 var jsEditorContent;                            // Content for right monaco editor
-let editingName = false;
+let editingName = false;        
 let penShowContainer;
 let penEditContainer;
 let penNameInput;
@@ -185,8 +185,6 @@ function generateExternalsRenderString(externalsList) {
     let externals = "";
 
     for (var i = 0; i < keys.length; ++i) {
-        // https://stackoverflow.com/questions/1410311/regular-expression-for-url-validation-in-javascript
-
         const targetURL = externalsList[keys[i]].url;
 
         // Skip rendering anything marked for deletion and that isn't a proper URL
@@ -276,7 +274,6 @@ function postNewPen(userId, penName,
     htmlContent, cssContent, jsContent,
     externals, htmlClass, htmlHead) {
 
-
     const newPen = {
         penInfo: {
             userId: userId,
@@ -347,7 +344,6 @@ function putPenUpdate(penId, penName,
     $("#pen-save-status-content").text("Updating Pen..");
 
     $.put(`/pens/${penId}`, updatedPen, (data) => {
-        console.log("Returned pen external data:", data.penExternals)
         penExternals = data.penExternals;
         sortLocalExternalsAndPopulate(penExternals);
         $("#pen-save-status-content").text("");
@@ -443,8 +439,7 @@ function monaco_setupMonacoResizing() {
 
     bottomPane.height(`${window.innerHeight - editorPane.height()}px`);
 
-    // TODO : Do a RCA to find out why this line is needed
-    tHeight = editorPane.height();
+    tHeight = editorPane.height();     // TODO : Do a RCA to find out why this line is needed
     editorPane.height(tHeight);
 
 
@@ -489,7 +484,7 @@ function monaco_setupMonacoResizing() {
             } else if (resizeBottom) {
                 const val = window.innerHeight - e.pageY;
                 bottomPane.height(`${val}px`);
-                editorPane.height(`${e.pageY}px`);
+                editorPane.height(`${e.pageY-40}px`);       // Temp fix to correct height diff
             }
             monaco_resizeWindow();
         }
