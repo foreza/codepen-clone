@@ -767,11 +767,11 @@ function setupSocketListeners(){
 
 
     socket.on('connect', () => {
-        alert(`connected to ${username}'s pen`)
+        console.log(`connected to ${username}'s pen`)
+        // TODO: Make this a prompt
     });
 
     socket.on('fragmentUpdate', (fragment) => {
-        console.log("frag update!")
         
         // If the value doesn't match -
         if (leftEditor.getValue() != fragment){
