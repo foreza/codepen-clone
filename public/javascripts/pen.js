@@ -29,14 +29,17 @@ let externalsString = "";
 const timeBeforeEditorUpdate = 1000;            // Default time                     
 var updateTimerRef;
 let currentHash;
-
-
+const socket = io('');                          // Socket IO 
+let socketEnabled = false;
 
 // Monaco Editor config
 require.config({ paths: { 'vs': '/min/vs' } });
 
 
+
 $(() => {
+
+
 
     // Add a "put" and "delete" shortcut since it's already supported.
     jQuery.each(["put", "delete"], function (i, method) {
@@ -150,6 +153,9 @@ $(() => {
                     break;
             } 
        }
+
+
+       setupSocketListeners();      // Enable socket activities only for live pens
 
     } else {
         htmlEditorContent = cssEditorContent = jsEditorContent = "";
@@ -388,6 +394,11 @@ function monaco_initializeEditors() {
         leftEditor.onDidChangeModelContent(e => {
             htmlEditorContent = leftEditor.getValue();
             handleEditorUpdate();
+
+            if (socketEnabled) {
+                socket.emit('fragmentUpdate', htmlEditorContent);
+            }
+
         })
 
         centerEditor.onDidChangeModelContent(e => {
@@ -747,3 +758,44 @@ String.prototype.hashCode = function(){
 	}
 	return hash;
 }
+
+
+// SocketIO
+
+function setupSocketListeners(){
+    socketEnabled = true;
+
+
+    socket.on('connect', () => {
+        alert(`connected to ${username}'s pen`)
+    });
+
+    socket.on('fragmentUpdate', (fragment) => {
+        console.log("frag update!")
+        
+        // If the value doesn't match -
+        if (leftEditor.getValue() != fragment){
+            console.log("Fragment updated");
+            leftEditor.setValue(fragment);
+        }
+
+      });
+
+    // socket.on('event', (data) => {
+    //     // TODO: Handle keypresses from other clients
+
+    //     // TODO: Handle content change for fragment
+
+    //     // On title change, what do?
+
+    //     // On new externals change, what do?
+
+
+
+    // });
+    socket.on('disconnect', () => {
+        
+    });
+}
+
+

@@ -12,7 +12,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
 /**
@@ -20,6 +20,9 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+var io = require('socket.io')(server);    // Bind socket.io here
+
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -88,3 +91,32 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+
+
+// Socket.io code
+
+let userCount = 0;
+
+io.on('connection', function(socket){
+
+  userCount++;
+  let userID = userCount;
+
+  console.log(`~~~~~~~~ user ${userID} connected`);
+
+  socket.on('disconnect', () => {
+    console.log(`~~~~~~~~ user ${userID} disconnected`);
+  });
+
+  // When 'fragment' event is received by io, broadcast to all other parties
+  socket.on('fragmentUpdate', (update) => {
+    console.log(`fragmentUpdate" ${update}`);
+    io.emit('fragmentUpdate',`${update}`);
+  });
+
+  // socket.on('disconnect', function(){
+  //   userCount--;
+  //   console.log('user disconnected, current count:', userCount);
+  // });
+});
