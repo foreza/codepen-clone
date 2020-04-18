@@ -3,60 +3,75 @@ var fragmentUtil = require('../dbUtils/penFragmentUtils')
 var externalUtil = require('../dbUtils/penExternalUtils')
 const util = {};
 
-
-
 /* 
     GET PEN: 
-    We can retrieve a pen AND associated info given the penid
+    Retrieve Pen/Fragments/Externals by penId 
 
     Required Params:
     * penId (primary key)      
 */
 
-const getPenByPenIDQuery = 
-`SELECT * 
+const getPenByPenIDQuery =
+    `SELECT * 
 FROM "Pens" 
 WHERE ("penId"=:penId);`;
 
 util.getPenByPenIDTransaction = (id) => {
-    return db.sequelize.transaction((t) => {
+    return db.sequelize.transaction(async (t) => {
+
+        let penInfo;
+        let penFragments = [];
+        let penExternals = [];
+
         try {
-            return db.sequelize.query(getPenByPenIDQuery, {
-                type: db.sequelize.QueryTypes.SELECT, 
+            penInfo = await db.sequelize.query(getPenByPenIDQuery, {
+                type: db.sequelize.QueryTypes.SELECT,
                 transaction: t,
-                replacements: {penId: id}
-            }).then((pen) => {
-                if (pen.length <= 0) {
-                    throw Error("No pens found");
-                } else {
-                    return db.sequelize.query(fragmentUtil.getFragmentsByPenIdQuery(), {
-                        type: db.sequelize.QueryTypes.SELECT,
-                        transaction: t,
-                        replacements: { penId: pen[0].penId }
-                    }).then((fragmentList) => {
-                        return db.sequelize.query(externalUtil.getExternalsByPenIdQuery(), {
-                            type: db.sequelize.QueryTypes.SELECT,
-                            transaction: t,
-                            replacements: { penId: pen[0].penId  }
-                        }).then((externalsList) => {
-                            let obj = {
-                                "penInfo": pen[0],
-                                "penFragments": fragmentList,
-                                "penExternals": externalsList
-                            }
+                replacements: { penId: id }
+            });
 
-                            return obj;
+            if (penInfo.length <= 0) {
+                throw Error("No pens found");
+            }
 
-                        })
-                    })
-                }
-
-            })
-        } catch (e) {
-            console.error("Rolling back transaction")
+        } catch (err) {
             t.rollback();
-            throw Error(err);
+            throw Error(`Error with Pen Info GET: ${err}`);
         }
+
+        try {
+            penFragments = await db.sequelize.query(fragmentUtil.getFragmentsByPenIdQuery(), {
+                type: db.sequelize.QueryTypes.SELECT,
+                transaction: t,
+                replacements: { penId: id }
+            });
+
+            if (penFragments.length <= 0) {
+                throw Error("No fragments found");  // TODO: Will we always require fragments?
+            }
+        } catch (err) {
+            t.rollback();
+            throw Error(`Error with Pen Fragment GET: ${err}`);
+        }
+
+        try {
+            penExternals = await db.sequelize.query(externalUtil.getExternalsByPenIdQuery(), {
+                type: db.sequelize.QueryTypes.SELECT,
+                transaction: t,
+                replacements: { penId: id }
+            });
+        } catch (err) {
+            t.rollback();
+            throw Error(`Error with Pen Externals GET: ${err}`);
+        }
+
+        let obj = {
+            "penInfo": penInfo,
+            "penFragments": penFragments,
+            "penExternals": penExternals
+        }
+
+        return obj;
 
     });
 
@@ -87,8 +102,8 @@ util.getPenByPenIDTransaction = (id) => {
 // WHERE ("penId"=4)
 // RETURNING *;
 
-const updatePenInfoByPenIDQuery = 
-`UPDATE "Pens" 
+const updatePenInfoByPenIDQuery =
+    `UPDATE "Pens" 
 SET "penName"=:penName, "htmlClass"=:htmlClass, "htmlHead"=:htmlHead,  
 "numFavorites"=:numFavorites, "numComments"=:numComments, "numViews"=:numViews
 WHERE ("penId"=:penId) 
@@ -96,6 +111,7 @@ RETURNING *;`
 
 util.updatePenContentByTransaction = (update) => {
     return db.sequelize.transaction(async (t) => {
+
         const penId = update.penInfo.penId;
         let penInfo;
         let penFragments = [];
@@ -108,11 +124,9 @@ util.updatePenContentByTransaction = (update) => {
                 replacements: { ...update.penInfo }
             });
         } catch (err) {
-            console.error("Error with Pen Info Update: ", err)
             t.rollback();
-            throw Error(err);
+            throw Error(`Error with Pen Info Update: ${err}`);
         }
-
 
         for (var i = 0; i < update.penFragments.length; ++i) {
 
@@ -120,10 +134,8 @@ util.updatePenContentByTransaction = (update) => {
                 fragmentId: update.penFragments[i].fragmentId,
                 body: update.penFragments[i].body ? update.penFragments[i].body : null
             }
+
             try {
-
-                console.log("~~~~~~~~~~~~~processing: ", fragmentUpdate);
-
                 const frag = await db.sequelize.query(
                     `UPDATE "PenFragments" 
                         SET "body"=:body 
@@ -132,16 +144,13 @@ util.updatePenContentByTransaction = (update) => {
                     type: db.sequelize.QueryTypes.UPDATE,
                     transaction: t,
                     replacements: { ...fragmentUpdate }
-                })
-
-                console.log("~~~ LOOOOOK", frag)
+                });
 
                 penFragments.push(frag[0][0]);
 
             } catch (err) {
-                console.log("Error with Pen Fragment Update: ", err)
                 t.rollback();
-                throw Error(err);
+                throw Error(`Error with Pen Fragment Update: ${err}`);
             }
         }
 
@@ -150,7 +159,6 @@ util.updatePenContentByTransaction = (update) => {
 
                 // If the ID exists (meaning, not new)
                 if (update.penExternals[i].externalId) {
-                    console.log("processing: ", update.penExternals[i]);
 
                     // If this ID was marked for deletion (no url)
                     if (!update.penExternals[i].url) {
@@ -159,12 +167,12 @@ util.updatePenContentByTransaction = (update) => {
                                 externalUtil.deleteExternalByExternalIdQuery(), {
                                 type: db.sequelize.QueryTypes.DELETE,
                                 transaction: t,
-                                replacements: { externalId: update.penExternals[i].externalId}
-                            })
+                                replacements: { externalId: update.penExternals[i].externalId }
+                            });
                         } catch (err) {
-                            console.log("Error with Pen External Update - deletion: ", err)
                             t.rollback();
-                            throw Error(err);
+                            throw Error(`Error with Pen External Update - deletion: 
+                            ${update.penExternals[i].externalId} -> ${err}`);
                         }
                     } else {
                         const externalUpdate = {
@@ -178,12 +186,12 @@ util.updatePenContentByTransaction = (update) => {
                                 type: db.sequelize.QueryTypes.UPDATE,
                                 transaction: t,
                                 replacements: { ...externalUpdate }
-                            })
+                            });
                             penExternals.push(updatedExternal[0][0]);
                         } catch (err) {
-                            console.log("Error with Pen External Update - update existing: ", err)
                             t.rollback();
-                            throw Error(err);
+                            throw Error(`Error with Pen External Update - update existing:
+                            ${update.penExternals[i].externalId} -> ${err}`);
                         }
 
                     }
@@ -195,7 +203,6 @@ util.updatePenContentByTransaction = (update) => {
                         externalType: update.penExternals[i].externalType,
                         url: update.penExternals[i].url
                     }
-                    console.log("Creating new external: ", update.penExternals[i].url)
 
                     try {
                         const createdExternal = await db.sequelize.query(
@@ -203,13 +210,12 @@ util.updatePenContentByTransaction = (update) => {
                             type: db.sequelize.QueryTypes.INSERT,
                             transaction: t,
                             replacements: { ...newExternal }
-                        })
-                        console.log("pushing this: ", createdExternal[0][0]);
+                        });
                         penExternals.push(createdExternal[0][0]);
                     } catch (err) {
-                        console.log("Error with Pen External Update - make new: ", err)
                         t.rollback();
-                        throw Error(err);
+                        throw Error(`Error with Pen External Update - make new: 
+                        ${update.penExternals[i].url} -> ${err}`);
                     }
 
                 }
@@ -224,11 +230,6 @@ util.updatePenContentByTransaction = (update) => {
         }
 
         return obj;
-
-
-    }).catch(err => {
-        console.error(`Update Pen has an err: ${err}`)
-        // t.rollback();
     });
 }
 
@@ -270,11 +271,12 @@ util.addNewPenByTransaction = (pen) => {
                 type: db.sequelize.QueryTypes.INSERT,
                 transaction: t,
                 replacements: { ...pen.penInfo }
-            })
+            });
         } catch (err) {
             t.rollback();
-            throw Error(`${err} at PenInfo`);
+            throw Error(`${err} at adding PenInfo`);
         }
+
         const newPenId = penInfo[0][0].penId;
 
         for (var i = 0; i < pen.penFragments.length; ++i) {
@@ -286,23 +288,18 @@ util.addNewPenByTransaction = (pen) => {
                 createdAt: new Date()
             }
 
-            console.log("frag body",  fragmentBody)
-
             try {
                 await db.sequelize.query(
                     fragmentUtil.createPenFragmentQuery(), {
                     type: db.sequelize.QueryTypes.INSERT,
                     transaction: t,
                     replacements: { ...fragmentBody }
-                })
+                });
             } catch (err) {
                 t.rollback();
                 throw Error(`${err} at penFragments: ${pen.penFragments[i]}`);
             }
-
-
         }
-
 
         if (pen.penExternals) {
             for (var i = 0; i < pen.penExternals.length; ++i) {
@@ -328,40 +325,18 @@ util.addNewPenByTransaction = (pen) => {
         }
 
         return penInfo;
-
-    })
+    });
 }
-
-
-
-/* 
-    GET PEN: 
-    We can retrieve a pen given the id
-
-    Required Params:
-    * penId (primary key)      
-*/
-
-// SELECT * FROM "Pens" WHERE ("penId"=4);
-
-// const getPenByPenIDQuery = (id) => { return `SELECT * FROM "Pens" WHERE ("penId"=${id});` };
-// util.getPenByPenID = (id) => db.sequelize.query(getPenByPenIDQuery(id), {
-//     type: db.sequelize.QueryTypes.SELECT,
-// });
 
 
 /* 
     GET PENS associated with User : 
-    We can retrieve a set of User Pens associated with a userId
+    We can retrieve a set of User Pens with pen Previews associated with a userId
 
     Required Params:
     * userId (fkey)   
     * count (# of pens to return)   
 */
-
-// SELECT * FROM "Pens" WHERE ("userId"=1) LIMIT 10;
-
-// const getXPensByUserIDQuery = (userId, count) => { return `SELECT * FROM "Pens" WHERE ("userId"=${userId}) LIMIT ${count};` };
 
 const getXPensByUserIDWithPreviewQuery = `SELECT * FROM "Pens" INNER JOIN (
 	SELECT * FROM (
@@ -374,15 +349,10 @@ const getXPensByUserIDWithPreviewQuery = `SELECT * FROM "Pens" INNER JOIN (
     WHERE "Pens"."userId" = :userId
     LIMIT :count;`
 
-util.getPenByUserID = (userId, count) => db.sequelize.query(getXPensByUserIDWithPreviewQuery, {
+util.getPenByUserID = (userId, count) => db.sequelize.query(
+    getXPensByUserIDWithPreviewQuery, {
     type: db.sequelize.QueryTypes.SELECT,
-    replacements: { "userId": userId, "count": count}
-
+    replacements: { "userId": userId, "count": count }
 });
-
-
-
-
-
 
 module.exports = util;
