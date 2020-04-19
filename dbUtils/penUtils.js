@@ -66,7 +66,7 @@ util.getPenByPenIDTransaction = (id) => {
         }
 
         let obj = {
-            "penInfo": penInfo,
+            "penInfo": penInfo[0],
             "penFragments": penFragments,
             "penExternals": penExternals
         }
@@ -345,7 +345,8 @@ const getXPensByUserIDWithPreviewQuery = `SELECT * FROM "Pens" INNER JOIN (
 			order by "PenPreviews"."createdAt" desc) image_rank, 
 		"PenPreviews"."penId", "PenPreviews"."uri"
 		FROM "PenPreviews") as ranked
-	WHERE ranked.image_rank = 1) as ranked_previews ON ranked_previews."penId" = "Pens"."penId"
+    WHERE ranked.image_rank = 1) as ranked_previews 
+    ON ranked_previews."penId" = "Pens"."penId"
     WHERE "Pens"."userId" = :userId
     LIMIT :count;`
 

@@ -23,9 +23,11 @@ $(document).ready(function () {
 function getPensForUser(userId) {
     $.get(`/pens/user/${userId}`).then((data) => {
         pens = data;
+        console.log(`called /pens/user/${userId}, got data: ${pens}` );
         if (typeof username !== 'undefined'){
             renderPensForUser(pens, username);
         } else {
+            alert("something wrong");
             throw Error("Username not found")
         }
     }).catch(error => {
@@ -43,13 +45,19 @@ function renderPensForUser(pens, username) {
 
 function util_generatePenCardDom(pen, username){
 
-    var truncatedUri = (pen.uri).substring(8);      // Temp fix - let's talk about this?
+    if (typeof pen.uri != undefined) {
+        console.log(pen.uri);
+        var truncatedUri = (pen.uri).substring(8);      // Temp fix - let's talk about this?
+    } else {
+        pen.uri = "/images/placeholder.jpg"
+    };
+    
 
     return `<div class="col s12 m6 l4">
                 <div class="card">
                     <div class="card-image">
                         <a class="pen-title-link" href="/${username}/pen/${pen.hashId}">
-                            <div class="placeholder">
+                            <div class="preview-container">
                                 <img src="${truncatedUri}"/>
                             </div>
                         </a>   
