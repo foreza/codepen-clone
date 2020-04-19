@@ -29,8 +29,7 @@ router.get('/dashboard', [collections.checkUserExists, collections.checkAuthStat
   let renderParams = {
     "userId": req.session.user.id,
     "username": req.session.user.username,
-    "title": `Dashboard for: ${req.session.user.fullName}`,
-    "pen": null
+    "title": `Dashboard for: ${req.session.user.fullName}`
   }
 
   res.render('dashboard', renderParams);

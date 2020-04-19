@@ -18,24 +18,16 @@
   }
   
   #tab-pens .card-image {
-    height: 200px;
     display: block;
     position: relative;
   }
   
   #tab-pens .card-image img {
     display: block;
-    position: absolute;
     overflow: hidden;
-    height: 200px;
-  }
-  
-  #tab-pens .placeholder {
-    background-image: url("../images/placeholder.jpg");
-    height: 200px;
-    width: auto;
-    border-radius: 10px;
-    background-repeat: no-repeat;
+    width: 100%;
+    position: relative;
+    margin: 0 auto;
   }
   
   span.card-options {
@@ -59,6 +51,10 @@
     font-size: 17px;
   }
 
+
+  #pen-card-view > div {
+    max-width: 400px;
+  }
 
   /* Dashboard Sort bar */
 
