@@ -25,25 +25,38 @@ const util = {};
 // VALUES (2, 0, '<h1>test</h1>', null, null)
 // RETURNING *;
 
-const createPenFragmentQuery = `INSERT INTO "PenFragments" ( 
-    "penId", "fragmentType", "body", "createdAt") 
-VALUES (:penId, :fragmentType,  :body,  :createdAt)
-RETURNING *;`
+// const createPenFragmentQuery = `INSERT INTO "PenFragments" ( 
+//     "penId", "fragmentType", "body", "createdAt") 
+// VALUES (:penId, :fragmentType,  :body,  :createdAt)
+// RETURNING *;`
 
-util.createPenFragmentQuery = () => {
-    return createPenFragmentQuery;
-} 
+// util.createPenFragmentQuery = () => {
+//     return createPenFragmentQuery;
+// } 
 
-util.createPenFragment = async (fragment) => {
-    const ret = await db.sequelize.query(createPenFragmentQuery, {
-        replacements: { ...fragment},
-        type: db.sequelize.QueryTypes.INSERT
-    });
+// util.createPenFragment = async (fragment) => {
+//     const ret = await db.sequelize.query(createPenFragmentQuery, {
+//         replacements: { ...fragment},
+//         type: db.sequelize.QueryTypes.INSERT
+//     });
+//     return ret;
+// }
 
-    return ret;
+
+util.buildBulkCreateFragmentQuery = (count) => {
+
+    let queryString = "";
+
+    for (var i = 0; i < count; ++i) {
+        queryString += `INSERT INTO "PenFragments" ( 
+            "penId", "fragmentType", "body", "createdAt") 
+        VALUES (:penId, :fragmentType${i},  :body${i},  :createdAt)
+        RETURNING *;`
+    }
+
+    console.log(queryString);
+    return queryString;
 }
-
-
 
 /*
     PEN FRAGMENT UPDATE (Body):
