@@ -31,6 +31,7 @@ test('Test login to new pen, save some data', async t => {
         .typeText('#password', '123456789123456789', {replace: true})
         .click("#login-button")
         .expect(Selector('#logged-in-dashboard').exists).ok()
+        .expect(Selector('#pen-card-view').child().count).eql(0)
         .click("#profile-image")
         .click("#create-new-pen")
         .expect(Selector('#pen-view-header').exists).ok()
@@ -38,29 +39,16 @@ test('Test login to new pen, save some data', async t => {
         .expect(Selector('#pen-save-status-content').visible).ok()
         .click("#save-pen")
         .expect(Selector('#pen-save-status-content').visible).notOk()
-
 }).page(`http://localhost:3000/login`);
 
 
 
-// test('Test re-login, open pen from dashboard view', async t => {
-//     await t
-//         .typeText('#usernameOrEmail', 'JohnSmithCheerio', {replace: true})
-//         .typeText('#password', '123456789123456789', {replace: true})
-//         .click("#login-button")
-//         .expect(Selector('#logged-in-dashboard').exists).ok()
-//         .click("#profile-image")
-//         .click("#create-new-pen")
-//         .expect(Selector('#pen-view-header').exists).ok()
+test('Test re-login, open pen from dashboard view', async t => {
+    await t
+    .typeText('#usernameOrEmail', 'JohnSmithCheerio', {replace: true})
+    .typeText('#password', '123456789123456789', {replace: true})
+    .click("#login-button")
+    .expect(Selector('#logged-in-dashboard').exists).ok()
+    .expect(Selector('#pen-card-view').child().count).eql(1)
+}).page(`http://localhost:3000/login`);
 
-
-// }).page(`http://localhost:3000/login`);
-
-
-
-// test ('Test create a new pen', async t => {
-//     await t
-//         .click("#profile-image")
-//         .click("#create-new-pen")
-//         .expect(Selector('#pen-view-header').exists).ok()
-// }).page(`http://localhost:3000/dashboard`);
