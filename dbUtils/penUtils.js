@@ -279,27 +279,25 @@ util.addNewPenByTransaction = (pen) => {
 
         const newPenId = penInfo[0][0].penId;
 
+        let bulkFragments = [];
+        let bulkQuery = fragmentUtil.buildBulkCreateFragmentQuery(pen.penFragments.length);
+
         for (var i = 0; i < pen.penFragments.length; ++i) {
+            bulkFragments[`fragmentType${i}`] = pen.penFragments[i].fragmentType;
+            bulkFragments[`body${i}`] = pen.penFragments[i].body ? pen.penFragments[i].body : null
+        }
 
-            const fragmentBody = {
-                penId: newPenId,
-                fragmentType: pen.penFragments[i].fragmentType,
-                body: pen.penFragments[i].body ? pen.penFragments[i].body : null,
-                createdAt: new Date()
-            }
-
-            try {
-                await db.sequelize.query(
-                    fragmentUtil.createPenFragmentQuery(), {
-                    type: db.sequelize.QueryTypes.INSERT,
-                    transaction: t,
-                    replacements: { ...fragmentBody }
-                });
+        try {
+            await db.sequelize.query(bulkQuery, {
+                        type: db.sequelize.QueryTypes.INSERT,
+                        transaction: t,
+                        replacements: { ... bulkFragments, penId: newPenId, createdAt: new Date()}
+                    });
             } catch (err) {
                 t.rollback();
-                throw Error(`${err} at penFragments: ${pen.penFragments[i]}`);
+                throw Error(`${err} at adding penFragments`);
             }
-        }
+
 
         if (pen.penExternals) {
             for (var i = 0; i < pen.penExternals.length; ++i) {
