@@ -5,8 +5,14 @@
   "scripts": {
     "start": "NODE_ENV=development npx sequelize-cli db:migrate && NODE_ENV=development node ./bin/www",
     "test": "NODE_ENV=test npx sequelize-cli db:migrate:undo:all && NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test mocha ./server-tests --exit && NODE_ENV=test npx sequelize-cli db:migrate:undo:all",
-    "fe-test": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test node ./bin/www & NODE_ENV=test testcafe chrome frontend-tests/ && NODE_ENV=test npx sequelize-cli db:migrate:undo:all",
+    "fe-test": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test node ./bin/www & NODE_ENV=test testcafe chrome frontend-tests/smoketest.js && NODE_ENV=test npx sequelize-cli db:migrate:undo:all",
+    "fe-test-all": "NODE_ENV=test npx sequelize-cli db:migrate && npm run test-seed-up && NODE_ENV=test node ./bin/www & NODE_ENV=test testcafe chrome frontend-tests/fullTests/ && NODE_ENV=test npx sequelize-cli db:migrate:undo:all",
+    "test-migration-up": "NODE_ENV=test npx sequelize-cli db:migrate",
+    "test-migration-down": "NODE_ENV=test npx sequelize-cli db:migrate:undo:all",
+    "test-seed-up": "NODE_ENV=test npx sequelize-cli db:seed --seed seeders/sample-users.js && NODE_ENV=test npx sequelize-cli db:seed --seed seeders/sample-pens.js && NODE_ENV=test npx sequelize-cli db:seed --seed seeders/sample-pen-fragments.js && NODE_ENV=test npx sequelize-cli db:seed --seed seeders/sample-pen-externals.js && NODE_ENV=test npx sequelize-cli db:seed --seed seeders/sample-pen-previews.js",
+    "test-seed-down": "NODE_ENV=test npx sequelize-cli db:seed:undo:all",
     "debug": "NODE_ENV=development nodemon --inspect ./bin/www",
+    
     "dev-seed-up": "NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-users.js && NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-pens.js && NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-pen-fragments.js && NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-pen-externals.js && NODE_ENV=development npx sequelize-cli db:seed --seed seeders/sample-pen-previews.js",
     "dev-seed-down": "NODE_ENV=development npx sequelize-cli db:seed:undo:all",
     "dev-migration-up": "NODE_ENV=development npx sequelize-cli db:migrate",
